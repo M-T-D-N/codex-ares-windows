@@ -1,0 +1,15 @@
+node_modules/
+start-wait-*.json
+run-*/
+build/
+bundle/
+evaluator-cwd/
+desktop-bindings/
+*.log
+current-run.json
+activation-launch.json
+.env
+.env.*
+!.env.example
+*.exe
+*.pdb

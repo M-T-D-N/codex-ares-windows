@@ -1,0 +1,19 @@
+name: Locked Windows build
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Select the locked toolchain in this disposable CI job
+        run: |
+          rustup toolchain install 1.98.0 --profile minimal
+          rustup default 1.98.0
+      - name: Restore, build and bundle; no models or Desktop
+        shell: pwsh
+        run: ./scripts/setup.ps1

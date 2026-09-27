@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "repository": "https://github.com/openai/codex",
+  "commit": "0e2f848bf4a4e8d41a02d848a851ba126c09d185",
+  "archive": {
+    "url": "https://codeload.github.com/openai/codex/tar.gz/0e2f848bf4a4e8d41a02d848a851ba126c09d185",
+    "sha256": "1bd5875c86fd4ea2e659b2294889cc04aa25f2d68ec0e7e788d6353889b1b2b0"
+  },
+  "ares": {
+    "repository": "https://github.com/miuuyy/Astra-Ares",
+    "commit": "b2011446d88202329dcdc5163500ca818aba9dbb",
+    "upstreamCodexPinIsDifferent": true
+  },
+  "patch": {
+    "file": "native.patch",
+    "sha256": "87d99c8dd20a8885f68471fe4f746838776fb5365a482e9c48cd985bf0b46fb0",
+    "applyCount": 1,
+    "modifiedFiles": 123,
+    "newFiles": 14
+  },
+  "baseTree": "460dcf26557283eb7581a78e448064fc7e0fc49b",
+  "restoredTree": "4ae73fb0da8ce3f88784abc88fbd2ef9929806ea",
+  "build": {
+    "rustcVersion": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "cargoVersion": "cargo 1.98.0 (797e8a9bc 2026-08-05)",
+    "target": "x86_64-pc-windows-msvc",
+    "targetSelection": "default host; no --target flag",
+    "profile": "dev",
+    "scryptOptLevel": 3,
+    "jobs": 2,
+    "cargoLockSha256": "d9791d7fb33ce54da9e13cfec3c75751ff6318d0028d09668716e70014e93e9a",
+    "nodeMinimum": "22",
+    "nodeDependency": "gpt-tokenizer@4.0.0",
+    "nodeLockFile": "package-lock.json",
+    "nodeLockSha256": "a3dafa3ea11e1baa26d1339408cbbb4d8dd802b351ca875f40cc849918a82c69",
+    "externalNativeDependency": {
+      "name": "rusty_v8",
+      "version": "150.4.0",
+      "requiredArchiveUrl": "https://github.com/openai/codex/releases/download/rusty-v8-v150.4.0/rusty_v8_ptrcomp_sandbox_release_x86_64-pc-windows-msvc.lib.gz",
+      "archiveSha256": "732ec5da4243aa166799780c8519a5eea6f32f6e47657a323342794dc3c239d6",
+      "bindingSha256": "dabf78ba1faac127660db9862b1d0354175c71b8db2d4fcb5bacbd9c93576b16",
+      "checksumManifestSha256": "a4d6221dddb4b5724b23411eaac47caf6095489fbf9d126f65b33cef96a0a8ef",
+      "source": "Codex-built V8 release pair; same sandbox features as the locked source",
+      "fromSourceBuild": "NOT_REQUIRED_FOR_V8"
+    }
+  },
+  "nativeVersion": "codex-cli 0.155.0-alpha.16",
+  "bridgeProtocol": 4,
+  "policy": {
+    "tau": 0.9,
+    "lease": 1,
+    "productionCallLimit": null,
+    "efforts": [
+      "medium",
+      "high",
+      "xhigh",
+      "max"
+    ],
+    "luna": "gpt-6-luna/high",
+    "jev": "jev-1.13.0"
+  },
+  "desktop": {
+    "observedVersion": "26.924.2738.0",
+    "freshPublicBundleGui": "NOT_RUN",
+    "redistribute": false
+  },
+  "companions": [
+    {
+      "name": "codex-code-mode-host.exe",
+      "package": "codex-code-mode-host",
+      "source": "codex-rs/code-mode-host",
+      "license": "Apache-2.0 + dependency notices"
+    },
+    {
+      "name": "codex-command-runner.exe",
+      "package": "codex-windows-sandbox",
+      "source": "codex-rs/windows-sandbox-rs",
+      "license": "Apache-2.0 + dependency notices"
+    },
+    {
+      "name": "codex-windows-sandbox-setup.exe",
+      "package": "codex-windows-sandbox",
+      "source": "codex-rs/windows-sandbox-rs",
+      "license": "Apache-2.0 + dependency notices"
+    }
+  ],
+  "capabilities": [
+    "eligible root only",
+    "selected base model retained",
+    "Astra/Sol reasoning levels present in server catalog",
+    "responses-lite configuration updates",
+    "ordinary Luna opted out"
+  ],
+  "publicPackagingDifferences": [
+    {
+      "path": "codex-rs/core/src/session/jev_main.rs",
+      "kind": "personal-thread-generalization",
+      "description": "Preserve an optional developer-thread exclusion via CODEX_ARES_EXCLUDED_THREAD; no private ID is distributed.",
+      "originalSha256": "a5cc0901b59a5322b3a0cbd25e02f4956b08ffa838fdbee2aa9dc22951b63374",
+      "publicSha256": "32ca606efa921a175e630b78ef5be723cf73bd1cd9cc32d9e73a8a9f3ce02e06"
+    }
+  ],
+  "historicalNativeSha256": "7ad8dcd49a0dd25b7b90274431052e683e0c5a23230c2e188d3a1f143f4cbec1"
+}

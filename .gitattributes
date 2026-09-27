@@ -1,0 +1,2 @@
+* -text
+# Keep exact patch bytes, including SQL migration CRLF and binary schema payloads.
