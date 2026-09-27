@@ -74,8 +74,8 @@
     },
     {
       "path": "docs/compatibility.md",
-      "bytes": 1931,
-      "sha256": "5d2338e8027118a5ceee9395eb046e10b3549a9a6e387e703e703e9b7218377f"
+      "bytes": 2736,
+      "sha256": "9a06aa09753c58df67e3e47e4c1449c2e1b4675f73c5c6bf5a0276e597b7128c"
     },
     {
       "path": "docs/pilot-results.md",
@@ -189,13 +189,13 @@
     },
     {
       "path": "scripts/start.ps1",
-      "bytes": 7032,
-      "sha256": "42a598ac30d332c196db577f35bfabbad5b2cbb42ee863b7aa2574236c0a93dd"
+      "bytes": 7718,
+      "sha256": "5a5d74d1b77c74934b1f879b924cc8bd01bf1a3ceb843c3f3d89a3f4d60308b9"
     },
     {
       "path": "scripts/status.ps1",
-      "bytes": 3833,
-      "sha256": "9b3ff0966bd4346466b3d90d2e8b3d656393a6581d76d23abfea134b98af1aeb"
+      "bytes": 4377,
+      "sha256": "52c0213ad24504958781593f1668df650806e397f840a75bdbb838b6946b2106"
     },
     {
       "path": "src/common/bridge.mjs",
@@ -288,6 +288,16 @@
       "sha256": "05357305d7fb513cdd329f2ed5d2878610a2bf80bdd14156a04f9c611c0d138b"
     },
     {
+      "path": "tests/desktop-startup.ps1",
+      "bytes": 5012,
+      "sha256": "260db3a554af8de2607197147ab62172a4e51e8133ca9ae98306adfe26f4f6dd"
+    },
+    {
+      "path": "tests/unit/desktop-startup.test.mjs",
+      "bytes": 968,
+      "sha256": "6e36662855154915d1d3aad9229a7230f0247b2b51706054bc7bb6a414582498"
+    },
+    {
       "path": "tests/unit/packaging.test.mjs",
       "bytes": 8375,
       "sha256": "0ea1d2ee0854ecf60e50dce4ea7696673147e4d917ddb8b33e109c556e2d840b"
@@ -304,7 +314,7 @@
     }
   ],
   "selfExcludedFromHashes": true,
-  "sourceFileCountIncludingManifest": 61,
+  "sourceFileCountIncludingManifest": 63,
   "pilotDocument": "docs/pilot-results.md",
   "pilotDataOrReplayHarnessIncluded": false
 }

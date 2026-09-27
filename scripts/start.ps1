@@ -1,4 +1,4 @@
-param([switch]$PreflightOnly,[int]$WaitForDesktopPid=0)
+param([switch]$PreflightOnly,[int]$WaitForDesktopPid=0,[switch]$PackagedLaunch)
 $ErrorActionPreference='Stop'
 $repoRoot=Split-Path -Parent $PSScriptRoot
 $principal=[Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
@@ -10,6 +10,15 @@ if($packages.Count -ne 1){throw 'Exactly one Codex package registered for the cu
 $package=$packages[0]
 $compat=Get-Content -LiteralPath (Join-Path $repoRoot 'patches/codex/upstream.lock.json') -Raw | ConvertFrom-Json
 if($package.Version.ToString() -ne $compat.desktop.observedVersion){throw 'This Desktop version has not been validated with the locked native protocol. Use the installed app normally; no update or installation was changed.'}
+# The registered MSIX Desktop needs package identity. Direct EXE launch loses it.
+# Keep this context within the Ares process tree; do not change installation or user settings.
+if(-not $PreflightOnly -and -not $PackagedLaunch) {
+  $packagedArgs='-NoProfile -NonInteractive -WindowStyle Hidden -File "{0}" -PackagedLaunch' -f $PSCommandPath
+  if($WaitForDesktopPid){$packagedArgs+=' -WaitForDesktopPid '+$WaitForDesktopPid}
+  Invoke-CommandInDesktopPackage -PackageFamilyName $package.PackageFamilyName -AppId App `
+    -Command (Join-Path ([Environment]::SystemDirectory) 'WindowsPowerShell\v1.0\powershell.exe') -Args $packagedArgs -PreventBreakaway
+  return
+}
 $desktopPath=Join-Path $package.InstallLocation 'app\ChatGPT.exe'
 if(-not(Test-Path -LiteralPath $desktopPath -PathType Leaf)){throw 'The registered Desktop executable is missing.'}
 $manifestPath=Join-Path $repoRoot 'bundle\candidate.json'

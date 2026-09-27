@@ -2,12 +2,22 @@ $ErrorActionPreference='Stop'
 $repoRoot=Split-Path -Parent $PSScriptRoot
 
 # Compare recorded process identity, never mere PID existence.
+function Get-RecordedStartMilliseconds($Value) {
+  # Windows PowerShell serializes CIM dates as /Date(ms)/, losing sub-ms precision.
+  if($Value -is [string] -and $Value -match '^/Date\((-?\d+)(?:[+-]\d{4})?\)/$') {
+    return [long]$Matches[1]
+  }
+  return ([datetimeoffset]$Value).ToUnixTimeMilliseconds()
+}
 function Test-RecordedIdentity($Expected,$Actual) {
-  if(-not $Expected -or -not $Actual){return $false}
-  return $Expected.ProcessId -eq $Actual.ProcessId -and
-    $Expected.ParentProcessId -eq $Actual.ParentProcessId -and
-    $Expected.ExecutablePath -ceq $Actual.ExecutablePath -and
-    ([datetimeoffset]$Expected.CreationDate).UtcTicks -eq ([datetimeoffset]$Actual.CreationDate).UtcTicks
+  if(-not $Expected -or -not $Actual -or -not $Expected.CommandLine -or -not $Actual.CommandLine){return $false}
+  try {
+    return $Expected.ProcessId -eq $Actual.ProcessId -and
+      $Expected.ParentProcessId -eq $Actual.ParentProcessId -and
+      $Expected.ExecutablePath -ceq $Actual.ExecutablePath -and
+      $Expected.CommandLine -ceq $Actual.CommandLine -and
+      (Get-RecordedStartMilliseconds $Expected.CreationDate) -eq (Get-RecordedStartMilliseconds $Actual.CreationDate)
+  } catch {return $false}
 }
 function Get-StateFreshness($Receipt,$State,$DesktopMatches,$SupervisorMatches,$BackendMatches,$ManifestMatches,$Now) {
   if(-not $State){return 'unobserved'}
@@ -34,16 +44,16 @@ $manifest.native.path=[IO.Path]::GetFullPath((Join-Path $repoRoot $manifest.nati
 $binding=Get-Content -LiteralPath $receipt.bindingPath -Raw | ConvertFrom-Json
 $state=if(Test-Path -LiteralPath $run.statusPath){Get-Content -LiteralPath $run.statusPath -Raw | ConvertFrom-Json}else{$null}
 $desktop=Get-CimInstance Win32_Process -Filter "ProcessId = $($receipt.desktop.pid)" |
-  Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath
+  Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine
 $supervisor=Get-CimInstance Win32_Process -Filter "ProcessId = $($receipt.supervisor.pid)" |
-  Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath
+  Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine
 $expectedDesktop=@($receipt.processIdentities | Where-Object {$_.ProcessId -eq $receipt.desktop.pid}) | Select-Object -First 1
 $expectedSupervisor=@($receipt.processIdentities | Where-Object {$_.ProcessId -eq $receipt.supervisor.pid}) | Select-Object -First 1
 $actual=@(Get-CimInstance Win32_Process -Filter "Name = 'codex.exe'" | Where-Object {
   $_.ExecutablePath -ceq $manifest.native.path -and $_.ParentProcessId -eq $receipt.desktop.pid -and
   $_.CommandLine -match ' app-server ' -and $expectedDesktop -and
-  ([datetimeoffset]$_.CreationDate) -ge ([datetimeoffset]$expectedDesktop.CreationDate)
-} | Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath)
+  (Get-RecordedStartMilliseconds $_.CreationDate) -ge (Get-RecordedStartMilliseconds $expectedDesktop.CreationDate)
+} | Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine)
 $ownManifest=Join-Path $repoRoot 'bundle/candidate.json'
 $matches=[IO.Path]::GetFullPath($receipt.manifestPath) -ceq [IO.Path]::GetFullPath($ownManifest)
 $freshness=Get-StateFreshness $receipt $state (Test-RecordedIdentity $expectedDesktop $desktop) (Test-RecordedIdentity $expectedSupervisor $supervisor) ($actual.Count -gt 0) $matches ([datetimeoffset]::UtcNow)
