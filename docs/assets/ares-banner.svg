@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="300" viewBox="0 0 1120 300" role="img" aria-labelledby="title desc">
+  <title id="title">Codex Ares for Windows</title>
+  <desc id="desc">Same-turn reasoning control for Astra and Sol. Fresh judgment selects effort for the next generation. The flow is an illustration, not a measured run.</desc>
+  <rect width="1120" height="300" rx="16" fill="#132d35"/>
+  <path d="M704 0V300M752 0V300M800 0V300M848 0V300M896 0V300M944 0V300M992 0V300M1040 0V300M1088 0V300M672 54H1120M672 102H1120M672 150H1120M672 198H1120M672 246H1120" fill="none" stroke="#22414a" stroke-width="1"/>
+  <g fill="none" stroke="#80d4bc" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M54 77L75 35L96 77M63 60H87"/>
+    <path d="M101 46H124M118 40L124 46L118 52"/>
+  </g>
+  <text x="52" y="153" fill="#f3f6ef" font-family="Georgia, 'Times New Roman', serif" font-size="64" letter-spacing="-1.4">Codex Ares</text>
+  <text x="56" y="196" fill="#b9d1d5" font-family="Segoe UI, Arial, sans-serif" font-size="25">Same turn. Fresh judgment.</text>
+  <text x="56" y="253" fill="#80d4bc" font-family="Segoe UI, Arial, sans-serif" font-size="18">ASTRA + SOL</text>
+  <circle cx="203" cy="247" r="2" fill="#80d4bc"/>
+  <text x="217" y="253" fill="#b9d1d5" font-family="Segoe UI, Arial, sans-serif" font-size="18">WINDOWS</text>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <rect x="632" y="69" width="171" height="48" rx="6" fill="#80d4bc"/>
+    <text x="717.5" y="100" text-anchor="middle" fill="#132d35" font-size="20" font-weight="600">Fresh state</text>
+    <path d="M803 93H851M843 87L851 93L843 99" fill="none" stroke="#80d4bc" stroke-width="2"/>
+    <rect x="867" y="69" width="199" height="48" rx="6" fill="#80d4bc"/>
+    <text x="966.5" y="100" text-anchor="middle" fill="#132d35" font-size="20" font-weight="600">Judge effort</text>
+    <path d="M967 117V165M961 157L967 165L973 157" fill="none" stroke="#80d4bc" stroke-width="2"/>
+    <rect x="794" y="181" width="272" height="48" rx="6" fill="#132d35" stroke="#80d4bc" stroke-width="1.5"/>
+    <text x="930" y="212" text-anchor="middle" fill="#f3f6ef" font-size="20">Next generation</text>
+    <path d="M794 205H717V133M711 141L717 133L723 141" fill="none" stroke="#80d4bc" stroke-width="2"/>
+    <text x="1066" y="265" text-anchor="end" fill="#b9d1d5" font-size="15">Selected Main model stays the same</text>
+  </g>
+</svg>

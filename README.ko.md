@@ -1,11 +1,28 @@
 # Windows용 Codex Ares
 
+<p align="center">
+  <img src="docs/assets/ares-banner.svg" alt="Codex Ares — 선택한 Astra·Sol을 유지하고 매 generation 사이에서 최신 상태로 추론 강도를 판단" width="1120" />
+</p>
+
 선택한 Astra 또는 Sol 모델을 유지하면서 같은 turn의 generation 사이에서 추론 강도를 조절하는 어댑터입니다. 독립 Luna High 평가 또는 Jev→현재 Main 검토를 선택할 수 있습니다.
 
-[English](README.md) | [한국어](README.ko.md)
+<p align="center">
+  <a href="README.md">English</a> · <a href="README.ko.md">한국어</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/M-T-D-N/codex-ares-windows/actions/workflows/test.yml"><img src="https://github.com/M-T-D-N/codex-ares-windows/actions/workflows/test.yml/badge.svg" alt="소스 자동 검사" /></a>
+  <a href="docs/build.md"><img src="https://img.shields.io/badge/status-source_preview-d89a44" alt="소스 preview" /></a>
+  <a href="docs/compatibility.md"><img src="https://img.shields.io/badge/platform-Windows_x64-286b85" alt="Windows x64" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT_%2B_Apache--2.0-447a64" alt="어댑터 MIT · native patch Apache-2.0" /></a>
+</p>
+
+<p align="center">
+  <a href="#준비와-설치">시작하기</a> · <a href="#어떤-모드를-고를까">모드 선택</a> · <a href="docs/architecture.md">작동 구조</a> · <a href="docs/pilot-results.md">파일럿 결과</a>
+</p>
 
 > [!IMPORTANT]
-> 비공식 실험용 소스 공개 준비본이며 수정된 Codex backend가 필요합니다.
+> 비공식 실험용 소스 preview이며 수정된 Codex backend가 필요합니다.
 > 소스 복원, 본체·동반 실행파일 빌드와 무모델 패키지 검사가 통과했습니다.
 > 이번 공개 빌드의 새 Desktop GUI 시험은 수행하지 않았습니다.
 > [빌드 상태](docs/build.md)를 확인하세요.
@@ -14,6 +31,8 @@
 고지](#ai-개발-고지)를 확인하세요.
 
 ## 제공 기능
+
+**Main 모델은 그대로, 다음 generation의 추론 강도는 현재 상태에 맞게 조절합니다.**
 
 | 선택 | 유지하는 Main | 판단 |
 |---|---|---|
@@ -31,10 +50,12 @@
 Windows x64, Node.js 22+/npm, Git, rustup, Visual Studio x64 C++ 빌드 도구가 필요합니다. 정확한 소스·컴파일러 버전은 [빌드 lock](patches/codex/upstream.lock.json)에 고정되어 있습니다.
 
 ```powershell
+git clone https://github.com/M-T-D-N/codex-ares-windows.git
+Set-Location codex-ares-windows
 npm run setup
 ```
 
-고정 소스를 확인하고 누적 patch를 한 번 적용한 뒤 npm 의존성·정확한 Rust를 준비하고 빌드·묶음 생성을 진행합니다. 필요한 V8 라이브러리와 대응 바인딩은 고정된 Codex 공식 배포처에서 받아 해시를 검증합니다. Rust가 없으면 프로젝트의 build 폴더에 설치하며 이용자의 기본 toolchain·Codex 설치·인증은 바꾸지 않습니다. 소스 공개 준비본이며 실행파일 배포본은 아닙니다.
+고정 소스를 확인하고 누적 patch를 한 번 적용한 뒤 npm 의존성·정확한 Rust를 준비하고 빌드·묶음 생성을 진행합니다. 필요한 V8 라이브러리와 대응 바인딩은 고정된 Codex 공식 배포처에서 받아 해시를 검증합니다. Rust가 없으면 프로젝트의 build 폴더에 설치하며 이용자의 기본 toolchain·Codex 설치·인증은 바꾸지 않습니다. 소스 preview이며 실행파일 배포본은 아닙니다.
 
 모델 호출 없이 소스와 국소 검사를 확인하려면:
 
@@ -45,7 +66,14 @@ npm test
 .\scripts\doctor.ps1
 ```
 
+<details>
+<summary><strong>빌드 전에 확인할 내용</strong></summary>
+
+이 preview는 native 코드를 PC에서 직접 빌드합니다. 위 준비 도구와 호환되는 Codex Desktop 설치본이 필요하며, `npm run setup`은 Desktop 원클릭 설치기가 아닙니다. 빌드 캐시는 프로젝트 폴더에 보관하고 재사용할 수 있습니다.
+
 [빌드 안내](docs/build.md) · [호환 범위](docs/compatibility.md)
+
+</details>
 
 ## 호환 빌드에서 사용하기
 
@@ -57,9 +85,11 @@ Luna는 정상 Codex 인증 loader를 사용하며 Jev 키가 필요 없습니�
 
 ## 어떤 모드를 고를까
 
-- **Astra:** 평가 지연을 받아들일 수 있으면 Luna 판단 경로가 후보입니다. 지연이 중요하면 일반 Astra/xhigh가 간단합니다.
-- **Sol:** 현재 근거에서는 일반 Sol/High를 기본으로 권합니다.
-- **Jev:** 양쪽 Main 모두 선택형 실험 경로로 둡니다. 관측한 업무 판단 51건이 현행 gate에서 모두 Main으로 이관되어 기본 추천에서는 보류합니다.
+| Main / 경로 | 현재 권고 | 고려할 점 |
+|---|---|---|
+| **Astra** | Luna 판단 경로가 후보 | 평가 지연이 중요하면 일반 Astra/xhigh가 간단합니다. |
+| **Sol** | 일반 Sol/High | 현재 근거에서 유지하는 기본 추천입니다. |
+| **Jev / 양쪽 Main** | 선택형 실험 | 업무 판단 51건이 현행 gate에서 모두 이관되어 기본 추천은 보류합니다. |
 
 이는 제한된 운영 권고이며 절감률·품질 우위를 입증한 결론은 아닙니다. 필요한 분은 [파일럿 결과와 한계](docs/pilot-results.md)에서 업무 12조건, 강도 제어·회복과 Jev 분석을 볼 수 있습니다. 파일럿 데이터나 재실행 도구는 설치·검사의 의존성이 아닙니다.
 
@@ -68,6 +98,17 @@ Luna는 정상 Codex 인증 loader를 사용하며 Jev 키가 필요 없습니�
 합성 입력을 쓰는 작은 회귀검사 3파일이 경로 선택, 취소·회복, 상태, 인증정보 처리, 인증된 로컬 연결을 확인합니다. 유료 모델은 호출하지 않습니다. [검증 범위](docs/validation.md).
 
 실행 코드는 `src/`, 진입점은 `scripts/`, 누적 native patch와 고정 입력은 `patches/codex/`, 안내는 `docs/`에 있습니다. 파일럿 로그·대화 원문·실행 기록·빌드 캐시·바이너리는 공개 묶음에 넣지 않습니다.
+
+## 필요한 문서 찾기
+
+| 확인할 내용 | 문서 |
+|---|---|
+| 설치 준비·의존성 다운로드·실패 후 빌드 재개 | [빌드 안내](docs/build.md) |
+| 지원 Desktop·backend 조합 | [호환 범위](docs/compatibility.md) |
+| generation 제어·평가·장애 회복 | [작동 구조](docs/architecture.md) |
+| 통과한 검사와 아직 검증하지 않은 범위 | [검증 범위](docs/validation.md) |
+| 업무 비교와 Jev gate 분석 | [파일럿 결과](docs/pilot-results.md) |
+| 인증정보·로컬 연결·외부 요청 | [개인정보 안내](docs/privacy.md) |
 
 ## AI 개발 고지
 

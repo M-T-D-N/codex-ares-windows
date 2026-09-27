@@ -34,13 +34,13 @@
     },
     {
       "path": "README.ko.md",
-      "bytes": 6548,
-      "sha256": "f07c7863332b9f1e197a685bf238cf7aa86f3f3609453f65230dfe835c85a951"
+      "bytes": 8824,
+      "sha256": "1d05a0857ab88a4ee92038bbe043be6ab3f84fad0370d09e074f68c3fd5870c0"
     },
     {
       "path": "README.md",
-      "bytes": 6038,
-      "sha256": "7013f873e8af64be97a3410fb7f3ca524ce937fa35738455df97f23d707b029e"
+      "bytes": 8203,
+      "sha256": "e2d1c18f43242bee665303e016093ba6af04c8004471dee6bd1db79c5ed6ee1d"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -51,6 +51,11 @@
       "path": "docs/architecture.md",
       "bytes": 2541,
       "sha256": "27a423ed9fc24e721713ad750c2c35e893e79e3cfa0131fceb83b61edbffde46"
+    },
+    {
+      "path": "docs/assets/ares-banner.svg",
+      "bytes": 2443,
+      "sha256": "b57818db6776672d436649b5e800b0eb3b65c2c67f8efd8248a1ee7badc001e5"
     },
     {
       "path": "docs/build.md",
@@ -289,7 +294,7 @@
     }
   ],
   "selfExcludedFromHashes": true,
-  "sourceFileCountIncludingManifest": 58,
+  "sourceFileCountIncludingManifest": 59,
   "pilotDocument": "docs/pilot-results.md",
   "pilotDataOrReplayHarnessIncluded": false
 }
