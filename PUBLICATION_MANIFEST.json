@@ -33,14 +33,24 @@
       "sha256": "7061e502d40c90a478020e6d6c9bee505bb3152955f72412979394bdc780fcc2"
     },
     {
+      "path": "README.ja.md",
+      "bytes": 8606,
+      "sha256": "5cb8bf7c2ad9d2bb192c709f66cc41cd2552da49fc25381a79427ef2273fcace"
+    },
+    {
       "path": "README.ko.md",
-      "bytes": 8824,
-      "sha256": "1d05a0857ab88a4ee92038bbe043be6ab3f84fad0370d09e074f68c3fd5870c0"
+      "bytes": 8185,
+      "sha256": "0a85c72274da08f3cc5577949aee944db59c5125d0240d8c3067068345eeacc7"
     },
     {
       "path": "README.md",
-      "bytes": 8203,
-      "sha256": "e2d1c18f43242bee665303e016093ba6af04c8004471dee6bd1db79c5ed6ee1d"
+      "bytes": 7297,
+      "sha256": "8026107b90499c483ecf03a8b589a4cf1c3dfc670c399164b3a6cbb36c69d5ce"
+    },
+    {
+      "path": "README.zh-CN.md",
+      "bytes": 7029,
+      "sha256": "01963ab99be025010c5224bfeaff2d08e871c29ed159d0615c3d8a869ea617e1"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -54,8 +64,8 @@
     },
     {
       "path": "docs/assets/ares-banner.svg",
-      "bytes": 2443,
-      "sha256": "b57818db6776672d436649b5e800b0eb3b65c2c67f8efd8248a1ee7badc001e5"
+      "bytes": 2441,
+      "sha256": "b40249fb2a8f01ca014344965d6da0f491cb9636a59f9161d4cc3c371c112a09"
     },
     {
       "path": "docs/build.md",
@@ -69,8 +79,8 @@
     },
     {
       "path": "docs/pilot-results.md",
-      "bytes": 6541,
-      "sha256": "ee58d9db69a9a144d803bb7116a7643e2f259e1f5c7b197e1aca16315aef667b"
+      "bytes": 6609,
+      "sha256": "a25b5aca065623720f6be4b91793e7d34e0a4ec56bcd41e4408d52044e895cfb"
     },
     {
       "path": "docs/privacy.md",
@@ -294,7 +304,7 @@
     }
   ],
   "selfExcludedFromHashes": true,
-  "sourceFileCountIncludingManifest": 59,
+  "sourceFileCountIncludingManifest": 61,
   "pilotDocument": "docs/pilot-results.md",
   "pilotDataOrReplayHarnessIncluded": false
 }

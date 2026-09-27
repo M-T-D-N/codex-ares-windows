@@ -1,53 +1,55 @@
 # Codex Ares for Windows
 
 <p align="center">
-  <img src="docs/assets/ares-banner.svg" alt="Codex Ares — fresh judgment between generations, with the selected Astra or Sol model retained" width="1120" />
+  <img src="docs/assets/ares-banner.svg" alt="Codex Ares — automatic reasoning control for Astra and Sol" width="1120" />
 </p>
 
-Adjust reasoning effort between generations in the same Codex turn while keeping your selected Astra or Sol model. Choose independent Luna High evaluation or optional Jev/current-Main review.
+**Choose your model. Let Ares handle the reasoning level.**
+
+Reading a file, tracing a bug and weighing an implementation call for different amounts of reasoning. Ares checks the current state before each generation and adjusts the effort for Astra or Sol's next response, while the task continues in the same conversation.
 
 <p align="center">
-  <a href="README.md">English</a> · <a href="README.ko.md">한국어</a>
+  <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a>
 </p>
 
 <p align="center">
   <a href="https://github.com/M-T-D-N/codex-ares-windows/actions/workflows/test.yml"><img src="https://github.com/M-T-D-N/codex-ares-windows/actions/workflows/test.yml/badge.svg" alt="Source checks" /></a>
   <a href="docs/build.md"><img src="https://img.shields.io/badge/status-source_preview-d89a44" alt="Source preview" /></a>
   <a href="docs/compatibility.md"><img src="https://img.shields.io/badge/platform-Windows_x64-286b85" alt="Windows x64" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT_%2B_Apache--2.0-447a64" alt="MIT adapter and Apache-2.0 native patch" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT_%2B_Apache--2.0-447a64" alt="MIT adapter + Apache-2.0 native patch" /></a>
 </p>
 
 <p align="center">
-  <a href="#setup">Get started</a> · <a href="#choosing-a-mode">Choose a mode</a> · <a href="docs/architecture.md">Architecture</a> · <a href="docs/pilot-results.md">Pilot findings</a>
+  <a href="#get-started">Get started</a> · <a href="#pick-your-route">Choose a route</a> · <a href="docs/architecture.md">How it works</a> · <a href="docs/pilot-results.md">Test results</a>
 </p>
-
-> [!IMPORTANT]
-> Experimental, unofficial source preview. A patched Codex backend is required.
-> Source restoration, native/companion builds and no-model package checks pass.
-> This public build has not undergone a fresh Desktop GUI trial.
-> See the [build status](docs/build.md).
 
 Development note: this downstream is AI-generated and user-tested; [read the
 full disclosure](#ai-development-disclosure).
 
-## What it does
+## What Ares adds to Codex
 
-**Your Main model stays selected. Ares adjusts the reasoning effort for its next generation.**
+- **Automatic effort changes during a task.** Ares evaluates the next step from the first generation onward and can select `medium`, `high`, `xhigh` or `max`. You don't have to stop and change the selector for each step.
+- **The model you chose.** Astra stays Astra; Sol stays Sol. Effort changes apply to the next generation in the same turn. Your existing workers keep their own roles.
+- **A way through evaluator delays.** If evaluation times out or becomes unavailable, the Main continues at its baseline effort while the controller handles recovery.
 
-| Select | Main model | Judgment |
+Ordinary Astra, Sol and Luna remain available. Automatic control starts when you choose an Ares route.
+
+## Pick your route
+
+| Choose in Codex | Main model | Who selects the effort |
 |---|---|---|
-| Astra Ares | GPT-6 Astra | Independent GPT-6 Luna / High |
-| Sol Ares | GPT-6 Sol | Independent GPT-6 Luna / High |
-| Astra Jev Main | GPT-6 Astra | Jev, with deferral to the same Main |
-| Sol Jev Main | GPT-6 Sol | Jev, with deferral to the same Main |
+| **Astra Ares** | GPT-6 Astra | Independent GPT-6 Luna / High |
+| **Sol Ares** | GPT-6 Sol | Independent GPT-6 Luna / High |
+| **Astra Jev Main** | GPT-6 Astra | Jev, with review by the current Main when deferred |
+| **Sol Jev Main** | GPT-6 Sol | Jev, with review by the current Main when deferred |
 
-The controller evaluates fresh state at each generation boundary. Jev deferral lets the existing Main request a different effort for its next generation without changing the selected model or asking the user to start another turn. Evaluator unavailability uses the baseline effort and a recovery path so that evaluation failure does not itself fail the user's work.
+**Luna evaluates; your Main works.** The Luna routes use your existing Codex sign-in. A separate evaluator reads the current decision context without tools or MCP access and returns an effort recommendation.
 
-Ordinary Astra, Sol and Luna and existing workers are not enrolled. No-tools isolation applies to the Luna evaluator only. Production operation has no trial call-count cap. [Architecture](docs/architecture.md).
+**Jev can hand the decision to your Main.** When Jev defers, the Main can request a different effort internally for its next generation. This optional route requires a TypeSafe key and can incur TypeSafe charges. [Credential setup and data handling](docs/privacy.md).
 
-## Setup
+## Get started
 
-Prerequisites: Windows x64, Node.js 22+ with npm, Git, rustup and Visual Studio x64 C++ build tools. The [build lock](patches/codex/upstream.lock.json) fixes the source and compiler versions.
+You need **Windows x64**, Node.js 22+ with npm, Git, rustup, Visual Studio x64 C++ build tools and a compatible Codex Desktop installation. The current launcher supports **Desktop 26.924.2738.0**; check [compatibility](docs/compatibility.md) before building.
 
 ```powershell
 git clone https://github.com/M-T-D-N/codex-ares-windows.git
@@ -55,60 +57,47 @@ Set-Location codex-ares-windows
 npm run setup
 ```
 
-Setup checks the pinned source, applies the cumulative patch once, restores npm dependencies, reuses the exact Rust toolchain or installs it into the project's own build directory, then builds and bundles. The required V8 library and matching bindings come from the pinned Codex release with verified checksums. Setup does not change the user's default Rust toolchain, Codex installation or authentication. This is a source preview, not an installable binary release.
+Setup downloads the pinned source and dependencies, applies the native patch, and builds Ares locally. It verifies the V8 downloads and keeps reusable build caches in the project. Your installed Codex, authentication and default Rust toolchain stay in place.
 
-For source review and local checks without a model call:
+After the build finishes, complete any active local tasks and quit Codex from its app menu. In a normal, non-administrator PowerShell, start Ares:
 
 ```powershell
-npm ci --ignore-scripts --no-audit --no-fund
-npm test
-.\scripts\setup.ps1 -RestoreOnly
-.\scripts\doctor.ps1
+.\scripts\start.ps1
 ```
 
+Select **Astra Ares** or **Sol Ares** in the model picker to use Luna evaluation, or choose one of the Jev routes above.
+
+| To… | Do this |
+|---|---|
+| Check the running backend and controller | Run `.\scripts\status.ps1` |
+| Return to fixed effort | Choose an ordinary model at a turn boundary |
+| Stop the current task | Use Codex's normal Stop control |
+| Return to the installed app | Quit normally, then open Codex as usual |
+
+[Full build guide and recovery steps](docs/build.md)
+
+## Tested in real Codex work
+
+The existing trials covered all four routes, effort changes within a turn, overlapping conversations and recovery after evaluator delay. The [published results](docs/pilot-results.md) include the full 12-condition workload comparison and analysis of 51 Jev judgments.
+
 <details>
-<summary><strong>Before you build</strong></summary>
+<summary><strong>Results and current recommendations</strong></summary>
 
-This preview builds native code locally. It requires the prerequisites above and a compatible installed Codex Desktop; `npm run setup` is not a one-click Desktop installer. Build caches stay in the project directory and can be reused.
+- **Astra:** Luna-assisted effort is an option when its evaluation wait is acceptable; fixed Astra/xhigh is simpler when latency matters.
+- **Sol:** fixed Sol/High remains the default recommendation from the measured workloads.
+- **Jev:** all 51 workload judgments deferred at the current gate, so it remains an experimental option rather than the default.
 
-[Build instructions](docs/build.md) · [Compatibility](docs/compatibility.md)
+These small comparisons demonstrate control behavior, not a general cost or quality advantage. Failures, missing measurements and the distinction between natural escalation and forced control tests are included in the results.
 
 </details>
 
-## Use with a compatible build
+This release provides **source to build locally**. Source restoration, all four native executables, 21 local checks and no-model package checks passed. A fresh Desktop GUI trial of the exact public build has not been run; the historical live trials are reported separately. [Build status](docs/build.md) · [Validation scope](docs/validation.md).
 
-After a complete compatible bundle is available, finish active local tasks and quit Desktop normally from its app menu. In a normal, non-administrator PowerShell, run `.\scripts\start.ps1` and select one of the four routes above. Check `.\scripts\status.ps1` for the actual backend and controller state. The installed Desktop is detected and left intact; supported versions are listed in [compatibility](docs/compatibility.md).
+## Go deeper
 
-Luna uses the normal Codex authentication loader and needs no Jev key. Jev requires private `TYPESAFE_API_KEY` or `TYPESAFE_API_KEY_FILE` environment configuration. It sends the bounded decision input to TypeSafe and may incur usage charges. Never put credentials in the repository or CLI arguments. `.env.example` lists variable names; `.env` is not automatically loaded. [Privacy](docs/privacy.md).
+[Architecture](docs/architecture.md) · [Build and dependencies](docs/build.md) · [Compatibility](docs/compatibility.md) · [Privacy](docs/privacy.md) · [Test results](docs/pilot-results.md)
 
-Select the ordinary Main model at a turn boundary to leave automatic routing. Use Desktop's normal Stop control for an active turn. Quit the app normally to close its owned evaluator and bridge; reopen the installed app normally to return. No forced shutdown is used.
-
-## Choosing a mode
-
-| Main / route | Current recommendation | What to weigh |
-|---|---|---|
-| **Astra** | Luna-assisted effort is a candidate | Fixed Astra/xhigh is simpler when evaluator delay matters. |
-| **Sol** | Fixed Sol/High | Remains the default recommendation on the available evidence. |
-| **Jev / either Main** | Optional experiment | Withheld from defaults: all 51 observed workload decisions deferred at the current gate. |
-
-These are limited operating recommendations, not claims of proven savings or universal quality improvements. Read [pilot findings and limits](docs/pilot-results.md) for the complete 12-condition comparison, effort-control observations and Jev findings. The page is optional reading; no pilot data or replay harness is needed to run or test the adapter.
-
-## Development checks
-
-Three small offline test files cover routing, cancellation/recovery, status, credential handling and authenticated local transport. They use synthetic inputs and make no paid model calls. [Validation scope](docs/validation.md).
-
-The native patch and build inputs are in `patches/codex/`; execution code is in `src/`, entrypoints in `scripts/`, and user/developer guides in `docs/`. Pilot logs, task transcripts, runtime receipts, build caches and binaries are excluded.
-
-## Explore the project
-
-| Looking for… | Read |
-|---|---|
-| Setup, dependency downloads and build recovery | [Build guide](docs/build.md) |
-| Supported Desktop and backend combinations | [Compatibility](docs/compatibility.md) |
-| Generation control, evaluation and recovery | [Architecture](docs/architecture.md) |
-| What passed and what remains unverified | [Validation](docs/validation.md) |
-| Workload comparisons and the Jev gate findings | [Pilot findings](docs/pilot-results.md) |
-| Credentials, local transport and external requests | [Privacy](docs/privacy.md) |
+The README is available in English, Korean, Japanese and Simplified Chinese. Technical guides are currently in English.
 
 ## AI development disclosure
 

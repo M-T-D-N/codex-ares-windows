@@ -2,7 +2,7 @@
 
 [Back to the main page](../README.md)
 
-The pilot established that generation-boundary effort control can keep the chosen Main model and recover from evaluator unavailability. It did **not** establish a general cost or quality advantage. Results here describe the tested implementation, not a successful fresh public build: the current build limitation is documented in [build status](build.md).
+The pilot established that generation-boundary effort control can keep the chosen Main model and recover from evaluator unavailability. It did **not** establish a general cost or quality advantage. These results describe the tested implementation. Public-source restoration, native builds and package checks are recorded separately in [build status](build.md); a new Desktop GUI trial of the public bundle has not been run.
 
 ## What to use
 
