@@ -18,6 +18,21 @@ foreach($name in @('Get-RecordedStartMilliseconds','Test-RecordedIdentity','Get-
   Invoke-Expression $fn.Extent.Text
 }
 $startAst=Parse-Source $StartFile
+$versionSelection=$startAst.EndBlock.Statements | Where-Object {$_ -is [Management.Automation.Language.AssignmentStatementAst] -and $_.Left.Extent.Text -eq '$validatedPackageVersion'} | Select-Object -First 1
+$versionCheck=$startAst.EndBlock.Statements | Where-Object {$_ -is [Management.Automation.Language.IfStatementAst] -and $_.Clauses[0].Item1.Extent.Text -match 'package.Version.ToString'} | Select-Object -First 1
+Check ($null -ne $versionSelection -and $null -ne $versionCheck) 'registered-version validation branch missing'
+function Validate-PackageVersion($registered,$metadata){
+  $package=[pscustomobject]@{Version=[version]$registered};$compat=[pscustomobject]@{desktop=$metadata}
+  & ([scriptblock]::Create($versionSelection.Extent.Text+"
+"+$versionCheck.Extent.Text))
+}
+Validate-PackageVersion '1.2.3.4' ([pscustomobject]@{observedPackageVersion='1.2.3.4';observedVersion='different-app-display-version'})
+Check $true 'registered MSIX version takes precedence over app display version'
+Validate-PackageVersion '1.2.3.4' ([pscustomobject]@{observedVersion='1.2.3.4'})
+Check $true 'legacy package version field remains supported'
+$rejected=$false;try{Validate-PackageVersion '1.2.3.5' ([pscustomobject]@{observedPackageVersion='1.2.3.4';observedVersion='1.2.3.5'})}catch{$rejected=$true}
+Check $rejected 'unvalidated registered MSIX version is rejected'
+
 $route=$startAst.EndBlock.Statements | Where-Object {$_ -is [Management.Automation.Language.IfStatementAst] -and $_.Clauses[0].Item1.Extent.Text -match 'PackagedLaunch'} | Select-Object -First 1
 Check ($null -ne $route) 'package routing branch missing'
 function Invoke-CommandInDesktopPackage {

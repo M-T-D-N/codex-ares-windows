@@ -10,7 +10,7 @@ The pilot established that generation-boundary effort control can keep the chose
 |---|---|---|
 | Astra | Luna-assisted effort when its added wait is acceptable; fixed xhigh when latency matters | Workload observations vary by task; the evidence does not establish a universal improvement |
 | Sol | Fixed High by default | Luna did escalate on the more complex intake, but did not establish a benefit that justifies default evaluator overhead |
-| Either, Jev | Optional experimental route; not the default | The workload gate deferred all 51 judgments, adding evaluator work without direct effort selection |
+| Either, Jev | Retired; not available as an operating route | The workload gate deferred all 51 judgments, adding evaluator work without direct effort selection |
 
 These recommendations do not require readers to reproduce the pilot or run paid probes. No threshold or evaluator question was tuned to make the observations look better.
 
@@ -23,7 +23,7 @@ These recommendations do not require readers to reproduce the pilot or run paid 
 
 ## Workload comparison
 
-All 12 conditions are shown in execution order, including the less favorable observations. F = fixed Main, L = Luna High evaluator, J = Jev/current-Main review. The fixed settings were Astra/xhigh and Sol/High. The first nine conditions were SEO diagnoses; the last three were an initial intake of a complex 12-person problem, **not its full solution**. The task change preceded those runs.
+All 12 conditions are shown in execution order, including the less favorable observations. F = fixed Main, L = Luna High evaluator, J = Jev/current-Main review. The fixed settings were Astra/xhigh and Sol/High. The first nine conditions were SEO diagnoses; the last three were an initial intake of a complex multi-party planning problem, **not its full solution**. The task change preceded those runs.
 
 Each condition has one sample with private inputs. All first submissions passed the recorded acceptance: SEO acceptance was limited by available input; complex-task acceptance covered initial intake only. Browser/tool access problems are environment observations, not proof of a model difference. Equal nominal input does not establish equal context or cache state.
 
@@ -46,15 +46,15 @@ Token figures count each Main/worker cumulative total once and include cached in
 
 One Astra/Jev stream request failed and then retried successfully, with cause UNKNOWN. The Astra/Luna canonical run recorded two response cancellations. The complex Sol/Luna intake used xhigh on seven generations; that is natural escalation evidence, not proof that xhigh or Max was necessary. A prior recommendation to use Max and the explicit Max control tests are different evidence and are not counted as natural escalation.
 
-## Why Jev is not the default
+## Historical Jev gate findings
 
-The 51 workload responses comprised 26 Astra and 25 Sol judgments, choosing High 45 times and Medium six times. Their highest returned choice probability, q, ranged from .45 to .88. The current top-1 gate requires q ≥ .90, so all 51 semantically deferred to Main review. This was not an authentication or provider outage.
+The 51 workload responses comprised 26 Astra and 25 Sol judgments, choosing High 45 times and Medium six times. Their highest returned choice probability, q, ranged from .45 to .88. The tested top-1 gate required q ≥ .90, so all 51 semantically deferred to Main review. This was not an authentication or provider outage.
 
 The separate Desktop fixture did directly accept Medium in seven of nine attempts. Thus the route can accept a judgment, while the workload sample demonstrated zero direct-accept coverage.
 
 | Offline top-1 threshold | Accepted / 51 | Error or risk among accepted decisions |
 |---|---:|---|
-| .90 (current) | 0 | Empty accepted region; no error estimate |
+| .90 (tested) | 0 | Empty accepted region; no error estimate |
 | .80 | 7 | UNKNOWN |
 | .70 | 36 | UNKNOWN |
 | .60 | 46 | UNKNOWN |

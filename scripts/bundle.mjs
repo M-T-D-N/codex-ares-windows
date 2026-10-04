@@ -16,7 +16,7 @@ const companions=[];
 await copyFile(join(target,'debug/codex.exe'),join(bundle,'codex.exe'));
 for(const spec of lock.companions){
  await copyFile(join(target,'debug',spec.name),join(bundle,spec.name));
- companions.push({...await entry(join(bundle,spec.name)),sourceRelease:'0.155.0-alpha.16',source:'built from locked source',signature:'not claimed'});
+ companions.push({...await entry(join(bundle,spec.name)),sourceRelease:lock.nativeVersion.replace(/^codex-cli /,''),source:'built from locked source',signature:'not claimed'});
 }
 async function collect(dir,allFiles=false){
  const out=[];
@@ -26,10 +26,10 @@ async function collect(dir,allFiles=false){
 }
 const sidecar=await collect(join(root,'src'));
 const runtimeDependencies=[...await Promise.all(['package-lock.json','scripts/start.ps1','scripts/status.ps1'].map(p=>entry(join(root,p)))),...await collect(join(root,'node_modules/gpt-tokenizer'),true)];
-const native={...await entry(join(bundle,'codex.exe')),version:lock.nativeVersion,sourceRelease:'0.155.0-alpha.16',profile:'dev'};
+const native={...await entry(join(bundle,'codex.exe')),version:lock.nativeVersion,sourceRelease:lock.nativeVersion.replace(/^codex-cli /,''),profile:'dev'};
 const manifest={schema:1,native,companions,sidecar,runtimeDependencies,evaluatorSources:[],
  sourceIdentitySha256:sha(JSON.stringify({lock,sidecar,runtimeDependencies})),
  statusServicePath:'src/selection/services.mjs',nodePath:'node',protocol:4,productionCallLimit:null,
- supportedMainModels:['gpt-6-astra','gpt-6-sol'],tau:0.9,lease:1,publicBundleGui:'NOT_RUN'};
+ supportedMainModels:['gpt-6-astra','gpt-6-sol','gpt-6.1-sol'],lease:1,publicBundleGui:'NOT_RUN'};
 await writeFile(join(bundle,'candidate.json'),JSON.stringify(manifest,null,2)+'\n');
 console.log(JSON.stringify({status:'bundle_created',artifacts:1+companions.length+sidecar.length+runtimeDependencies.length,modelCalls:0}));

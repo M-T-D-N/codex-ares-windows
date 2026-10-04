@@ -3,9 +3,7 @@ import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {resolve,join} from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {loadOriginalJev} from '../src/jev-main/adapter.mjs';
 const root=fileURLToPath(new URL('..',import.meta.url));
-await loadOriginalJev(); // Pure import/integrity check; no evaluator instance or key read.
 const sha=data=>createHash('sha256').update(data).digest('hex');
 const lock=JSON.parse(await readFile(join(root,'patches/codex/upstream.lock.json'),'utf8'));
 if(sha(await readFile(join(root,'patches/codex/native.patch')))!==lock.patch.sha256)throw new Error('Native patch changed');

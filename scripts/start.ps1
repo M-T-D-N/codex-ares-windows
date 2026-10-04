@@ -1,5 +1,7 @@
 param([switch]$PreflightOnly,[int]$WaitForDesktopPid=0,[switch]$PackagedLaunch)
 $ErrorActionPreference='Stop'
+# Use this host's bundled utilities even with an inherited PowerShell 7 module path.
+Import-Module (Join-Path $PSHOME 'Modules\Microsoft.PowerShell.Utility\Microsoft.PowerShell.Utility.psd1') -ErrorAction Stop
 $repoRoot=Split-Path -Parent $PSScriptRoot
 $principal=[Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
 if($principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
@@ -9,7 +11,8 @@ $packages=@(Get-AppxPackage -Name OpenAI.Codex)
 if($packages.Count -ne 1){throw 'Exactly one Codex package registered for the current user is required.'}
 $package=$packages[0]
 $compat=Get-Content -LiteralPath (Join-Path $repoRoot 'patches/codex/upstream.lock.json') -Raw | ConvertFrom-Json
-if($package.Version.ToString() -ne $compat.desktop.observedVersion){throw 'This Desktop version has not been validated with the locked native protocol. Use the installed app normally; no update or installation was changed.'}
+$validatedPackageVersion=if($compat.desktop.observedPackageVersion){$compat.desktop.observedPackageVersion}else{$compat.desktop.observedVersion}
+if($package.Version.ToString() -ne $validatedPackageVersion){throw 'This Desktop version has not been validated with the locked native protocol. Use the installed app normally; no update or installation was changed.'}
 # The registered MSIX Desktop needs package identity. Direct EXE launch loses it.
 # Keep this context within the Ares process tree; do not change installation or user settings.
 if(-not $PreflightOnly -and -not $PackagedLaunch) {
@@ -69,10 +72,12 @@ if($existing.Count -gt 0) {
   }
   throw 'Another Codex backend is running. Finish local work, quit Codex normally from its app menu, then run this command again. No process was stopped.'
 }
-$stdout=Join-Path $repoRoot ('supervisor-'+$stamp+'.stdout.log')
-$stderr=Join-Path $repoRoot ('supervisor-'+$stamp+'.stderr.log')
-$argsLine='"{0}" --manifest "{1}" --desktop-binding "{2}" --run-dir "{3}" --activate' -f $launcher,$manifestPath,$bindingPath,$run
-$process=Start-Process -FilePath $node -ArgumentList $argsLine -WorkingDirectory $repoRoot -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
+$detachedOutput=& $node $launcher --manifest $manifestPath --desktop-binding $bindingPath --run-dir $run --activate --detach-supervisor
+if($LASTEXITCODE -ne 0){throw 'Detached supervisor launch failed. No retry was attempted.'}
+$detached=$detachedOutput | ConvertFrom-Json
+$stdout=$detached.stdout
+$stderr=$detached.stderr
+$process=Get-Process -Id $detached.pid -ErrorAction Stop
 $identity=Get-CimInstance Win32_Process -Filter "ProcessId = $($process.Id)" | Select-Object ProcessId,ParentProcessId,CreationDate,CommandLine,ExecutablePath
 $launch=[ordered]@{startedAt=[DateTime]::UtcNow.ToString('o');status='starting';runDir=$run;identity=$identity;
   stdout=$stdout;stderr=$stderr;bindingPath=$bindingPath;trial=$false;persistentUntilDesktopExit=$true}

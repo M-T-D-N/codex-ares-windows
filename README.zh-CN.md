@@ -6,7 +6,7 @@
 
 **选好模型，让 Ares 调整推理强度。**
 
-查看文件、定位故障、权衡实现方案，下一步需要多少推理会随任务变化。Ares 在每次生成前重新评估当前状态，为 Astra 或 Sol 设置下一次响应的推理强度。任务继续在同一段对话中完成。
+查看文件、定位故障、权衡实现方案，下一步需要多少推理会随任务变化。Ares 在每次生成前重新评估当前状态，为所选模型设置下一次响应的推理强度。任务继续在同一段对话中完成。
 
 <p align="center">
   <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a>
@@ -28,10 +28,10 @@
 ## 为 Codex 增加什么
 
 - **在任务进行中自动调整推理强度。** 从第一次生成开始，Ares 就会评估下一步，并可选择 `medium`、`high`、`xhigh` 或 `max`，减少逐步暂停任务、手动切换设置的操作。
-- **继续使用你选择的模型。** Astra 仍是 Astra，Sol 仍是 Sol。强度变化应用于同一轮的下一次生成，现有工作代理也保留各自的职责。
+- **继续使用你选择的模型。** Astra 仍是 Astra，Sol 仍是 Sol，Sol 6.1 仍是 Sol 6.1。强度变化应用于同一轮的下一次生成，现有工作代理也保留各自的职责。
 - **评估延迟时继续工作。** 如果评估超时或评估器不可用，主模型会按基准强度继续执行，由控制器处理恢复。
 
-你仍然可以选择普通 Astra、Sol 和 Luna。选择 Ares 路径后才会启动自动控制。
+你仍然可以选择普通 Astra、Sol、Sol 6.1 和 Luna。选择 Ares 路径后才会启动自动控制。
 
 ## 选择评估路径
 
@@ -39,16 +39,14 @@
 |---|---|---|
 | **Astra Ares** | GPT-6 Astra | 独立的 GPT-6 Luna / High |
 | **Sol Ares** | GPT-6 Sol | 独立的 GPT-6 Luna / High |
-| **Astra Jev Main** | GPT-6 Astra | Jev；转交判断时由当前主模型复核 |
-| **Sol Jev Main** | GPT-6 Sol | Jev；转交判断时由当前主模型复核 |
+| **Sol 6.1-Ares** | GPT-6.1 Sol | 独立的 GPT-6 Luna / High |
 
 **Luna 负责评估，主模型负责工作。** Luna 路径使用现有的 Codex 登录。独立评估器不使用工具或 MCP，只读取当前判断所需的上下文，并给出推理强度建议。
 
-**Jev 可以把判断交给当前主模型。** 主模型接到判断后，可以通过内部请求改变自身下一次生成的推理强度。该可选路径需要 TypeSafe 密钥，并可能产生 TypeSafe 使用费用。[凭据配置与数据处理](docs/privacy.md)。
 
 ## 开始使用
 
-需要 **Windows x64**、Node.js 22+ 与 npm、Git、rustup、Visual Studio x64 C++ 构建工具，以及兼容的 Codex Desktop。当前启动器支持 **Desktop 26.924.2738.0**，构建前请查看[兼容范围](docs/compatibility.md)。
+需要 **Windows x64**、Node.js 22+ 与 npm、Git、rustup、Visual Studio x64 C++ 构建工具，以及兼容的 Codex Desktop。当前 native 源码以 **Codex 0.160.0** 为基准。已有本地 Ares 运行环境通过了实际 Desktop 启动与 Luna 判断→主模型响应检查，请查看[兼容范围](docs/compatibility.md)。
 
 ```powershell
 git clone https://github.com/M-T-D-N/codex-ares-windows.git
@@ -64,7 +62,7 @@ npm run setup
 .\scripts\start.ps1
 ```
 
-在模型选择器中选择 **Astra Ares** 或 **Sol Ares** 即可使用 Luna 评估。要使用 Jev，请选择上表中的 Jev 路径。
+在模型选择器中选择 **Astra Ares**、**Sol Ares** 或 **Sol 6.1-Ares** 即可使用 Luna 评估。
 
 | 想要做什么 | 操作 |
 |---|---|
@@ -84,13 +82,13 @@ npm run setup
 
 - **Astra：** 如果可以接受评估等待时间，可选择 Luna 辅助路径；重视延迟时，固定 Astra/xhigh 更简单。
 - **Sol：** 根据已测任务，仍建议默认使用固定 Sol/High。
-- **Jev：** 现行 gate 将全部 51 次任务判断转交给主模型，因此保留为实验选项，而非默认路径。
+- **历史 Jev 试验：** 51 次判断全部转交给了主模型。Jev 路径已移除，当时的测量结果保留在试验报告中。
 
 这些小规模对比验证了控制行为，并未证明普遍的费用节省或质量提升。结果也保留了失败、未观测项，以及自然升级和显式控制试验之间的区别。
 
 </details>
 
-当前提供的是**在本机构建的源码**。源码恢复、4 个 native 可执行文件、21 项本地检查及不调用模型的打包检查均已通过。尚未对这份公开构建重新进行 Desktop GUI 实测；已有的实际使用试验单独记录。[构建状态](docs/build.md) · [验证范围](docs/validation.md)。
+当前提供的是**在本机构建的源码**。最近的修复让评估连接在启动宿主退出后继续运行，在保留当前要求的同时缩短过长评估输入，并修复开发构建中被中断的工具历史。实际 Sol 6.1-Ares 轮次应用了 Luna/High 的 Medium 建议并完成响应。[开发验证](docs/validation.md)区分本地运行证据与公开目录结构检查，也保留延迟与失败记录。
 
 ## 进一步了解
 

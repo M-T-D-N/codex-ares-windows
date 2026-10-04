@@ -6,7 +6,7 @@
 
 **Choose your model. Let Ares handle the reasoning level.**
 
-Reading a file, tracing a bug and weighing an implementation call for different amounts of reasoning. Ares checks the current state before each generation and adjusts the effort for Astra or Sol's next response, while the task continues in the same conversation.
+Reading a file, tracing a bug and weighing an implementation call for different amounts of reasoning. Ares checks the current state before each generation and adjusts the effort for the selected model's next response, while the task continues in the same conversation.
 
 <p align="center">
   <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a>
@@ -29,10 +29,10 @@ full disclosure](#ai-development-disclosure).
 ## What Ares adds to Codex
 
 - **Automatic effort changes during a task.** Ares evaluates the next step from the first generation onward and can select `medium`, `high`, `xhigh` or `max`. You don't have to stop and change the selector for each step.
-- **The model you chose.** Astra stays Astra; Sol stays Sol. Effort changes apply to the next generation in the same turn. Your existing workers keep their own roles.
+- **The model you chose.** Astra stays Astra; Sol stays Sol; Sol 6.1 stays Sol 6.1. Effort changes apply to the next generation in the same turn. Your existing workers keep their own roles.
 - **A way through evaluator delays.** If evaluation times out or becomes unavailable, the Main continues at its baseline effort while the controller handles recovery.
 
-Ordinary Astra, Sol and Luna remain available. Automatic control starts when you choose an Ares route.
+Ordinary Astra, Sol, Sol 6.1 and Luna remain available. Automatic control starts when you choose an Ares route.
 
 ## Pick your route
 
@@ -40,16 +40,14 @@ Ordinary Astra, Sol and Luna remain available. Automatic control starts when you
 |---|---|---|
 | **Astra Ares** | GPT-6 Astra | Independent GPT-6 Luna / High |
 | **Sol Ares** | GPT-6 Sol | Independent GPT-6 Luna / High |
-| **Astra Jev Main** | GPT-6 Astra | Jev, with review by the current Main when deferred |
-| **Sol Jev Main** | GPT-6 Sol | Jev, with review by the current Main when deferred |
+| **Sol 6.1-Ares** | GPT-6.1 Sol | Independent GPT-6 Luna / High |
 
 **Luna evaluates; your Main works.** The Luna routes use your existing Codex sign-in. A separate evaluator reads the current decision context without tools or MCP access and returns an effort recommendation.
 
-**Jev can hand the decision to your Main.** When Jev defers, the Main can request a different effort internally for its next generation. This optional route requires a TypeSafe key and can incur TypeSafe charges. [Credential setup and data handling](docs/privacy.md).
 
 ## Get started
 
-You need **Windows x64**, Node.js 22+ with npm, Git, rustup, Visual Studio x64 C++ build tools and a compatible Codex Desktop installation. The current launcher supports **Desktop 26.924.2738.0**; check [compatibility](docs/compatibility.md) before building.
+You need **Windows x64**, Node.js 22+ with npm, Git, rustup, Visual Studio x64 C++ build tools and a compatible Codex Desktop installation. The native source targets **Codex 0.160.0**. The existing local Ares runtime passed an actual Desktop launch and Luna→Main response check; see [compatibility](docs/compatibility.md) for the tested scope.
 
 ```powershell
 git clone https://github.com/M-T-D-N/codex-ares-windows.git
@@ -65,7 +63,7 @@ After the build finishes, complete any active local tasks and quit Codex from it
 .\scripts\start.ps1
 ```
 
-Select **Astra Ares** or **Sol Ares** in the model picker to use Luna evaluation, or choose one of the Jev routes above.
+Select **Astra Ares**, **Sol Ares** or **Sol 6.1-Ares** in the model picker to use Luna evaluation.
 
 | To… | Do this |
 |---|---|
@@ -85,13 +83,13 @@ The existing trials covered all four routes, effort changes within a turn, overl
 
 - **Astra:** Luna-assisted effort is an option when its evaluation wait is acceptable; fixed Astra/xhigh is simpler when latency matters.
 - **Sol:** fixed Sol/High remains the default recommendation from the measured workloads.
-- **Jev:** all 51 workload judgments deferred at the current gate, so it remains an experimental option rather than the default.
+- **Historical Jev trial:** all 51 judgments deferred. The Jev routes have been removed; the measurements remain in the pilot report.
 
 These small comparisons demonstrate control behavior, not a general cost or quality advantage. Failures, missing measurements and the distinction between natural escalation and forced control tests are included in the results.
 
 </details>
 
-This release provides **source to build locally**. Source restoration, all four native executables, 21 local checks and no-model package checks passed. A fresh Desktop GUI trial of the exact public build has not been run; the historical live trials are reported separately. [Build status](docs/build.md) · [Validation scope](docs/validation.md).
+This release provides **source to build locally**. Recent fixes keep the evaluator bridge alive after its launch host exits, reduce oversized evaluator evidence while preserving current goals, and recover interrupted tool history in development builds. A real Sol 6.1-Ares turn completed after Luna/High selected Medium. [Development validation](docs/validation.md) separates this local runtime evidence from the public layout checks and records delays and failures.
 
 ## Go deeper
 

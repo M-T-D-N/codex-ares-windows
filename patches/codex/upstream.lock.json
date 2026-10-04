@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "repository": "https://github.com/openai/codex",
-  "commit": "0e2f848bf4a4e8d41a02d848a851ba126c09d185",
+  "commit": "79b1b666f2e8551f8abbbca34957227f67f3f553",
   "archive": {
-    "url": "https://codeload.github.com/openai/codex/tar.gz/0e2f848bf4a4e8d41a02d848a851ba126c09d185",
-    "sha256": "1bd5875c86fd4ea2e659b2294889cc04aa25f2d68ec0e7e788d6353889b1b2b0"
+    "url": "https://codeload.github.com/openai/codex/tar.gz/79b1b666f2e8551f8abbbca34957227f67f3f553",
+    "sha256": "3158b325d0efab5fca38639f9039f5f0e52ac2a5e646eebbbe289602db7a2ced"
   },
   "ares": {
     "repository": "https://github.com/miuuyy/Astra-Ares",
@@ -13,13 +13,13 @@
   },
   "patch": {
     "file": "native.patch",
-    "sha256": "87d99c8dd20a8885f68471fe4f746838776fb5365a482e9c48cd985bf0b46fb0",
+    "sha256": "d03d69aa59d137fc4a900362b248208f3958e93bca10ebd5949f31d347ddc820",
     "applyCount": 1,
-    "modifiedFiles": 123,
-    "newFiles": 14
+    "modifiedFiles": 131,
+    "newFiles": 16
   },
-  "baseTree": "460dcf26557283eb7581a78e448064fc7e0fc49b",
-  "restoredTree": "4ae73fb0da8ce3f88784abc88fbd2ef9929806ea",
+  "baseTree": "c09968bc06fc543c9d8bd9ffbaaa72829b31f5d9",
+  "restoredTree": "4317732d431ef7c5a25c1a21b17c478b5dbf850f",
   "build": {
     "rustcVersion": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
     "cargoVersion": "cargo 1.98.0 (797e8a9bc 2026-08-05)",
@@ -28,7 +28,7 @@
     "profile": "dev",
     "scryptOptLevel": 3,
     "jobs": 2,
-    "cargoLockSha256": "d9791d7fb33ce54da9e13cfec3c75751ff6318d0028d09668716e70014e93e9a",
+    "cargoLockSha256": "f0ea6b033508c394980bfc011907947beffcb7f7b1a56addbff90196617c14a4",
     "nodeMinimum": "22",
     "nodeDependency": "gpt-tokenizer@4.0.0",
     "nodeLockFile": "package-lock.json",
@@ -44,10 +44,9 @@
       "fromSourceBuild": "NOT_REQUIRED_FOR_V8"
     }
   },
-  "nativeVersion": "codex-cli 0.155.0-alpha.16",
+  "nativeVersion": "codex-cli 0.160.0",
   "bridgeProtocol": 4,
   "policy": {
-    "tau": 0.9,
     "lease": 1,
     "productionCallLimit": null,
     "efforts": [
@@ -56,13 +55,24 @@
       "xhigh",
       "max"
     ],
-    "luna": "gpt-6-luna/high",
-    "jev": "jev-1.13.0"
+    "luna": "gpt-6-luna/high"
   },
   "desktop": {
-    "observedVersion": "26.924.2738.0",
+    "observedVersion": "26.930.3930.0",
     "freshPublicBundleGui": "NOT_RUN",
-    "redistribute": false
+    "redistribute": false,
+    "observedPackageVersion": "26.930.3930.0",
+    "observedInstalledBackend": "not re-measured in current local runtime acceptance",
+    "verifiedLocalRuntime": {
+      "nativeSourceCommit": "f50cc4e77da485d06e28864f1e1b66bb0cc047f2",
+      "mainModel": "gpt-6.1-sol",
+      "evaluationModel": "gpt-6-luna",
+      "evaluationEffort": "high",
+      "appliedEffort": "medium",
+      "turnStatus": "completed",
+      "scope": "existing local runtime; public layout adapters checked separately"
+    },
+    "observedAppVersion": "UNKNOWN"
   },
   "companions": [
     {
@@ -87,18 +97,17 @@
   "capabilities": [
     "eligible root only",
     "selected base model retained",
-    "Astra/Sol reasoning levels present in server catalog",
+    "Astra/Sol/Sol 6.1 reasoning levels preserved from server catalog",
     "responses-lite configuration updates",
-    "ordinary Luna opted out"
+    "ordinary Luna opted out",
+    "Jev/Main retired; saved aliases resolve to plain original Main without evaluation"
   ],
-  "publicPackagingDifferences": [
-    {
-      "path": "codex-rs/core/src/session/jev_main.rs",
-      "kind": "personal-thread-generalization",
-      "description": "Preserve an optional developer-thread exclusion via CODEX_ARES_EXCLUDED_THREAD; no private ID is distributed.",
-      "originalSha256": "a5cc0901b59a5322b3a0cbd25e02f4956b08ffa838fdbee2aa9dc22951b63374",
-      "publicSha256": "32ca606efa921a175e630b78ef5be723cf73bd1cd9cc32d9e73a8a9f3ce02e06"
-    }
-  ],
-  "historicalNativeSha256": "7ad8dcd49a0dd25b7b90274431052e683e0c5a23230c2e188d3a1f143f4cbec1"
+  "publicPackagingDifferences": [],
+  "historicalNativeSha256": "767cbcbf87e7bf3af659980f7e7b0879a29900b178c392056a06dcdb6e587a23",
+  "publicSourceOptOut": {
+    "path": "codex-rs/core/src/session/jev_main.rs",
+    "sha256": "547516d850dee3849f67db456268025ef9d4fd42e5e2faf6d76a8957b6842b0f",
+    "description": "Optional CODEX_ARES_EXCLUDED_THREAD; no private ID is distributed."
+  },
+  "nativeSourceCommit": "f50cc4e77da485d06e28864f1e1b66bb0cc047f2"
 }

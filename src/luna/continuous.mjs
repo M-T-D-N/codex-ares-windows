@@ -5,7 +5,7 @@ import {hash} from '../common/hash.mjs';
 const identity=p=>({protocol:4,threadId:p.threadId,turnId:p.turnId,step:p.step,connectionEpoch:p.connectionEpoch});
 const keyOf=p=>JSON.stringify([p.threadId,p.turnId,p.adviceBasis?.ownerId]);
 export function validateContinuousCheckpoint(p){
-  if(p?.protocol!==4||p.type!=='checkpoint'||!['gpt-6-astra','gpt-6-sol'].includes(p.model)
+  if(p?.protocol!==4||p.type!=='checkpoint'||!['gpt-6-astra','gpt-6-sol','gpt-6.1-sol'].includes(p.model)
     ||!['threadId','turnId','connectionEpoch'].every(k=>typeof p[k]==='string'&&p[k].length>0&&p[k].length<200)
     ||!Number.isSafeInteger(p.step)||p.step<1||!Array.isArray(p.supportedEfforts)
     ||!p.supportedEfforts.every(e=>typeof e==='string')||!p.adviceBasis?.ownerId

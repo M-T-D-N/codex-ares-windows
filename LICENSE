@@ -2,7 +2,7 @@ License scope
 
 This is not a single-license MIT distribution.
 
-1. Original Astra-Ares bridge/provider code retains its MIT license and copyright notice in licenses/MIT-Astra-Ares.txt. The exact original files are src/upstream/jev.mjs and provider-error.mjs.
+1. The effort-question code derived from Astra-Ares in src/luna/question.mjs retains its upstream MIT license and copyright notice in licenses/MIT-Astra-Ares.txt. The Jev provider/client files are not included.
 2. The cumulative Codex native patch, its generated/native derivatives and applicable upstream files are distributed under Apache-2.0. The full text and upstream NOTICE are retained in licenses/Apache-2.0.txt and licenses/NOTICE.codex. See patches/codex/modified-files.json for the prominent changed-file notice and complete list, and patches/codex/PATCH_MAP.md for responsibilities.
 3. New adapter JavaScript, PowerShell, documentation and evidence-export derivatives are distributed under the MIT license below. This grant does not replace the upstream licenses or apply MIT terms to the Codex native patch.
 4. Third-party dependency rights are separate. See THIRD_PARTY_NOTICES.md. The source preview does not distribute Desktop, Node, Rust, compiled dependencies or executable files.

@@ -31,7 +31,8 @@ function evaluatorEnv(source){
       ||/^CODEX_ARES_/i.test(key)
       ||/^CODEX_PARENT_/i.test(key)
       ||/^(CODEX_CLI_PATH|CODEX_THREAD_ID)$/i.test(key)
-      ||/^CODEX_LUNA_EVALUATOR$/i.test(key));
+      ||/^CODEX_LUNA_EVALUATOR$/i.test(key)
+      ||/^TYPESAFE_API_KEY(?:_FILE)?$/i.test(key));
   return buildEnvironment(normalized,{CODEX_LUNA_EVALUATOR:'1'},{remove});
 }
 async function windowsIdentity(pid){
@@ -78,7 +79,7 @@ export class LunaAppServer{
     this.pending=new Map();this.threads=new Map();this.awaitingClose=new Map();
     this.active=new Set();this.queue=[];
     this.nextId=1;this.epoch=0;this.child=null;this.starting=null;this.retiring=null;
-    this.closed=false;this.draining=false;this.idleTimer=null;
+    this.closed=false;this.closing=null;this.draining=false;this.idleTimer=null;
   }
   note(event){try{this.record(event);}catch{/* telemetry cannot break cleanup */}}
   async start(){
@@ -86,6 +87,8 @@ export class LunaAppServer{
     if(this.child&&!this.child.exited&&this.child.initialized)return;
     if(this.starting)return this.starting;
     if(this.retiring)await this.retiring;
+    if(this.child&&!this.child.exited)
+      throw problem('evaluator_transport','Previous evaluator exit is unconfirmed');
     this.starting=this.startEpoch();
     try{await this.starting;}finally{this.starting=null;}
   }
@@ -95,14 +98,23 @@ export class LunaAppServer{
     const args=['-c','thread_unload_delay_secs=0','app-server','--listen','stdio://'];
     const processChild=this.spawnProcess(this.binary,args,
       {cwd:this.cwd,env:this.env,stdio:['pipe','pipe','pipe'],windowsHide:true});
-    const state={process:processChild,epoch:++this.epoch,exited:false,initialized:false,
+    const state={process:processChild,epoch:++this.epoch,exited:false,initialized:false,transport:'open',
       identity:null,buffer:'',stderrBytes:0,startedAt:new Date().toISOString(),
       exit:deferred()};
     this.child=state;
     processChild.stdout.setEncoding('utf8');
     processChild.stdout.on('data',data=>this.onData(state,data));
     processChild.stderr.on('data',data=>{state.stderrBytes+=Buffer.byteLength(data);});
-    processChild.on('error',error=>this.onExit(state,problem('evaluator_process',error.message)));
+    processChild.stdin.on('error',error=>this.transportFailure(state,error));
+    processChild.stdin.on('close',()=>{
+      if(state.transport==='open')this.transportFailure(state,
+        problem('evaluator_transport','Evaluator input pipe closed'));
+    });
+    processChild.on('error',error=>{
+      const failure=problem('evaluator_process',error.message);
+      if(!processChild.pid)this.onExit(state,failure);
+      else this.transportFailure(state,failure);
+    });
     processChild.on('exit',(code,signal)=>this.onExit(state,
       problem('evaluator_process',`Evaluator exited (code=${code}, signal=${signal})`)));
     try{state.identity=await this.inspectProcess(processChild.pid);}catch{state.identity=null;}
@@ -126,9 +138,33 @@ export class LunaAppServer{
     }
   }
   write(frame,state=this.child){
-    if(!state||state.exited||state.process.stdin.destroyed)
+    if(!state||state.exited||state.transport!=='open')
       throw problem('evaluator_process','Evaluator transport is closed');
-    state.process.stdin.write(JSON.stringify(frame)+'\n');
+    const input=state.process.stdin;
+    if(input.destroyed||input.writableEnded||input.writableFinished||input.writable===false){
+      this.transportFailure(state,problem('evaluator_transport','Evaluator input pipe is not writable'));
+      throw state.transportError;
+    }
+    try{input.write(JSON.stringify(frame)+'\n',error=>{
+      if(error)this.transportFailure(state,error);
+    });}catch(error){this.transportFailure(state,error);throw state.transportError;}
+  }
+  rejectPending(state,error){
+    for(const[id,entry]of this.pending)if(entry.state===state){
+      this.pending.delete(id);entry.wait.reject(error);
+    }
+  }
+  transportFailure(state,cause){
+    if(state.exited||state.transportError)return;
+    const error=problem('evaluator_transport','Evaluator input transport failed');
+    state.transportError=error;state.transport='failed';state.initialized=false;
+    this.note({type:'evaluator_transport_failed',epoch:state.epoch,pid:state.process.pid,
+      category:error.category,code:cause?.code??cause?.category??'UNKNOWN',processExitObserved:false});
+    this.rejectPending(state,error);
+    for(const flight of this.active)if(flight.epoch===state.epoch){
+      flight.abortError??=error;flight.stuck=true;flight.completion.reject(error);
+    }
+    if(this.child===state){this.draining=true;this.retireIfDrained(state);}
   }
   rpc(method,params,state=this.child){
     if(!state||state.exited)return Promise.reject(problem('evaluator_process','Evaluator unavailable'));
@@ -292,7 +328,7 @@ export class LunaAppServer{
       if(flight.abortError)throw flight.abortError;
       const started=await this.rpc('thread/start',{
         model:'gpt-6-luna',cwd:this.cwd,ephemeral:true,sandbox:'read-only',
-        approvalPolicy:'never',developerInstructions:INSTRUCTIONS,config:{project_doc_max_bytes:0,
+        approvalPolicy:'never',baseInstructions:INSTRUCTIONS,developerInstructions:INSTRUCTIONS,config:{project_doc_max_bytes:0,
           skills:{include_instructions:false},
           memories:{use_memories:false,generate_memories:false,dedicated_tools:false}},
       },state);
@@ -365,6 +401,10 @@ export class LunaAppServer{
   async cleanup(flight){
     const state=this.child;
     if(!state||state.exited||flight.epoch!==state.epoch)return;
+    if(state.transport!=='open'){
+      flight.stuck=true;this.draining=true;this.retireIfDrained(state);
+      await state.exit.promise;return;
+    }
     if(flight.turnStartSent&&!flight.turnId){
       // Start may have succeeded despite a lost response; only process exit is proof.
       flight.stuck=true;this.draining=true;this.retireIfDrained(state);
@@ -380,13 +420,14 @@ export class LunaAppServer{
       if(!['unsubscribed','notSubscribed','notLoaded'].includes(result?.status))
         throw problem('evaluator_cleanup','Thread unsubscribe unconfirmed');
       let loadedCount='UNKNOWN',threadLoaded='UNKNOWN';
-      try{
+      try{if(state.transport==='open'){
         const loaded=await this.rpc('thread/loaded/list',{},state);
         if(Array.isArray(loaded?.data)){
           loadedCount=loaded.data.length;threadLoaded=loaded.data.includes(flight.threadId);
           if(loaded.nextCursor)loadedCount='AT_LEAST_'+loadedCount;
         }
-      }catch{/* an unsubscribed thread will also be released at idle retirement */ }
+      }}catch(error){this.note({type:'evaluator_cleanup_probe_failed',epoch:state.epoch,
+        category:error.category??'UNKNOWN'});}
       this.note({type:'evaluator_thread_cleanup',epoch:flight.epoch,
         threadId:flight.threadId,unsubscribeStatus:result.status,loadedCount,
         threadLoaded,threadClosedObserved:!!flight.closedObserved});
@@ -416,10 +457,14 @@ export class LunaAppServer{
     this.draining=true;
     state.retirementAttempted=true;
     state.retirementReason=reason;
+    state.transport='closing';state.initialized=false;
+    this.rejectPending(state,problem('evaluator_transport','Evaluator is retiring'));
     this.note({type:'evaluator_process_retiring',epoch:state.epoch,pid:state.process.pid,
       reason,activeFlights:this.active.size});
     this.retiring=(async()=>{
-      state.process.stdin.end();
+      try{state.process.stdin.end(error=>{
+        if(error)this.transportFailure(state,error);
+      });}catch(error){this.transportFailure(state,error);}
       await waitAtMost(state.exit.promise,this.retireMs);
       if(!state.exited){
         let fresh;
@@ -437,13 +482,11 @@ export class LunaAppServer{
   }
   onExit(state,error){
     if(state.exited)return;
-    state.exited=true;state.exit.resolve();
+    state.exited=true;state.transport='closed';state.exit.resolve();
     this.note({type:'evaluator_process_exited',epoch:state.epoch,pid:state.process.pid,
       category:error.category,retirementReason:state.retirementReason??'unexpected_exit',
       stderrBytes:state.stderrBytes});
-    for(const[id,entry]of this.pending)if(entry.state===state){
-      this.pending.delete(id);entry.wait.reject(error);
-    }
+    this.rejectPending(state,error);
     for(const flight of this.active)if(flight.epoch===state.epoch)
       flight.completion.reject(error);
     for(const [threadId,flight] of this.awaitingClose)
@@ -452,8 +495,13 @@ export class LunaAppServer{
     if(!this.retiring){this.draining=false;this.pump();}
   }
   async close(){
-    if(this.closed)return this.retiring;
-    this.closed=true;clearTimeout(this.idleTimer);
+    if(this.closing)return this.closing;
+    this.closed=true;
+    this.closing=this.closeOwned();
+    return this.closing;
+  }
+  async closeOwned(){
+    clearTimeout(this.idleTimer);
     for(const flight of this.queue){
       flight.signal?.removeEventListener('abort',flight.abortListener);
       flight.wait.reject(problem('evaluator_closed','Evaluator closed'));

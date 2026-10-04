@@ -2,9 +2,9 @@
 
 The authoritative build inputs are `patches/codex/upstream.lock.json`, `native.patch`, `base-files.json`, `modified-files.json`, and `package-lock.json`. The public Codex archive is pinned by commit and SHA-256. The Ares revision records source attribution; setup applies only this repository's cumulative patch.
 
-`setup.ps1 -RestoreOnly` fetches or accepts `-Archive`, checks its exact digest, rejects a nonempty `-SourceDir`, extracts only the expected 8,218 entries, constructs the clean Git index with original modes, applies the cumulative patch once with `git apply --check --index` then `git apply --index`, and verifies all final contents and the complete Git tree. No original repository is reset or cleaned. One Linux-only bubblewrap LICENSE symlink is materialized as link text on Windows while its Git mode remains 120000; no administrator symlink privilege is requested.
+`setup.ps1 -RestoreOnly` fetches or accepts `-Archive`, checks its exact digest, rejects a nonempty `-SourceDir`, extracts only the expected entries in `base-files.json`, constructs the clean Git index with original modes, applies the cumulative patch once with `git apply --check --index` then `git apply --index`, and verifies all final contents and the complete Git tree. No original repository is reset or cleaned. One Linux-only bubblewrap LICENSE symlink is materialized as link text on Windows while its Git mode remains 120000; no administrator symlink privilege is requested.
 
-Byte-preserved CRLF source and SQLite migration changes cause Git trailing-whitespace warnings. Do not run whitespace-fixing apply or newline normalization: full restored tree equality is the criterion. The binary schema changes are embedded in the Git binary patch.
+The cumulative Windows patch preserves CRLF bytes in the 73 SQL migration files so their embedded checksums match the installed Windows build. Their SQL statements are unchanged. Git can report trailing-whitespace warnings for these CRLF patch lines; do not apply whitespace-fixing or normalize those SQL files to LF. Full restored contents and Git modes are the criterion. Rust source remains LF to avoid needless whole-source changes between updates.
 
 Full setup next performs `npm ci --ignore-scripts --no-audit --no-fund`, dev native build and the three companions from the same source, bundle hashing, then Doctor. Rust/Cargo are pinned to 1.98.0 with recorded full versions; target is the default `x86_64-pc-windows-msvc` host, dev profile, jobs2 and inherited scrypt opt-level3. Visual Studio tools are discovered or supplied through `-VcVarsPath`. Build/cache directories are separate from the source preview; repeated native changes may reuse a valid target without copying it. Do not run concurrent writers against one target. No `cargo clean` or release-profile switch is performed.
 
@@ -16,11 +16,15 @@ The release is https://github.com/openai/codex/releases/tag/rusty-v8-v150.4.0. F
 
 ## Verified build scope
 
-Fresh source restoration matched the locked contents and Git modes. The CLI and all three companions were built from that restored source, retaining the dev profile and existing crate/compiled caches. No installed companion executable was copied into the bundle. The new CLI reports `codex-cli 0.155.0-alpha.16`.
+The current native lock targets Codex **0.160.0** and includes all accepted Ares corrections through context-history recovery. The existing local build produced the CLI and all three companions from that source with the valid shared toolchain and reusable target cache. Actual local Desktop startup and a Luna→native effort→completed Main response were observed. Full public-source patch restoration, public adapter regressions and local runtime evidence establish different boundaries; see [validation](validation.md).
 
-Package Doctor verifies the bundle. No-model checks passed for app-server initialization and model listing, a real code-mode/V8 calculation (`6 * 7` returning `42`), normal process exit and the non-activation preflight against Desktop 26.924.2738.0. No Desktop was restarted and no model generation was requested. A new GUI trial of these exact public bytes was not run. Binary convenience distribution remains a separate decision requiring its complete dependency notices and publication approval.
+A completely cold dependency rebuild, a project-local Rust installer run, a fresh public-layout Desktop GUI trial, and a binary convenience release are not claimed. The source package excludes toolchains, native executables, installed Desktop files and build caches. A binary release would need a separate complete dependency notice inventory and approval.
 
-Crate URLs and Git revisions are public in Cargo.lock, but a completely cold network rebuild of every dependency was not performed. The locked npm dependency was actually fetched/restored using npm10.9.2; Node24.19.0 was observed locally. No global package/toolchain installation or change was made.
+## Keeping up with upstream
+
+Keep one canonical source path and one target cache. Inspect the official release delta, retain Ares changes and update the exact source lock only after related checks. A Desktop-only change calls for launch/protocol acceptance; model or generation-contract changes also need their focused native checks. Build only affected targets after source changes and automatic-fix review are finished. Preserve Windows SQL checksum bytes while retaining LF Rust source.
+
+Cargo decides whether cached artifacts are valid. The unchanged CLI rebuild in this cycle took 1.41 seconds; changing source paths, features or compiler inputs can still require compilation. This single observation is not a general speedup claim. Do not copy `deps`, `.fingerprint` or `build` manually, clear the target routinely, or treat every app update as a new full pilot.
 
 ## Automatic dependency setup
 

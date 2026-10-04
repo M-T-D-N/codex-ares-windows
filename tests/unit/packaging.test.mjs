@@ -5,7 +5,6 @@ import {once} from 'node:events';
 import {normalizeEnvironment,buildEnvironment} from '../../src/common/environment.mjs';
 import {logEvent} from '../../src/common/logging.mjs';
 import {PilotBridge,frame} from '../../src/common/bridge.mjs';
-import {JevEvaluator} from '../../src/jev-main/evaluator.mjs';
 import {LunaAppServer} from '../../src/luna/app-server.mjs';
 import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,copyFileSync,rmSync} from 'node:fs';
 import {join,resolve} from 'node:path';
@@ -21,14 +20,9 @@ test('Windows child environment rejects conflicting aliases and normalizes befor
   assert.throws(()=>normalizeEnvironment({BAD:'a\0b'}),/Invalid/);
 });
 test('Luna evaluator construction needs no Jev credentials and removes inherited control routing',async()=>{
-  const e=new LunaAppServer({binary:'fixture.exe',cwd:'fixture',env:{PATH:'tools',CODEX_ARES_EXCLUDED_THREAD:'owner',CODEX_STEP_CONTROLLER_TOKEN:'private',CODEX_CLI_PATH:'parent'},spawnProcess:()=>{throw Error('No process expected');}});
-  assert.equal(e.env.CODEX_LUNA_EVALUATOR,'1');assert.equal(e.env.CODEX_ARES_EXCLUDED_THREAD,undefined);assert.equal(e.env.CODEX_STEP_CONTROLLER_TOKEN,undefined);assert.equal(e.env.CODEX_CLI_PATH,undefined);
+  const e=new LunaAppServer({binary:'fixture.exe',cwd:'fixture',env:{PATH:'tools',CODEX_ARES_EXCLUDED_THREAD:'owner',CODEX_STEP_CONTROLLER_TOKEN:'private',CODEX_CLI_PATH:'parent',TYPESAFE_API_KEY:'fixture-only',TYPESAFE_API_KEY_FILE:'fixture-private-file'},spawnProcess:()=>{throw Error('No process expected');}});
+  assert.equal(e.env.CODEX_LUNA_EVALUATOR,'1');assert.equal(e.env.CODEX_ARES_EXCLUDED_THREAD,undefined);assert.equal(e.env.CODEX_STEP_CONTROLLER_TOKEN,undefined);assert.equal(e.env.CODEX_CLI_PATH,undefined);assert.equal(e.env.TYPESAFE_API_KEY,undefined);assert.equal(e.env.TYPESAFE_API_KEY_FILE,undefined);
   await e.close();
-});
-test('Jev explicit credential overrides file default and errors do not expose its value',async()=>{
-  const e=new JevEvaluator({apiKey:'fixture-only-not-a-key',credentialPath:'does-not-exist'});
-  assert.equal(await e.credentials(),'fixture-only-not-a-key');
-  await assert.rejects(new JevEvaluator({apiKey:'invalid fixture with spaces',credentialPath:null}).credentials(),error=>error.category==='credential_invalid'&&!error.message.includes('spaces'));
 });
 test('default event logs omit bodies, errors, identity, diagnostic state and judgment reason',()=>{
   const secret='private-fixture-text';const r=logEvent({type:'evaluation_completed',threadId:'case-a',effort:'high',prompt:secret,error:{message:secret},identity:{CommandLine:secret},stats:{body:secret},judgment:{action:'recommend',effort:'high',reason:secret},usage:{inputTokens:4,body:secret}},{detailed:false});
