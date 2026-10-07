@@ -23,6 +23,9 @@ Reading a file, tracing a bug and weighing an implementation call for different 
   <a href="#get-started">Get started</a> · <a href="#pick-your-route">Choose a route</a> · <a href="docs/architecture.md">How it works</a> · <a href="docs/pilot-results.md">Test results</a>
 </p>
 
+> [!NOTE]
+> **Source preview:** build locally using the pinned dependencies. Read the [build guide](docs/build.md), [compatibility scope](docs/compatibility.md) and [development validation](docs/validation.md) before setup.
+
 Development note: this downstream is AI-generated and user-tested; [read the
 full disclosure](#ai-development-disclosure).
 

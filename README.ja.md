@@ -23,6 +23,9 @@
   <a href="#使い始める">使い始める</a> · <a href="#評価経路を選ぶ">評価経路を選ぶ</a> · <a href="docs/architecture.md">仕組み</a> · <a href="docs/pilot-results.md">試験結果</a>
 </p>
 
+> [!NOTE]
+> **ソースプレビュー:** 固定された依存関係を使ってローカルでビルドします。開始前に[ビルドガイド](docs/build.md)、[互換性](docs/compatibility.md)、[開発検証](docs/validation.md)をご確認ください。
+
 開発について：この派生版はAIが生成し、ユーザーが動作を試験しています。[開発に関する開示](#ai開発に関する開示)をご覧ください。
 
 ## Codexに加わる機能

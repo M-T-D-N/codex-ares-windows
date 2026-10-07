@@ -23,6 +23,9 @@
   <a href="#시작하기">시작하기</a> · <a href="#내-모델에-맞는-경로-고르기">경로 선택</a> · <a href="docs/architecture.md">작동 방식</a> · <a href="docs/pilot-results.md">시험 결과</a>
 </p>
 
+> [!NOTE]
+> **소스 공개판:** 고정된 의존성으로 로컬에서 빌드합니다. 시작 전에 [빌드 안내](docs/build.md), [호환 범위](docs/compatibility.md), [개발 검증](docs/validation.md)을 확인하세요.
+
 개발 안내: 이 다운스트림은 AI가 생성하고 사용자가 시험했습니다. [전체
 고지](#ai-개발-고지)를 확인하세요.
 

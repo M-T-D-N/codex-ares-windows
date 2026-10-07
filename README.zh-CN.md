@@ -23,6 +23,9 @@
   <a href="#开始使用">开始使用</a> · <a href="#选择评估路径">选择路径</a> · <a href="docs/architecture.md">工作原理</a> · <a href="docs/pilot-results.md">测试结果</a>
 </p>
 
+> [!NOTE]
+> **源码预览：** 使用固定依赖在本机构建。开始前请阅读[构建指南](docs/build.md)、[兼容范围](docs/compatibility.md)和[开发验证](docs/validation.md)。
+
 开发说明：本衍生版本由 AI 生成，并由用户进行测试。请阅读[完整开发披露](#ai-开发披露)。
 
 ## 为 Codex 增加什么
