@@ -38,3 +38,21 @@ After source restoration has succeeded, resume a failed build without extracting
 ```
 
 Use the exact Rust/Cargo compiler from the lock in an x64 developer shell, or provide `-VcVarsPath`. A previous bundle is never overwritten automatically. Keep build failure details separate from a verified bundle; a source restore, native build, and GUI trial establish different claims.
+
+## Updating an existing build
+
+Read the [change history](../CHANGELOG.md) and [compatibility scope](compatibility.md) first. The machine authority for base, archive, patch, dependencies and companions is `patches/codex/upstream.lock.json`.
+
+Each update restores the **complete** patch onto its exact clean base once. Do not apply it on top of a previously patched source or treat it as a small incremental patch. Restore into a new empty source directory; existing source and bundle directories are never overwritten by setup. A new source directory may reuse an existing target cache only with the locked toolchain and no concurrent writer. Source restoration does not require copying a whole cache.
+
+Build the CLI and all four companions from that restored source, then bundle and run Doctor and `scripts/start.ps1 -PreflightOnly`. Preflight verifies inputs/version/binding without launching Desktop or calling a model. A cache hit or preflight pass alone does not prove Desktop/model execution.
+
+When ready to switch, finish active local work, quit Desktop normally and start the new bundle through `scripts/start.ps1`. The installed Start-menu app remains available for rollback. A shortcut that points to a stable launcher can remain unchanged; a shortcut pointing at a moved checkout must be updated to that checkout's launcher. No forced shutdown is part of this procedure.
+
+For bounded diagnostics on that next normal start:
+
+```powershell
+.\scripts\start.ps1 -ContextTraceThreadId '<exact-thread-UUID>'
+```
+
+The option is validated and explicitly forwarded through the MSIX boundary. Omit it for the normal default with detailed context tracing off. Startup options do not mutate an already running app.

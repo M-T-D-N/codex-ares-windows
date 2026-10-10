@@ -29,6 +29,8 @@ Reading a file, tracing a bug and weighing an implementation call for different 
 Development note: this downstream is AI-generated and user-tested; [read the
 full disclosure](#ai-development-disclosure).
 
+[Changes and documentation](docs/README.md) · [Change history](CHANGELOG.md)
+
 ## What Ares adds to Codex
 
 - **Automatic effort changes during a task.** Ares evaluates the next step from the first generation onward and can select `medium`, `high`, `xhigh` or `max`. You don't have to stop and change the selector for each step.

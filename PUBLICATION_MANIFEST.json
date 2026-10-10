@@ -27,9 +27,14 @@
       "sha256": "5ee1f200a6a48ba9671bcb6003463f6641232edc728020a17c0ae04d9acc3c94"
     },
     {
+      "path": "CHANGELOG.md",
+      "bytes": 3865,
+      "sha256": "1b976a048e8fdf9db7d00f97a3d79f3357d625a0beaba7c9aec46e60e436db89"
+    },
+    {
       "path": "docs/architecture.md",
-      "bytes": 3520,
-      "sha256": "d9ece590ef311d1ea37c396cf8cdcda7e8f62a20182cc8beee420fd02f1b1c2a"
+      "bytes": 3206,
+      "sha256": "c8f30a41b6083fced401be0949bccf59fa587bf79b604c31542b89b8d1979bf2"
     },
     {
       "path": "docs/assets/ares-banner.svg",
@@ -38,8 +43,13 @@
     },
     {
       "path": "docs/build.md",
-      "bytes": 6125,
-      "sha256": "fee8ba225ae201a04485418920d6a8f1eeb777c8705631539762bf248edf1549"
+      "bytes": 7839,
+      "sha256": "877f0883147c7a66e6b893baeffe231aef9ded7822e7ba84d878f12d27e15822"
+    },
+    {
+      "path": "docs/changes.ko.md",
+      "bytes": 3803,
+      "sha256": "36e7d5061ccfe104c5795c6a89d92cca9071ea4282b4ed76cb260405727a9cf2"
     },
     {
       "path": "docs/compatibility.md",
@@ -57,14 +67,19 @@
       "sha256": "212282e2d02b31d62ef3096b53a2872310cd1071aa0eaad9fa1611d32e7c7f4a"
     },
     {
+      "path": "docs/README.md",
+      "bytes": 1192,
+      "sha256": "7a8926b92956e6b18a2b202ddfe14c32038d9451dfd1622604010eb61a5abc66"
+    },
+    {
       "path": "docs/runtime-validation.json",
       "bytes": 1706,
       "sha256": "eb7320cae4cd780858caab5c1e32651000313e1777e545439a674abcf945cbd3"
     },
     {
       "path": "docs/validation.md",
-      "bytes": 2392,
-      "sha256": "acbb839c1606ddb785cd3662a8cb7e9d88ec0fd7284c3ea8bcb943d44b53f7cd"
+      "bytes": 3431,
+      "sha256": "da9c49062c54b5c53ff01be88444c338351b450283a101218fbf04d2c8c05ba7"
     },
     {
       "path": "LICENSE",
@@ -118,8 +133,8 @@
     },
     {
       "path": "patches/codex/PATCH_MAP.md",
-      "bytes": 436,
-      "sha256": "e4ee6be30d8e84d04fbaa3ff2b7060e2309b6eb8638c6f33bce7f7621614d747"
+      "bytes": 633,
+      "sha256": "79551873d1d512dc9dcab18168e4df4144a8cfd67383ed2a68ee79a9cf1578cb"
     },
     {
       "path": "patches/codex/upstream.lock.json",
@@ -128,23 +143,23 @@
     },
     {
       "path": "README.ja.md",
-      "bytes": 8525,
-      "sha256": "9b2aca4356b53fd3039e588d747869475f1388fcf3e5df83b4f370e97548477f"
+      "bytes": 8612,
+      "sha256": "e7a11359f525bc12b5103f29002b1efc6c4e009da231211dc9e181a14ed13286"
     },
     {
       "path": "README.ko.md",
-      "bytes": 8198,
-      "sha256": "e3be23a016867bc9ec052879be8df18b97672ab39dc0a5ee1bcf6084a179515f"
+      "bytes": 8289,
+      "sha256": "d527a50bf8d5369ee9c106d8874928f9160f4f79c6fe0c9629264f64f387160b"
     },
     {
       "path": "README.md",
-      "bytes": 7385,
-      "sha256": "33f09bbaac009ad7af6283311d54847630f5fe13eeec64be2f7aeda14733ff30"
+      "bytes": 7464,
+      "sha256": "99db626ebfa450e4128bb54c32b1d6ef0416d11d5983307dcd5ecb00b7122144"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 7067,
-      "sha256": "866d03b27d953038f8dd58ffc61c0ef4ba9a4cb446d601e811bd8b198396f3cd"
+      "bytes": 7142,
+      "sha256": "8a86221f5f567a9449a604e387bb1e69f73f7ada830b1c00e102ba29f5312acc"
     },
     {
       "path": "scripts/build-native.ps1",
@@ -308,7 +323,7 @@
     }
   ],
   "selfExcludedFromHashes": true,
-  "sourceFileCountIncludingManifest": 62,
+  "sourceFileCountIncludingManifest": 65,
   "pilotDocument": "docs/pilot-results.md",
   "pilotDataOrReplayHarnessIncluded": false,
   "nativeBase": "740e5af33c71225640e0c1c1555c514c2c93ab74",

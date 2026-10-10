@@ -1,15 +1,25 @@
-# Architecture
+# How Ares controls reasoning
 
-The model catalog offers three explicit Ares selections: Astra Ares, Sol Ares and Sol 6.1-Ares. Each keeps its selected Main model. Ordinary models and child workers remain outside the controller.
+## The active route
 
-`src/selection` validates the exact alias/model/route combination and connection ownership. `src/luna` runs the existing independent ephemeral GPT-6 Luna/High evaluator without tools or MCP initialization. The native generation boundary captures current decision context, obtains a validated effort through the authenticated local bridge, and records capture, send and response separately. An acknowledgment is not a dispatched response.
+Choose Astra Ares, Sol Ares or Sol 6.1-Ares. Native resolves the alias to the matching base model and preserves that model. An authenticated loopback checkpoint identifies the current root conversation, turn, generation and control owner. Ordinary model selections and ordinary Luna do not start Ares evaluation.
 
-Luna's effort question and criteria are retained in `src/luna/question.mjs`, extracted from the original Ares question without changing its content. Supported efforts remain medium/high/xhigh/max, with fresh judgment each generation. Evaluator failure, timeout, cancellation and cooldown retain the existing recovery behavior. Trial budgets are not operating limits.
+Before each eligible generation, the sidecar sends current decision context to an independent **GPT-6 Luna / High** evaluator through **Codex app-server**. The evaluator has no tools or MCP access. It returns the validated `action/effort/reason` contract; unsupported effort or invalid output is rejected. A recommendation belongs to its exact owner and generation, with lease one. Old decisions are not reused as fresh judgments.
 
-Jev/Main selections are retired. Saved `Astra-Jev-Main` and `Sol-Jev-Main` metadata resolve to their original plain Astra or Sol model and manual effort, without enrolling in Luna, Jev or the internal Main-control tool. `Astra-Jev` and `Sol-Jev` are stable internal IDs for the two existing Luna routes. `Sol 6.1-Ares` is the current GPT-6.1 Sol selection ID and display name. Saved `Sol61-Ares` selections remain compatible with the same Luna evaluator. Compatibility declarations left in the cumulative native source do not register a live Jev route. No new Decision API is integrated.
+Native captures the accepted effort and transmits its configuration to Main. Responses WebSocket continuation can inherit configuration through `previous_response_id`; an empty update array is not evidence that effort reverted to baseline. Capture, local send and completed response are separate observations. The evaluator's ephemeral thread is closed independently of Main completion.
 
-Launcher identity/hash checks, loopback token framing and owner isolation are retained. The launch host hands off to a detached supervisor, which keeps the bridge alive until normal Desktop exit. A sidecar alone cannot provide these generation boundaries on stock Codex.
+## Inputs and failure recovery
 
-`PilotBridge` and `CODEX_STEP_CONTROLLER_PILOT_MARKER` are compatibility names for the active authenticated connection; they do not load a pilot dataset. Evaluator-only optional history/tool evidence targets 12,000 local tokens and discloses omissions. Original and latest current requests stay whole, including requests above 28,000 tokens. Admission uses `thread/start.modelContextWindow` from the evaluator's actual resolved model/provider/configuration, minus an explicit framing reserve. This native value already includes the model's configured headroom; API advertised maxima are not substituted for it. Unknown capacity or irreducible oversize sends no model turn and falls back to Main; capacity failures can recover after cooldown, and changed input can recover from context-scoped oversize. Native history, judgment criteria, lease and evaluation frequency are unchanged. Byte/frame transport limits still apply. No historical bootstrap, fault schedule, saved pilot input or trial counter is loaded by runtime entrypoints.
+Original and latest current requests stay whole. Accepted current goal input is collected before sampling, including pending goal input. Optional historical requests, progress and tool evidence target 12,000 locally counted tokens and explicitly disclose truncation/omission. This is not semantic summarization or a guarantee that every old constraint remains visible.
 
-The [DevDay 2026 announcement](https://openai.com/index/devday-2026-recap/) describes Luna Decisions as a limited preview for finite question/answer decisions. The checked official documentation did not establish the endpoint, authentication, request/response schema or pricing contract needed here. A future integration belongs at the existing `evaluate(snapshot, {signal, trace})` boundary; deadline, cancellation, response validation and fallback ownership remain intact. The current implementation continues to use the available Codex Luna/High evaluator and makes no guessed Decisions API request.
+Admission uses the evaluator's own resolved usable context window minus framing reserve; it does not borrow Main's context window or substitute an advertised API maximum. Unknown capacity or irreducible oversize starts no inference. Missing current task evidence is rejected before allocating an evaluator thread.
+
+On timeout, abstention, unavailable evaluation or rejected control, Main uses its baseline. Existing cooldown and fresh-input recovery remain in place. One conversation's decision cannot control another. Trial call counters are outside runtime termination conditions; normal operation is not capped at 10, 40 or 41 evaluations.
+
+## Windows process boundary
+
+Desktop starts through the registered MSIX context; direct executable launch is insufficient. A detached supervisor keeps the loopback bridge alive after the temporary launch host exits. Normal Desktop exit closes evaluator and bridge. Receipt and returned exit code include log-flush failure. No installation, global settings, authentication or memory service is replaced.
+
+Detailed context-phase tracing is opt-in for one exact UUID at startup. Normal structured Ares telemetry remains available; default sidecar logging removes prompt/result bodies and judgment explanations. [Privacy](privacy.md) describes local diagnostics and publication exclusions.
+
+This public route is Luna via app-server. It is not Decisions API or a Sign in with ChatGPT Responses integration. Retired Jev/Main aliases are handled as compatibility metadata, not an active Jev client. [Change history](../CHANGELOG.md) explains why the current boundaries were added.
