@@ -1,12 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {countTokens} from 'gpt-tokenizer/encoding/o200k_base';
-import {evaluationInput,validateJudgment} from '../../src/luna/policy.mjs';
+import {evaluationInput as prepareInput,evaluatorInputBudget,validateJudgment} from '../../src/luna/policy.mjs';
 import {preview,projectEvidence} from '../../src/common/evidence.mjs';
 import {ContinuousService} from '../../src/luna/continuous.mjs';
 import {hash} from '../../src/common/hash.mjs';
 
 const tokens=text=>countTokens(text,{disallowedSpecial:new Set()});
+// Fixture contract, not a claim about the current account's remote catalog.
+const capacity={model:'gpt-6-luna',modelProvider:'openai',modelContextWindow:258400};
+const evaluationInput=(p,options={})=>prepareInput(p,{capacity,...options});
 function checkpoint(context={}){
   return {protocol:4,type:'checkpoint',threadId:'task',turnId:'turn',step:1,connectionEpoch:'epoch',
     model:'gpt-6.1-sol',supportedEfforts:['medium','high','xhigh','max'],currentEffort:'xhigh',
@@ -91,12 +94,37 @@ test('large current goal is never silently reduced to fit the soft target',()=>{
   assert.equal(state.coverage.currentUserRequestsComplete,true);
 });
 
-test('irreducible hard oversize and missing current evidence still fail before a model call',()=>{
+test('current request above the former 28k guard survives whole under resolved Luna capacity',()=>{
   const goal='constraint '.repeat(40000);
-  assert.throws(()=>evaluationInput(checkpoint({originalTurnPrompt:goal,latestUserPrompt:goal})),
-    e=>e.category==='input_oversize'&&e.localTokens>28000);
+  const p=checkpoint({originalTurnPrompt:goal,latestUserPrompt:goal}),before=structuredClone(p);
+  const result=evaluationInput(p);
+  assert.ok(result.stats.localTokens>28000);
+  assert.equal(JSON.parse(result.input).state.originalTask,goal);
+  assert.deepEqual(p,before);
+  assert.equal(result.stats.inputBudget.model,'gpt-6-luna');
+  assert.equal(result.stats.inputBudget.modelProvider,'openai');
+  assert.ok(result.stats.localTokens<result.stats.maxTokens);
+});
+
+test('actual smaller capacity rejects oversized current goals before a model call',()=>{
+  const goal='constraint '.repeat(40000);
+  assert.throws(()=>evaluationInput(checkpoint({originalTurnPrompt:goal,latestUserPrompt:goal}),
+    {capacity:{...capacity,modelContextWindow:32000}}),
+    e=>e.category==='input_oversize'&&e.localTokens>e.maxTokens);
   assert.throws(()=>evaluationInput(checkpoint({latestUserPrompt:''})),
     e=>e.category==='required_evidence_missing');
+});
+
+test('unverified, malformed and wrong-model capacity cannot enlarge admission',()=>{
+  for(const value of [undefined,{...capacity,modelContextWindow:null},{...capacity,modelContextWindow:NaN},
+    {...capacity,modelContextWindow:Infinity},{...capacity,modelContextWindow:1},
+    {...capacity,modelContextWindow:32000.5},{...capacity,model:'gpt-6-astra'},
+    {...capacity,modelProvider:''}])
+    assert.throws(()=>prepareInput(checkpoint(),{capacity:value}),e=>e.category==='capacity_unavailable');
+  const budget=evaluatorInputBudget(capacity);
+  assert.equal(budget.usableContextTokens,258400);
+  assert.ok(budget.framingReserveTokens>=4096);
+  assert.equal(budget.maxTokens+budget.framingReserveTokens,258400);
 });
 
 test('legacy projector does not alter input unless the Luna-only option is supplied',()=>{
@@ -108,7 +136,8 @@ test('legacy projector does not alter input unless the Luna-only option is suppl
 
 test('same turn continues fresh evaluation past the external trial budgets',async()=>{
   let calls=0;
-  const service=new ContinuousService({evaluator:{async evaluate(snapshot){
+  const service=new ContinuousService({evaluator:{async evaluate(request){
+    const snapshot=request.prepare(capacity);
     calls++;assert.ok(snapshot.stats.localTokens<=12000);
     return {text:JSON.stringify({action:'recommend',effort:calls%2?'medium':'xhigh',reason:'Fixture only.'})};
   },async close(){}},record:()=>{}});
@@ -121,6 +150,40 @@ test('same turn continues fresh evaluation past the external trial budgets',asyn
   }
   assert.equal(calls,43);assert.equal(service.status().productionCallLimit,null);
   await service.close();
+});
+
+test('oversize fallback is context scoped and a corrected next generation evaluates',async()=>{
+  let prepared=0,modelCalls=0;
+  const service=new ContinuousService({evaluator:{async evaluate(request){
+    prepared++;request.prepare({...capacity,modelContextWindow:prepared===1?32000:258400});modelCalls++;
+    return {text:JSON.stringify({action:'recommend',effort:'medium',reason:'Fixture.'})};
+  },async close(){}},record:()=>{}});
+  const goal='constraint '.repeat(40000),p=checkpoint({originalTurnPrompt:goal,latestUserPrompt:goal});
+  let connection=service.controller(p),reply=await connection.handle(p);connection.close();
+  assert.equal(reply.type,'degraded');assert.equal(reply.reason,'input_oversize');
+  assert.equal(modelCalls,0);
+  const next=checkpoint({originalTurnPrompt:goal,latestUserPrompt:goal+'\nAlso verify the updated bound.'});
+  next.step=2;next.connectionEpoch='next';
+  connection=service.controller(next);reply=await connection.handle(next);connection.close();
+  assert.equal(reply.type,'decision');assert.equal(reply.effort,'medium');
+  assert.equal(prepared,2);assert.equal(modelCalls,1);
+  await service.close();
+});
+
+test('missing capacity uses recovery cooldown rather than permanently disabling the turn',async()=>{
+  let now=0,attempts=0;
+  const service=new ContinuousService({clock:()=>now,waitMs:1000,evaluator:{async evaluate(request){
+    attempts++;request.prepare(attempts===1?{...capacity,modelContextWindow:null}:capacity);
+    return {text:JSON.stringify({action:'recommend',effort:'xhigh',reason:'Fixture.'})};
+  },async close(){}},record:()=>{}});
+  const p=checkpoint();let connection=service.controller(p);
+  const failed=await connection.handle(p);connection.close();
+  assert.equal(failed.reason,'capacity_unavailable');
+  assert.equal(service.status().targets[0].suspendedReason,null);
+  now=1001;p.step=2;p.connectionEpoch='retry';connection=service.controller(p);
+  const recovered=await connection.handle(p);connection.close();
+  assert.equal(recovered.type,'decision');assert.equal(recovered.effort,'xhigh');
+  assert.equal(attempts,2);await service.close();
 });
 
 test('effort schema and unsupported effort rejection remain unchanged',()=>{

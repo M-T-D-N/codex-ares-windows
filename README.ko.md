@@ -50,7 +50,7 @@
 
 ## 시작하기
 
-**Windows x64**, Node.js 22+/npm, Git, rustup, Visual Studio x64 C++ 빌드 도구와 호환되는 Codex Desktop 설치본이 필요합니다. 현재 native 소스는 **Codex 0.160.0**을 기준으로 합니다. 기존 로컬 Ares 실행본의 실제 Desktop 기동과 Luna 판단→메인 응답을 확인했습니다. [호환 범위](docs/compatibility.md)에서 검증 범위를 확인하세요.
+**Windows x64**, Node.js 22+/npm, Git, rustup, Visual Studio x64 C++ 빌드 도구와 호환되는 Codex Desktop 설치본이 필요합니다. 현재 native 소스는 **Codex 0.162.0-alpha.17.2**을 기준으로 합니다. 기존 로컬 Ares 실행본의 실제 Desktop 기동과 Luna 판단→메인 응답을 확인했습니다. [호환 범위](docs/compatibility.md)에서 검증 범위를 확인하세요.
 
 ```powershell
 git clone https://github.com/M-T-D-N/codex-ares-windows.git

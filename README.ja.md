@@ -49,7 +49,7 @@
 
 ## 使い始める
 
-必要なものは、**Windows x64**、Node.js 22+とnpm、Git、rustup、Visual Studioのx64 C++ビルドツール、対応するCodex Desktopです。現在のnativeソースは**Codex 0.160.0**が基準です。既存のローカルAres実行環境でDesktop起動とLuna判断→メイン応答を確認しました。[互換性](docs/compatibility.md)で検証範囲を確認してください。
+必要なものは、**Windows x64**、Node.js 22+とnpm、Git、rustup、Visual Studioのx64 C++ビルドツール、対応するCodex Desktopです。現在のnativeソースは**Codex 0.162.0-alpha.17.2**が基準です。既存のローカルAres実行環境でDesktop起動とLuna判断→メイン応答を確認しました。[互換性](docs/compatibility.md)で検証範囲を確認してください。
 
 ```powershell
 git clone https://github.com/M-T-D-N/codex-ares-windows.git

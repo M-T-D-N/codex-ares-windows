@@ -49,7 +49,7 @@
 
 ## 开始使用
 
-需要 **Windows x64**、Node.js 22+ 与 npm、Git、rustup、Visual Studio x64 C++ 构建工具，以及兼容的 Codex Desktop。当前 native 源码以 **Codex 0.160.0** 为基准。已有本地 Ares 运行环境通过了实际 Desktop 启动与 Luna 判断→主模型响应检查，请查看[兼容范围](docs/compatibility.md)。
+需要 **Windows x64**、Node.js 22+ 与 npm、Git、rustup、Visual Studio x64 C++ 构建工具，以及兼容的 Codex Desktop。当前 native 源码以 **Codex 0.162.0-alpha.17.2** 为基准。已有本地 Ares 运行环境通过了实际 Desktop 启动与 Luna 判断→主模型响应检查，请查看[兼容范围](docs/compatibility.md)。
 
 ```powershell
 git clone https://github.com/M-T-D-N/codex-ares-windows.git

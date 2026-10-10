@@ -1,5 +1,5 @@
 // Explicit candidate launch; only this process tree receives the native override.
-import {readFile, writeFile, mkdir, appendFile} from 'node:fs/promises';
+import {readFile, writeFile, mkdir, appendFile, realpath, lstat} from 'node:fs/promises';
 import {createReadStream, openSync, closeSync} from 'node:fs';
 import {createHash, randomBytes, randomUUID} from 'node:crypto';
 import {spawn, execFile} from 'node:child_process';
@@ -15,6 +15,19 @@ async function digest(path) {
   const hash = createHash('sha256');
   for await (const chunk of createReadStream(path)) hash.update(chunk);
   return hash.digest('hex');
+}
+export async function configureRuntimeTemp(ownerRoot) {
+  const owner = resolve(ownerRoot);
+  if ((await realpath(owner)).toLowerCase() !== owner.toLowerCase())
+    throw new Error('Ares temporary files require an existing owner directory.');
+  const tempDir = join(owner, 'temp');
+  try {await mkdir(tempDir);}
+  catch (error) {if (error.code !== 'EEXIST') throw error;}
+  if (!(await lstat(tempDir)).isDirectory() ||
+      (await realpath(tempDir)).toLowerCase() !== tempDir.toLowerCase())
+    throw new Error('Ares temporary directory must not be redirected or a file.');
+  process.env = buildEnvironment(process.env, {TEMP: tempDir, TMP: tempDir, TMPDIR: tempDir});
+  return tempDir;
 }
 export function spawnDesktop(binary, args, env) {
   // Windows libuv must not place the user's Desktop in the supervisor's
@@ -68,6 +81,15 @@ export async function finishSupervisor({services, app, reason, code, record,
     JSON.stringify(failures) + '\n');
   return {...result, code: result.code || (failures.length ? 1 : 0)};
 }
+export function validateCompanionRelease(manifest) {
+  const required = ['codex-code-mode-host.exe', 'codex-command-runner.exe', 'codex-windows-sandbox-setup.exe'];
+  if (/^0\.162\./.test(manifest.native?.sourceRelease ?? ''))
+    required.push('codex-windows-sandbox-service.exe');
+  if (!Array.isArray(manifest.companions) || manifest.companions.length !== required.length ||
+      required.some(name => manifest.companions.filter(a => basename(a.path).toLowerCase() === name).length !== 1) ||
+      manifest.companions.some(a => a.sourceRelease !== manifest.native.sourceRelease || dirname(a.path) !== dirname(manifest.native.path)))
+    throw new Error('Candidate companion release combination is invalid.');
+}
 export async function launch({trialStatus = null} = {}) {
   const {values} = parseArgs({options: {
     manifest: {type: 'string'}, 'desktop-binding': {type: 'string'},
@@ -84,11 +106,7 @@ export async function launch({trialStatus = null} = {}) {
   const runDir = resolve(values['run-dir']);
   if (!runDir.toLowerCase().startsWith((taskRoot + '\\').toLowerCase()))
     throw new Error('Run directory must stay in the candidate owner folder.');
-  const required = ['codex-code-mode-host.exe', 'codex-command-runner.exe', 'codex-windows-sandbox-setup.exe'];
-  if (!Array.isArray(manifest.companions) || manifest.companions.length !== required.length ||
-      required.some(name => manifest.companions.filter(a => basename(a.path).toLowerCase() === name).length !== 1) ||
-      manifest.companions.some(a => a.sourceRelease !== manifest.native.sourceRelease || dirname(a.path) !== dirname(manifest.native.path)))
-    throw new Error('Candidate companion release combination is invalid.');
+  validateCompanionRelease(manifest);
   if (!manifest.sidecar?.some(a => resolve(a.path) === fileURLToPath(import.meta.url)))
     throw new Error('Manifest does not identify this launcher.');
   const artifacts = [manifest.native, ...manifest.companions, ...manifest.sidecar,
@@ -100,6 +118,7 @@ export async function launch({trialStatus = null} = {}) {
   // The service binding is part of the hash-checked runtime.
   if (!manifest.statusServicePath || !manifest.sidecar.some(a => resolve(a.path) === resolve(manifest.statusServicePath)))
     throw new Error('Status service binding is not in the verified manifest.');
+  await configureRuntimeTemp(taskRoot);
   const {startServices} = await import(pathToFileURL(resolve(manifest.statusServicePath)).href);
   if (binding.packageName !== 'OpenAI.Codex' || !binding.registeredForCurrentUser ||
       await digest(binding.desktop.path) !== binding.desktop.sha256)

@@ -1,4 +1,4 @@
-param([switch]$PreflightOnly,[int]$WaitForDesktopPid=0,[switch]$PackagedLaunch)
+param([switch]$PreflightOnly,[int]$WaitForDesktopPid=0,[switch]$PackagedLaunch,[string]$ContextTraceThreadId=$env:CODEX_CONTEXT_TRACE_THREAD_ID)
 $ErrorActionPreference='Stop'
 # Use this host's bundled utilities even with an inherited PowerShell 7 module path.
 Import-Module (Join-Path $PSHOME 'Modules\Microsoft.PowerShell.Utility\Microsoft.PowerShell.Utility.psd1') -ErrorAction Stop
@@ -6,6 +6,12 @@ $repoRoot=Split-Path -Parent $PSScriptRoot
 $principal=[Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
 if($principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
   throw 'Use normal, non-administrator PowerShell. No settings were changed.'
+}
+# Only one explicit UUID may cross the package activation boundary.
+if($ContextTraceThreadId) {
+  if($ContextTraceThreadId -cnotmatch '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$') {
+    throw 'ContextTraceThreadId must be one exact Codex thread UUID; lists and wildcards are not accepted.'
+  }
 }
 $packages=@(Get-AppxPackage -Name OpenAI.Codex)
 if($packages.Count -ne 1){throw 'Exactly one Codex package registered for the current user is required.'}
@@ -18,9 +24,14 @@ if($package.Version.ToString() -ne $validatedPackageVersion){throw 'This Desktop
 if(-not $PreflightOnly -and -not $PackagedLaunch) {
   $packagedArgs='-NoProfile -NonInteractive -WindowStyle Hidden -File "{0}" -PackagedLaunch' -f $PSCommandPath
   if($WaitForDesktopPid){$packagedArgs+=' -WaitForDesktopPid '+$WaitForDesktopPid}
+  if($ContextTraceThreadId){$packagedArgs+=' -ContextTraceThreadId '+$ContextTraceThreadId}
   Invoke-CommandInDesktopPackage -PackageFamilyName $package.PackageFamilyName -AppId App `
     -Command (Join-Path ([Environment]::SystemDirectory) 'WindowsPowerShell\v1.0\powershell.exe') -Args $packagedArgs -PreventBreakaway
   return
+}
+# Set the option only in the new packaged launcher process, never in its caller.
+if(-not $PreflightOnly -and $PackagedLaunch -and $ContextTraceThreadId) {
+  $env:CODEX_CONTEXT_TRACE_THREAD_ID=$ContextTraceThreadId
 }
 $desktopPath=Join-Path $package.InstallLocation 'app\ChatGPT.exe'
 if(-not(Test-Path -LiteralPath $desktopPath -PathType Leaf)){throw 'The registered Desktop executable is missing.'}
@@ -66,6 +77,7 @@ if($existing.Count -gt 0) {
     $_.ParentProcessId -in $existing.ProcessId -and $_.ExecutablePath -ceq $candidateManifest.native.path -and $_.CommandLine -match ' app-server '
   })
   if($backend.Count -gt 0) {
+    if($ContextTraceThreadId){throw 'Context diagnostics are selected at startup. Quit Codex normally first. The running app was not changed.'}
     Start-Process -FilePath $desktopPath
     Write-Output 'This candidate is already running. Opened its existing window.'
     return

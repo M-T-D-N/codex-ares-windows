@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
 import {PassThrough,Writable} from 'node:stream';
 import {LunaAppServer,expectedGlobalInstructionSource} from '../../src/luna/app-server.mjs';
-import {INSTRUCTIONS} from '../../src/luna/policy.mjs';
+import {INSTRUCTIONS,evaluationInput} from '../../src/luna/policy.mjs';
 
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -11,6 +11,10 @@ const judgment=effort=>JSON.stringify({action:'recommend',effort,reason:'Enough 
 const until=async check=>{for(let i=0;i<100&&!check();i++)await tick();assert.ok(check());};
 const usage=n=>({totalTokens:n+4,inputTokens:n,cachedInputTokens:0,
   cacheWriteInputTokens:0,outputTokens:4,reasoningOutputTokens:1});
+const evaluationRequest=goal=>({prepare:capacity=>evaluationInput({model:'gpt-6.1-sol',step:1,
+  currentEffort:'high',supportedEfforts:['medium','high','xhigh','max'],context:{
+    originalTurnPrompt:goal,latestUserPrompt:goal,priorUserPrompts:[],publicNotes:[],recentToolCalls:[],
+  }},{capacity})});
 function fakeServer(handle,{respondInitialize=true,exitOnEnd=true,loadedList=()=>({
   data:[],nextCursor:null,
 })}={}){
@@ -66,6 +70,55 @@ function finish(child,request,effort='medium',early=false){
   child.reply(request,{turn:{id:turnId,status:'inProgress',items:[]}});
   if(!early)complete();
 }
+
+test('resolved evaluator capacity prepares a whole long request before the only model start',async()=>{
+  const goal='constraint '.repeat(40000);let prepared=false;
+  const {app,children}=adapter((child,request)=>{
+    if(request.method==='thread/start'){
+      assert.equal(prepared,false);
+      child.reply(request,{thread:{id:'large-current'},model:'gpt-6-luna',
+        modelProvider:'specific-provider',modelContextWindow:258400});
+    }else if(request.method==='turn/start'){
+      assert.equal(prepared,true);
+      assert.equal(JSON.parse(request.params.input[0].text).state.originalTask,goal);
+      finish(child,request);
+    }else if(request.method==='thread/unsubscribe')child.reply(request,{status:'unsubscribed'});
+  });
+  const factory=evaluationRequest(goal),result=await app.evaluate({prepare:capacity=>{
+    assert.equal(capacity.modelProvider,'specific-provider');prepared=true;return factory.prepare(capacity);
+  }});
+  assert.equal(result.text,judgment('medium'));
+  assert.equal(children[0].frames.filter(f=>f.method==='turn/start').length,1);
+  await app.close();
+});
+
+test('missing capacity cleans the ephemeral thread with zero model starts and later recovers',async()=>{
+  let n=0;
+  const {app,children}=adapter((child,request)=>{
+    if(request.method==='thread/start')child.reply(request,{thread:{id:'capacity-'+(++n)},
+      model:'gpt-6-luna',modelProvider:'openai',modelContextWindow:n===1?null:258400});
+    else if(request.method==='turn/start')finish(child,request);
+    else if(request.method==='thread/unsubscribe')child.reply(request,{status:'unsubscribed'});
+  });
+  await assert.rejects(app.evaluate(evaluationRequest('Keep the user request.')),{category:'capacity_unavailable'});
+  assert.equal(children[0].frames.filter(f=>f.method==='turn/start').length,0);
+  assert.equal(children[0].frames.filter(f=>f.method==='thread/unsubscribe').length,1);
+  assert.equal((await app.evaluate(evaluationRequest('Keep the user request.'))).text,judgment('medium'));
+  assert.equal(children[0].frames.filter(f=>f.method==='turn/start').length,1);
+  await app.close();
+});
+
+test('actual small evaluator capacity rejects a large request and still closes its thread',async()=>{
+  const {app,children}=adapter((child,request)=>{
+    if(request.method==='thread/start')child.reply(request,{thread:{id:'too-small'},
+      model:'gpt-6-luna',modelProvider:'openai',modelContextWindow:32000});
+    else if(request.method==='thread/unsubscribe')child.reply(request,{status:'unsubscribed'});
+  });
+  await assert.rejects(app.evaluate(evaluationRequest('constraint '.repeat(40000))),{category:'input_oversize'});
+  assert.equal(children[0].frames.some(f=>f.method==='turn/start'),false);
+  assert.equal(children[0].frames.filter(f=>f.method==='thread/unsubscribe').length,1);
+  await app.close();
+});
 
 test('ended stdin rejects RPC without claiming process exit',async()=>{
   const {app,children,events}=adapter(()=>{}, {exitOnEnd:false,retireMs:5});

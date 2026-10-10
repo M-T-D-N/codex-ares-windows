@@ -65,7 +65,7 @@ try {
   if($code -eq 0 -and $IncludeCompanions){
     $record.phase='companions'
     $record | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $recordPath -Encoding utf8
-    $companionArgs=@('build','--locked','-p','codex-code-mode-host','--bin','codex-code-mode-host','-p','codex-windows-sandbox','--bin','codex-command-runner','--bin','codex-windows-sandbox-setup','-j','2')
+    $companionArgs=@('build','--locked','-p','codex-code-mode-host','--bin','codex-code-mode-host','-p','codex-windows-sandbox','--bin','codex-command-runner','--bin','codex-windows-sandbox-setup','-p','codex-windows-sandbox-service','--bin','codex-windows-sandbox-service','-j','2')
     if($Offline){$companionArgs+='--offline'}
     & $cargo @companionArgs
     $code=$LASTEXITCODE

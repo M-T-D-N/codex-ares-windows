@@ -290,9 +290,9 @@ export class LunaAppServer{
   }
   evaluate(snapshot,{signal,trace}={}){
     if(this.closed)return Promise.reject(problem('evaluator_closed','Evaluator is closed'));
-    if(typeof snapshot?.input!=='string'||!snapshot.input)
+    if((typeof snapshot?.input!=='string'||!snapshot.input)&&typeof snapshot?.prepare!=='function')
       return Promise.reject(problem('invalid_input','Evaluator snapshot.input required'));
-    if(Buffer.byteLength(snapshot.input)>MAX_FRAME)
+    if(typeof snapshot.input==='string'&&Buffer.byteLength(snapshot.input)>MAX_FRAME)
       return Promise.reject(Object.assign(problem('input_oversize','Evaluator input exceeds frame limit'),
         {permanent:true}));
     if(signal?.aborted)return Promise.reject(signal.reason??problem('evaluator_cancelled','Cancelled'));
@@ -328,7 +328,10 @@ export class LunaAppServer{
       if(flight.abortError)throw flight.abortError;
       const started=await this.rpc('thread/start',{
         model:'gpt-6-luna',cwd:this.cwd,ephemeral:true,sandbox:'read-only',
-        approvalPolicy:'never',baseInstructions:INSTRUCTIONS,developerInstructions:INSTRUCTIONS,config:{project_doc_max_bytes:0,
+        // This independent judge does not need the generic coding-agent base.
+        // The override is ephemeral; global user instructions and Main are untouched.
+        approvalPolicy:'never',baseInstructions:INSTRUCTIONS,developerInstructions:INSTRUCTIONS,
+        config:{project_doc_max_bytes:0,
           skills:{include_instructions:false},
           memories:{use_memories:false,generate_memories:false,dedicated_tools:false}},
       },state);
@@ -338,6 +341,7 @@ export class LunaAppServer{
       flight.selectedModel=typeof started.model==='string'?started.model:'UNKNOWN';
       this.note({type:'evaluator_thread_started',epoch:flight.epoch,threadId,trace:flight.trace??null,
         selectedModel:flight.selectedModel,responseModel:'UNKNOWN',
+        modelProvider:started.modelProvider??'UNKNOWN',modelContextWindow:started.modelContextWindow??null,
         instructionSourceCount:Array.isArray(started.instructionSources)
           ?started.instructionSources.length:'UNKNOWN',
         instructionSourceHashes:Array.isArray(started.instructionSources)
@@ -349,6 +353,12 @@ export class LunaAppServer{
       if(Array.isArray(started.instructionSources)&&started.instructionSources.some(source=>!expectedGlobalInstructionSource(source,this.env)))
         throw Object.assign(problem('unexpected_instructions',
           'Evaluator loaded a source outside the expected global instructions'),{permanent:true});
+      if(flight.abortError)throw flight.abortError;
+      if(typeof flight.snapshot.prepare==='function')
+        flight.snapshot=flight.snapshot.prepare({model:flight.selectedModel,
+          modelProvider:started.modelProvider,modelContextWindow:started.modelContextWindow});
+      if(typeof flight.snapshot.input!=='string'||!flight.snapshot.input||Buffer.byteLength(flight.snapshot.input)>MAX_FRAME)
+        throw Object.assign(problem('input_oversize','Evaluator input exceeds frame limit'),{permanent:true});
       if(flight.abortError)throw flight.abortError;
       flight.turnStartSent=true;
       const response=await this.rpc('turn/start',{

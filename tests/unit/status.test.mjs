@@ -14,7 +14,9 @@ function checkpoint(model='sol',id='S'){
     context:{schema:'CODEX_STEP_CONTROLLER_CONTEXT_V3',originalTurnPrompt:'Inspect the supplied source file.',
       latestUserPrompt:'Preserve its public contract.',priorUserPrompts:[],publicNotes:[],recentToolCalls:[],omittedOlderToolCalls:0}};
 }
-const evaluator=evaluate=>({evaluate,close:async()=>{}});
+const evaluator=evaluate=>({evaluate:(request,options)=>evaluate(request.prepare({
+  model:'gpt-6-luna',modelProvider:'openai',modelContextWindow:258400,
+}),options),close:async()=>{}});
 const target=s=>s.status().targets[0];
 test('Luna recommendation and capture do not imply dispatch or response',async()=>{
   const events=[],s=new ContinuousService({record:e=>events.push(e),evaluator:evaluator(async()=>result())});

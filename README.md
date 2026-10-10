@@ -50,7 +50,7 @@ Ordinary Astra, Sol, Sol 6.1 and Luna remain available. Automatic control starts
 
 ## Get started
 
-You need **Windows x64**, Node.js 22+ with npm, Git, rustup, Visual Studio x64 C++ build tools and a compatible Codex Desktop installation. The native source targets **Codex 0.160.0**. The existing local Ares runtime passed an actual Desktop launch and Luna→Main response check; see [compatibility](docs/compatibility.md) for the tested scope.
+You need **Windows x64**, Node.js 22+ with npm, Git, rustup, Visual Studio x64 C++ build tools and a compatible Codex Desktop installation. The native source targets **Codex 0.162.0-alpha.17.2**. The existing local Ares runtime passed an actual Desktop launch and Luna→Main response check; see [compatibility](docs/compatibility.md) for the tested scope.
 
 ```powershell
 git clone https://github.com/M-T-D-N/codex-ares-windows.git

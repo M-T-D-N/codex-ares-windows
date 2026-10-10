@@ -1,25 +1,16 @@
 {
   "schema": 1,
   "repository": "https://github.com/openai/codex",
-  "commit": "79b1b666f2e8551f8abbbca34957227f67f3f553",
+  "commit": "740e5af33c71225640e0c1c1555c514c2c93ab74",
   "archive": {
-    "url": "https://codeload.github.com/openai/codex/tar.gz/79b1b666f2e8551f8abbbca34957227f67f3f553",
-    "sha256": "3158b325d0efab5fca38639f9039f5f0e52ac2a5e646eebbbe289602db7a2ced"
+    "url": "https://api.github.com/repos/openai/codex/tarball/740e5af33c71225640e0c1c1555c514c2c93ab74",
+    "sha256": "25747823ea4ec852a146cbbe75d805b8df19190ca5b3fb21052d8e1cb75f2f83"
   },
   "ares": {
     "repository": "https://github.com/miuuyy/Astra-Ares",
     "commit": "b2011446d88202329dcdc5163500ca818aba9dbb",
     "upstreamCodexPinIsDifferent": true
   },
-  "patch": {
-    "file": "native.patch",
-    "sha256": "d03d69aa59d137fc4a900362b248208f3958e93bca10ebd5949f31d347ddc820",
-    "applyCount": 1,
-    "modifiedFiles": 131,
-    "newFiles": 16
-  },
-  "baseTree": "c09968bc06fc543c9d8bd9ffbaaa72829b31f5d9",
-  "restoredTree": "4317732d431ef7c5a25c1a21b17c478b5dbf850f",
   "build": {
     "rustcVersion": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
     "cargoVersion": "cargo 1.98.0 (797e8a9bc 2026-08-05)",
@@ -28,7 +19,7 @@
     "profile": "dev",
     "scryptOptLevel": 3,
     "jobs": 2,
-    "cargoLockSha256": "f0ea6b033508c394980bfc011907947beffcb7f7b1a56addbff90196617c14a4",
+    "cargoLockSha256": "49575eeb44a747925fd1acef51bff88316f728b77d7f63d989835c8623c344cb",
     "nodeMinimum": "22",
     "nodeDependency": "gpt-tokenizer@4.0.0",
     "nodeLockFile": "package-lock.json",
@@ -44,7 +35,7 @@
       "fromSourceBuild": "NOT_REQUIRED_FOR_V8"
     }
   },
-  "nativeVersion": "codex-cli 0.160.0",
+  "nativeVersion": "codex-cli 0.162.0-alpha.17.2",
   "bridgeProtocol": 4,
   "policy": {
     "lease": 1,
@@ -56,23 +47,6 @@
       "max"
     ],
     "luna": "gpt-6-luna/high"
-  },
-  "desktop": {
-    "observedVersion": "26.930.3930.0",
-    "freshPublicBundleGui": "NOT_RUN",
-    "redistribute": false,
-    "observedPackageVersion": "26.930.3930.0",
-    "observedInstalledBackend": "not re-measured in current local runtime acceptance",
-    "verifiedLocalRuntime": {
-      "nativeSourceCommit": "f50cc4e77da485d06e28864f1e1b66bb0cc047f2",
-      "mainModel": "gpt-6.1-sol",
-      "evaluationModel": "gpt-6-luna",
-      "evaluationEffort": "high",
-      "appliedEffort": "medium",
-      "turnStatus": "completed",
-      "scope": "existing local runtime; public layout adapters checked separately"
-    },
-    "observedAppVersion": "UNKNOWN"
   },
   "companions": [
     {
@@ -92,6 +66,12 @@
       "package": "codex-windows-sandbox",
       "source": "codex-rs/windows-sandbox-rs",
       "license": "Apache-2.0 + dependency notices"
+    },
+    {
+      "name": "codex-windows-sandbox-service.exe",
+      "package": "codex-windows-sandbox-service",
+      "source": "codex-rs/windows-sandbox-service",
+      "license": "Apache-2.0 + dependency notices"
     }
   ],
   "capabilities": [
@@ -102,12 +82,41 @@
     "ordinary Luna opted out",
     "Jev/Main retired; saved aliases resolve to plain original Main without evaluation"
   ],
-  "publicPackagingDifferences": [],
-  "historicalNativeSha256": "767cbcbf87e7bf3af659980f7e7b0879a29900b178c392056a06dcdb6e587a23",
-  "publicSourceOptOut": {
-    "path": "codex-rs/core/src/session/jev_main.rs",
-    "sha256": "547516d850dee3849f67db456268025ef9d4fd42e5e2faf6d76a8957b6842b0f",
-    "description": "Optional CODEX_ARES_EXCLUDED_THREAD; no private ID is distributed."
+  "publicPackagingDifferences": [
+    "Portable relative imports and project-owned TEMP; default log redaction; app-server evaluator only"
+  ],
+  "sourcePreparation": {
+    "sourceContentSha256": "8e578f11fa96a47d14a399ccf9175248ca0eb576d10e2823da1d486b756077ae",
+    "deltaFromAlpha17Preparation": [
+      "codex-rs/core/src/pilot_trace.rs",
+      "codex-rs/core/src/pilot_trace_tests.rs",
+      "codex-rs/core/src/session/world_state.rs"
+    ],
+    "gitModes": "VERIFIED by exact archive restoration and complete Git tree"
   },
-  "nativeSourceCommit": "f50cc4e77da485d06e28864f1e1b66bb0cc047f2"
+  "patch": {
+    "file": "native.patch",
+    "sha256": "9e0be821bfbc62c0e1403ff761a0a1e64514134fb9fda373fbc28f575b146860",
+    "changedFiles": 179,
+    "applyCount": 1,
+    "restoration": "Complete content and Git modes; checked by scripts/setup-native.mjs",
+    "command": "git -c core.autocrlf=false apply --binary native.patch",
+    "modifiedFiles": 160,
+    "newFiles": 19
+  },
+  "baseTree": "8d3f62d2b7cf4bbc92d226542c397fa007f74c49",
+  "restoredTree": "e4ebeb54ef1fb4efcda368c300fff0cf6cfab699",
+  "desktop": {
+    "observedVersion": "26.1007.2314.0",
+    "observedPackageVersion": "26.1007.2314.0",
+    "freshPublicBundleGui": "NOT_RUN",
+    "redistribute": false,
+    "verifiedLocalRuntime": {
+      "nativeVersion": "codex-cli 0.162.0-alpha.17.2",
+      "mainModel": "gpt-6.1-sol",
+      "evaluationModel": "gpt-6-luna",
+      "evaluationEffort": "high",
+      "scope": "same native source; portable packaging checked separately"
+    }
+  }
 }

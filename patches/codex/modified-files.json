@@ -3,32 +3,44 @@
   "files": {
     "codex-rs/Cargo.lock": {
       "mode": "100644",
-      "sha256": "f0ea6b033508c394980bfc011907947beffcb7f7b1a56addbff90196617c14a4",
-      "size": 406870,
+      "sha256": "49575eeb44a747925fd1acef51bff88316f728b77d7f63d989835c8623c344cb",
+      "size": 410082,
       "state": "present"
     },
     "codex-rs/Cargo.toml": {
       "mode": "100644",
-      "sha256": "7d369eab91a75b8b2f9dff8f51b9e597ee3683e90197b94ed23dfa209c94f504",
-      "size": 20738,
+      "sha256": "7e3d66b0034b9ffc7e232d6908728a968299bc25f94d88499e01dd0038b364d7",
+      "size": 21189,
+      "state": "present"
+    },
+    "codex-rs/analytics/src/client_tests.rs": {
+      "mode": "100644",
+      "sha256": "9879593d49507a13fe00c5756f157bbad8b53f94580a21748b5b8868a9cf808f",
+      "size": 44403,
+      "state": "present"
+    },
+    "codex-rs/analytics/src/tests/support.rs": {
+      "mode": "100644",
+      "sha256": "99b111b2c69d14f8aca00286a09adea3756d104c884bdedf682082eb991446fb",
+      "size": 23112,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/json/ServerNotification.json": {
       "mode": "100644",
-      "sha256": "6793cd45629580903c3afdbd7029540595361fc7e4d5df81eb46306db0c6e22a",
-      "size": 208048,
+      "sha256": "585089254fe0ef1be7c518f2f3d923b36299dd452b4f426fce96974eed944225",
+      "size": 210995,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.schemas.json": {
       "mode": "100644",
-      "sha256": "e0b009557cd5a629856e7d3757111dc88f850ed7ce0afb7518d895043dc69223",
-      "size": 714379,
+      "sha256": "855a9b429e1f657e73a69f7b8ca69b3a7545e8c445ed8f464a9c99f40bc772fd",
+      "size": 725359,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.v2.schemas.json": {
       "mode": "100644",
-      "sha256": "75445e2364340c3d5903498f1ddc07f28bcb9fc5048ef2afcef7d7126a7d3ce7",
-      "size": 613134,
+      "sha256": "f79422c49fbec33f03ecc7a9a61a64e3c0cc5dfae2327c67d69bea06c41b4780",
+      "size": 623435,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/json/v2/ReasoningEffortUpdatedNotification.json": {
@@ -37,28 +49,34 @@
       "size": 782,
       "state": "present"
     },
+    "codex-rs/app-server-protocol/schema/json/v2/ThreadStartResponse.json": {
+      "mode": "100644",
+      "sha256": "6531ec52855791714f37088d7084ace01ecf9e49d740324c36aba7d38421e467",
+      "size": 79238,
+      "state": "present"
+    },
     "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-experimental.json.zst": {
       "mode": "100644",
-      "sha256": "59cf15db4200b48cae63db7589c1edfd61043345e2a337bce5f1d78e1bab2a01",
-      "size": 160384,
+      "sha256": "d13d7e365efce17ddc06abe215ef153ef3304723930f049127089660f933a531",
+      "size": 163336,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-stable.json.zst": {
       "mode": "100644",
-      "sha256": "171636d37683a227ad005974e08fcd228250e6aa4a7d6f4cb129cb434543f2a2",
-      "size": 156732,
+      "sha256": "8693f3dc4b292e6e99075d1d1997a686efda3ec802a1dba4b73a249cf885e408",
+      "size": 158640,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/typescript/ServerNotification.ts": {
       "mode": "100644",
-      "sha256": "141596acc618d229aa2e5fbe38c8c855f27410d75cbcbecbf0318a949ab19b18",
-      "size": 15519,
+      "sha256": "fb3c633c651c47c8f12fd2505f798a2233e4be637005e086728d2e6bb376267e",
+      "size": 15711,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/typescript/ServerNotificationEnvelope.ts": {
       "mode": "100644",
-      "sha256": "41cbf84322d5d1551859b8561de9d77fe2072f0cc74816d45b5293f09b923624",
-      "size": 15917,
+      "sha256": "8760575cd81ed45af335830dd7ed099e90592c4766836f057aa0a86114ba4113",
+      "size": 16109,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/typescript/v2/ReasoningEffortUpdatedNotification.ts": {
@@ -67,16 +85,22 @@
       "size": 341,
       "state": "present"
     },
+    "codex-rs/app-server-protocol/schema/typescript/v2/ThreadStartResponse.ts": {
+      "mode": "100644",
+      "sha256": "1f393f5ba00050cbd163d2a9581ba2345c60261329aecc0618e85ddfe71f4a73",
+      "size": 1510,
+      "state": "present"
+    },
     "codex-rs/app-server-protocol/schema/typescript/v2/index.ts": {
       "mode": "100644",
-      "sha256": "a7739563e0460884606d0362b7f4fd99d4215b2402d398207b380585d2711fc2",
-      "size": 47237,
+      "sha256": "906254beec2b531f7bb7b7255c277db2c425bff8c53cf10418add3cc5304a40f",
+      "size": 47955,
       "state": "present"
     },
     "codex-rs/app-server-protocol/src/protocol/common.rs": {
       "mode": "100644",
-      "sha256": "ce707824b6101cbac7e85bd02eb2ad46e78b2ed010777e91e1d2ca09bb17f660",
-      "size": 173689,
+      "sha256": "cfd57b3184637198bb124430e9030822c310f30d70a38224baca3cd2ac50828c",
+      "size": 175825,
       "state": "present"
     },
     "codex-rs/app-server-protocol/src/protocol/v2/notification.rs": {
@@ -85,10 +109,16 @@
       "size": 2901,
       "state": "present"
     },
+    "codex-rs/app-server-protocol/src/protocol/v2/thread.rs": {
+      "mode": "100644",
+      "sha256": "837841478b7ffeb51d3f5b5dc096dfdd38a114535375fa459d68c5f8d78f8cbe",
+      "size": 79799,
+      "state": "present"
+    },
     "codex-rs/app-server/src/bespoke_event_handling.rs": {
       "mode": "100644",
-      "sha256": "ee6c73143e9b3845e05fddc9813b87d6d7f0675ee7f964539ec9b70cedde7657",
-      "size": 155896,
+      "sha256": "6753b64faeb0861d17414d1bc7093c798ab5059e00bcb2fa2c232b83cfea6e05",
+      "size": 156559,
       "state": "present"
     },
     "codex-rs/app-server/src/current_time.rs": {
@@ -111,8 +141,8 @@
     },
     "codex-rs/app-server/src/notification_media.rs": {
       "mode": "100644",
-      "sha256": "8148961b1d9222cb09a60be36839bc839f437da06d2634f26bea4880ee082947",
-      "size": 10535,
+      "sha256": "e930ce217219e813747bb21b17f0bc571896f5864f9880a743eda04e55a99da9",
+      "size": 10592,
       "state": "present"
     },
     "codex-rs/app-server/src/outgoing_message.rs": {
@@ -121,34 +151,46 @@
       "size": 59487,
       "state": "present"
     },
-    "codex-rs/chatgpt/src/lib.rs": {
+    "codex-rs/app-server/src/request_processors/thread_processor.rs": {
       "mode": "100644",
-      "sha256": "2c189062123edeb250f58a0ce17e79517189e88bebb349c9ebaba5c123a0f529",
-      "size": 110,
+      "sha256": "80612911bc673e2b89243b7fa90895edefedd5c679d4092ef05d02594dae28be",
+      "size": 256726,
+      "state": "present"
+    },
+    "codex-rs/app-server/tests/suite/v2/thread_start.rs": {
+      "mode": "100644",
+      "sha256": "355d4416a1384ae6abf070387297ac75f0ac104316dee60d4e92dfe8e214cdff",
+      "size": 69909,
       "state": "present"
     },
     "codex-rs/cli/src/main.rs": {
       "mode": "100644",
-      "sha256": "902a89da29fbf671bbaaf1932b03ca18d4ed83cbabb634fa70b796b567dea6f7",
-      "size": 179107,
+      "sha256": "0d4554e725323176ccf1f92fdf9f4317e7345e203666a7d70bdf2424093475e9",
+      "size": 180965,
+      "state": "present"
+    },
+    "codex-rs/code-mode/src/grpc_session/callbacks.rs": {
+      "mode": "100644",
+      "sha256": "4d9094a36cb7d0c1eafbea26c8fe529ecfc298bfef0707bd96929c81e7c6963f",
+      "size": 10496,
       "state": "present"
     },
     "codex-rs/codex-api/src/endpoint/responses_websocket.rs": {
       "mode": "100644",
-      "sha256": "806ccb5b72df33ac6eb5cbe3b6eb70b3b86b63b191c5923acb37cdc913593810",
-      "size": 48621,
+      "sha256": "fb46a62af436bd2877e2543af4a759b68eeab4e7ead9e5029cada2f789f1a9b3",
+      "size": 48279,
       "state": "present"
     },
     "codex-rs/core/src/client.rs": {
       "mode": "100644",
-      "sha256": "859feac02cc1b748ba6a17fdac3c51af24325efcb97abf7498bc907128fdd954",
-      "size": 122951,
+      "sha256": "d6a19a46323b7dedbf2eb57d7c1d4a71325ad74ca1e2002980e62d52a6122131",
+      "size": 123926,
       "state": "present"
     },
     "codex-rs/core/src/client_tests.rs": {
       "mode": "100644",
-      "sha256": "ad7f443e59c00d27ffca29b8bf0d8c8d04c80d5aca65c27538ae6083f9cc73f4",
-      "size": 77467,
+      "sha256": "d805ee88cb907cf2d85c96d742263a8422c57d247c1164e77b98548ce6077129",
+      "size": 80288,
       "state": "present"
     },
     "codex-rs/core/src/context/contextual_user_message.rs": {
@@ -165,14 +207,14 @@
     },
     "codex-rs/core/src/context/mod.rs": {
       "mode": "100644",
-      "sha256": "93d1a3493c9d79d3781f599d09252a0be89406a819c192c6be2db76907f9597b",
-      "size": 6831,
+      "sha256": "b013bdeea27190502989a4af3cd893fb2caab307b3a753e63c2dc77dbaa51aa9",
+      "size": 6896,
       "state": "present"
     },
     "codex-rs/core/src/context_manager/history_tests.rs": {
       "mode": "100644",
-      "sha256": "935e4aee5d007112abd63ff9f4cec147f9734b75909817a5b6c5c91f73945057",
-      "size": 118803,
+      "sha256": "6031397529253b057812fa257585db583f3435b811d0616a323d3d0d67a722e8",
+      "size": 121578,
       "state": "present"
     },
     "codex-rs/core/src/context_manager/normalize.rs": {
@@ -181,40 +223,52 @@
       "size": 16415,
       "state": "present"
     },
+    "codex-rs/core/src/hook_runtime.rs": {
+      "mode": "100644",
+      "sha256": "b4d28be663c4379ff710c5d77d55985429531c47b2d3bfe3411b59a9d026b3f9",
+      "size": 50441,
+      "state": "present"
+    },
     "codex-rs/core/src/lib.rs": {
       "mode": "100644",
-      "sha256": "d80f54be30a0f9ea911594d9b4047af0be09e652eb0beff5a9b0ccff3669e6a1",
-      "size": 8721,
+      "sha256": "73f20d193feb09070dba1c42a95230b61dbdf994d3a993270892466da125eea2",
+      "size": 8885,
       "state": "present"
     },
     "codex-rs/core/src/mcp.rs": {
       "mode": "100644",
-      "sha256": "9cdb6bd2037c025d95550a7bda71f8a0eb30e18f6476338c81082124aa3d404b",
-      "size": 18030,
+      "sha256": "fda0f58779ba37099288acbb86d5a2a6f651aa6714072d6cd5922488ef896503",
+      "size": 19458,
+      "state": "present"
+    },
+    "codex-rs/core/src/mcp_tool_call.rs": {
+      "mode": "100644",
+      "sha256": "df22312b18802f9e843536dec868e839500d31d9f7a995e75b32674054f77577",
+      "size": 91420,
       "state": "present"
     },
     "codex-rs/core/src/pilot_trace.rs": {
       "mode": "100644",
-      "sha256": "8902f85fe9f049ae0928046376f77d612170553cdf4e4110d1e23d65a9fa7287",
-      "size": 8570,
+      "sha256": "76833dea005759c46c60aff460aace2a3321ae3033b2a6d5859abc387efc9cde",
+      "size": 10055,
       "state": "present"
     },
     "codex-rs/core/src/pilot_trace_tests.rs": {
       "mode": "100644",
-      "sha256": "527b3363954c0e3da9e7fdb705661bd1491928873386bd01361e22d702c28762",
-      "size": 6640,
+      "sha256": "cdb8f67f08f7381357cf0bd68fc12f480cef429edbfc21b34e324d607d4b1ab7",
+      "size": 9105,
       "state": "present"
     },
     "codex-rs/core/src/session/decision_context.rs": {
       "mode": "100644",
-      "sha256": "3125e6c483bf523626df9037f2ca83420fca80126599e59ab2fae77eb2baf6cf",
-      "size": 6543,
+      "sha256": "7020599d9f8127acad0f3f7fd0e64ba2edfe9450f1e80a960988ba24e6a64525",
+      "size": 7122,
       "state": "present"
     },
     "codex-rs/core/src/session/input_queue.rs": {
       "mode": "100644",
-      "sha256": "8e913ff8ba27bc67c6d1e48ae70b590051f877fa7f80de0c4541bbc4b48be1ee",
-      "size": 27503,
+      "sha256": "9885e304d9172b872dc4f72bc30e19db74e6f762b5c0bd1d68510ea56ff33648",
+      "size": 29453,
       "state": "present"
     },
     "codex-rs/core/src/session/jev_main.rs": {
@@ -231,44 +285,50 @@
     },
     "codex-rs/core/src/session/mod.rs": {
       "mode": "100644",
-      "sha256": "ac7866dfa2668c5238e7b08cd0193648f23111503a2d2eeb951617b3e188dac3",
-      "size": 211865,
+      "sha256": "66fb6d8861c75712964a3bc7ffb2af330da663167060daeadc793efa7c55f458",
+      "size": 216513,
       "state": "present"
     },
     "codex-rs/core/src/session/session.rs": {
       "mode": "100644",
-      "sha256": "316684c1058769dbe69672e041b89f5eb10fbd4666d95a4987aaa5873644d1b3",
-      "size": 94641,
+      "sha256": "d46c2d575404c2c5e5eaa11985ecbdbab68e61bd065ff10b15b8961fa2e55383",
+      "size": 97382,
       "state": "present"
     },
     "codex-rs/core/src/session/step_activation.rs": {
       "mode": "100644",
-      "sha256": "d06257630762d43821be82a12a82f4da3a7f8f89baebaf81b53b6cb649692825",
-      "size": 25163,
+      "sha256": "b1b16502dc2f6c2009343f417d12fdfab3df610425767e8a5a8acbb2a1057c14",
+      "size": 25501,
       "state": "present"
     },
     "codex-rs/core/src/session/step_activation_tests.rs": {
       "mode": "100644",
-      "sha256": "ed172d2d32aa72ee606ab4054655a570662b08b2a442389c7269c90692fd12ef",
-      "size": 60445,
+      "sha256": "f22f23407fad564dfe75f13c8edf503d1914891e2af4eea48a42af6dba6a2170",
+      "size": 60435,
       "state": "present"
     },
     "codex-rs/core/src/session/step_controller.rs": {
       "mode": "100644",
-      "sha256": "350ce9b3a3bb34f33a1f68f2a113e4bf1a9ba32734a02204e0584b6a2baa3520",
-      "size": 23122,
+      "sha256": "fa30d59220605f6653dbe2d7bea73cc48520932934afa83db8d31407d4a6bd0e",
+      "size": 23217,
       "state": "present"
     },
     "codex-rs/core/src/session/step_controller_luna.rs": {
       "mode": "100644",
-      "sha256": "e08be73a7c86f52b9c4e50b4dbd15a3966ff3ab084987230f3a5531236991bdf",
-      "size": 34116,
+      "sha256": "fb1daffd0248e9f55f87fa9fee125f30be2487d4d050e9314751b674d740a089",
+      "size": 35806,
       "state": "present"
     },
     "codex-rs/core/src/session/step_controller_tests.rs": {
       "mode": "100644",
-      "sha256": "378aaecf9e9c39657a6d839c133ebea8f629e758e7ea80161b9e10a63d236516",
-      "size": 21164,
+      "sha256": "c479ba7a833a366e282bdb601b6fdc2966c60c518133ae7c3dd13b8afe8e21e4",
+      "size": 24950,
+      "state": "present"
+    },
+    "codex-rs/core/src/session/tests.rs": {
+      "mode": "100644",
+      "sha256": "772200dde34767062a33b24cf058d52601fac7c66f3b31ea81ec49cf84112699",
+      "size": 498470,
       "state": "present"
     },
     "codex-rs/core/src/session/time_reminder.rs": {
@@ -279,26 +339,38 @@
     },
     "codex-rs/core/src/session/turn.rs": {
       "mode": "100644",
-      "sha256": "262af2599a77670384074ca2f30e033d4a496f652c3379c9c3bd3006c481deed",
-      "size": 129459,
+      "sha256": "77d7f7f00f432ab2b0f63f843d32a8bd66fa5278979cf11bc8bb56f3c8bf88a8",
+      "size": 131070,
       "state": "present"
     },
     "codex-rs/core/src/session/turn_context.rs": {
       "mode": "100644",
-      "sha256": "313499daeb0380e712a776d9fe084f7f9b1d40a69f45f3a95881d316d41038d0",
-      "size": 61697,
+      "sha256": "1081cdef8d177d6709710d95ce7cef2c08152d0b2d9fd61825c2112977437e03",
+      "size": 69138,
       "state": "present"
     },
     "codex-rs/core/src/session/world_state.rs": {
       "mode": "100644",
-      "sha256": "30e2286f58a28ae6e51de3ebaa20576b86798f0992ade0f4bf0dca98e1d4aed8",
-      "size": 16299,
+      "sha256": "6f25e9c473624e00199a4ec3f7be87e010a4e6378ba74cb927c28f150e47dc6a",
+      "size": 18305,
       "state": "present"
     },
     "codex-rs/core/src/state/turn.rs": {
       "mode": "100644",
-      "sha256": "a08c5d9a4da5c81c9cfe8335165a40674dd18dc012df0a37b6d5a14a12515fbe",
-      "size": 9149,
+      "sha256": "3ef6a21d90ee4b57c1127380d70677655c8bb7421f9678e9105d8fd7209f9f8d",
+      "size": 8006,
+      "state": "present"
+    },
+    "codex-rs/core/src/tools/code_mode/delegate.rs": {
+      "mode": "100644",
+      "sha256": "82167db7f1245f26a2289bbc349f8979914d7e40ba8b366d09ed58d83a9cdf2c",
+      "size": 21135,
+      "state": "present"
+    },
+    "codex-rs/core/src/tools/code_mode/mod.rs": {
+      "mode": "100644",
+      "sha256": "953f16aa720c6aeb40d839da8d3ce4234b8ff919fd2db8db2e63886d9d1a695f",
+      "size": 20406,
       "state": "present"
     },
     "codex-rs/core/src/tools/handlers/ares_request_effort.rs": {
@@ -309,8 +381,8 @@
     },
     "codex-rs/core/src/tools/handlers/mod.rs": {
       "mode": "100644",
-      "sha256": "df11ab58376313072be4db604acb3384ea0e98cfece7c510399dc5a9b85a8735",
-      "size": 23788,
+      "sha256": "598af768107e5771eb17c1c29b089f8ea407a1ac0fcf657f2d93f71525dd50c0",
+      "size": 24264,
       "state": "present"
     },
     "codex-rs/core/src/tools/lifecycle.rs": {
@@ -319,16 +391,22 @@
       "size": 6233,
       "state": "present"
     },
+    "codex-rs/core/src/tools/registry.rs": {
+      "mode": "100644",
+      "sha256": "ccc0ef2f4053aeb5af4e53b66cc4e0b041b98b2f1c6331db3b530e093d2366d4",
+      "size": 36132,
+      "state": "present"
+    },
     "codex-rs/core/src/tools/spec_plan.rs": {
       "mode": "100644",
-      "sha256": "70dead9e7134aca8f53bbf1181b6808a8c7d8bd7403fefcb62c22847b7b103b1",
-      "size": 60970,
+      "sha256": "f1d3f213d167055f9016d96382050b580c3b547537234d0dede995bfb8d800a8",
+      "size": 64572,
       "state": "present"
     },
     "codex-rs/core/tests/suite/reasoning_effort_override.rs": {
       "mode": "100644",
-      "sha256": "fa3e1c2d8fb1f71d9b5b2ad531f56c696b4e715edafe3382f2ccbfd1c8fce2eb",
-      "size": 61956,
+      "sha256": "31840c4ce357da4628373ce6c64ced7c469cc74f2b5b4e9c5df3f7b0fa862307",
+      "size": 69355,
       "state": "present"
     },
     "codex-rs/exec/src/event_processor_with_human_output.rs": {
@@ -339,44 +417,62 @@
     },
     "codex-rs/exec/src/lib.rs": {
       "mode": "100644",
-      "sha256": "68f60055f299b66c944bab4a4a4939ffb56f9d9563bc3cacd0c97d8a99b781bd",
-      "size": 86335,
+      "sha256": "d69ab503727166e8fd57a8b2c5aa9fa6663c294c9114a97deebfeeb0fea8c6d3",
+      "size": 89509,
+      "state": "present"
+    },
+    "codex-rs/exec/src/lib_tests.rs": {
+      "mode": "100644",
+      "sha256": "af3750db10fa3890f434ebaddd09c74be86e10764c03edc4e0e391ca39ebfedb",
+      "size": 30262,
       "state": "present"
     },
     "codex-rs/models-manager/src/manager.rs": {
       "mode": "100644",
-      "sha256": "00db16d67bd408dd7d78c95ad230eb9fc481f6acf2ee79760fd418da43a14ad7",
-      "size": 34995,
+      "sha256": "960cfab821566208bb197927ca50df06152e33a7e2dfd6704ec08dcc44355618",
+      "size": 35338,
       "state": "present"
     },
     "codex-rs/models-manager/src/manager_tests.rs": {
       "mode": "100644",
-      "sha256": "2ccd7975776a0fbc367ba44bb4bb989c4b4d4d5c5cd20315a071002503e99b84",
-      "size": 64170,
+      "sha256": "5d9634ed62b115a28a20f266128180aa7076d04c47ff5b145c7933a4ba709784",
+      "size": 64122,
       "state": "present"
     },
     "codex-rs/protocol/src/openai_models.rs": {
       "mode": "100644",
-      "sha256": "a3746015b8c2ffdc34490c25f8b4468c428211958aa91a2ea06b14bc9d695042",
-      "size": 80367,
+      "sha256": "2ddb65c2fea0742dd050df6dea14b4f291366f7b0b5406f3189dfcdc2eb9c4d6",
+      "size": 80010,
       "state": "present"
     },
     "codex-rs/protocol/src/protocol.rs": {
       "mode": "100644",
-      "sha256": "1d2af14c69f72f4ed534230151419efba249f0da007f2cead028888256a3f2bf",
-      "size": 234697,
+      "sha256": "411401586472232191983fa405fd8f30bd4d5dfb29be707af312dfb62076b97a",
+      "size": 234443,
       "state": "present"
     },
     "codex-rs/rollout-trace/src/protocol_event.rs": {
       "mode": "100644",
-      "sha256": "6bb0b4f0ad1b62ce12a3d5251d22890ab9bc38e82b6a51808e2df3e98f66e854",
-      "size": 22660,
+      "sha256": "4e6489d1e7953f033e61630cd5992cc675afea1f4cf63275dfd9b251ca2ed179",
+      "size": 22447,
       "state": "present"
     },
     "codex-rs/rollout/src/policy.rs": {
       "mode": "100644",
-      "sha256": "ed4e95670e22f785890c2808849b09ff6d137ae081ca4a70ecde8ba5ba1516b2",
-      "size": 8469,
+      "sha256": "1b442b6d61a3b9be885888b49573ed990ee09f6db5db75780aada0ef7022fe74",
+      "size": 11555,
+      "state": "present"
+    },
+    "codex-rs/rollout/src/recorder.rs": {
+      "mode": "100644",
+      "sha256": "780e51ce754898b534728447dbcabb73d55aed94ef38a85ab326efd586c4381f",
+      "size": 80193,
+      "state": "present"
+    },
+    "codex-rs/rollout/src/recorder_tests.rs": {
+      "mode": "100644",
+      "sha256": "a9db646812d3b7401a1e6ef0db27a9a91025927c50968fb383a45afac3d2dc8d",
+      "size": 69176,
       "state": "present"
     },
     "codex-rs/state/goals_migrations/0001_thread_goals.sql": {
@@ -763,6 +859,12 @@
       "size": 474,
       "state": "present"
     },
+    "codex-rs/state/migrations/0059_thread_attachment_reverse_lookup.sql": {
+      "mode": "100644",
+      "sha256": "ae65cff0b494ca0a3d16e7226a36edf4e72ad2da56d441f214e3ff60e86567f8",
+      "size": 123,
+      "state": "present"
+    },
     "codex-rs/state/queue_migrations/0001_queued_items.sql": {
       "mode": "100644",
       "sha256": "4f1924728ef4efb58500a3decd2509b0f123f29a9fed0f732c8d90821d517b0c",
@@ -817,16 +919,70 @@
       "size": 122,
       "state": "present"
     },
+    "codex-rs/state/thread_history_migrations/0008_thread_turn_root.sql": {
+      "mode": "100644",
+      "sha256": "cf60f4367fe6d88bc37bba4fa29aead04cdcb3699fbdd7a5e8dc88f1dc4a3687",
+      "size": 56,
+      "state": "present"
+    },
+    "codex-rs/thread-store/src/live_thread.rs": {
+      "mode": "100644",
+      "sha256": "006e050919b0363ebfa19962f3451bcbe3a45a83f0c1802b1568c409ebcd86a5",
+      "size": 17460,
+      "state": "present"
+    },
+    "codex-rs/thread-store/src/local/live_writer.rs": {
+      "mode": "100644",
+      "sha256": "28242a404dbb2e38109b4df39d29643f82acdcf2151d9531758aa9553203e34d",
+      "size": 15435,
+      "state": "present"
+    },
+    "codex-rs/thread-store/src/local/mod.rs": {
+      "mode": "100644",
+      "sha256": "1df90c08d76961033f0758782b7d46299c80668806df4bed7daa8fc62d3650d9",
+      "size": 82954,
+      "state": "present"
+    },
+    "codex-rs/thread-store/src/local/thread_history.rs": {
+      "mode": "100644",
+      "sha256": "361fc444d1b3442894a51b75086e236dcfaba4c2eb308a6f248e5200ad179f68",
+      "size": 20845,
+      "state": "present"
+    },
+    "codex-rs/thread-store/src/local/thread_history_materialization.rs": {
+      "mode": "100644",
+      "sha256": "77f2a63b91214a189875f47c5aa209021c3a3b3338d959adc140becc85d206ea",
+      "size": 16937,
+      "state": "present"
+    },
+    "codex-rs/thread-store/src/local/thread_history_materialization_tests.rs": {
+      "mode": "100644",
+      "sha256": "e779263cc3ea44e236bc20c61b8157a7945ef60b62615e2b939b535184431a45",
+      "size": 106608,
+      "state": "present"
+    },
+    "codex-rs/thread-store/src/local/timestamp_metadata_tests.rs": {
+      "mode": "100644",
+      "sha256": "351acd597a274af082bc9c4428c92e8c05b76173e218de6dcbf3807aa9c98f9c",
+      "size": 8920,
+      "state": "present"
+    },
+    "codex-rs/thread-store/src/local/update_thread_metadata.rs": {
+      "mode": "100644",
+      "sha256": "bc42c96dce3cabe8e64a921eb20cfd307b4532a76ea79cd6e9dfd8cce05e3f47",
+      "size": 97079,
+      "state": "present"
+    },
     "codex-rs/tui/src/app/app_server_event_targets.rs": {
       "mode": "100644",
-      "sha256": "0cf7fceb7bc90ddf5b6551feedd8bcf9a21dad71be9566a83c69ebf1e0d51a15",
-      "size": 17035,
+      "sha256": "8f1ba0a8de93b3053a3d1387a825b82442fab0413a045b91e1bf430b67498d0a",
+      "size": 17384,
       "state": "present"
     },
     "codex-rs/tui/src/app/event_dispatch.rs": {
       "mode": "100644",
-      "sha256": "903f89c2ecf83e7707cfbfc7ff87227e934562a15c0dafdcbc0472bb0cc82209",
-      "size": 166518,
+      "sha256": "cb80c99482677dd2defd5f4c19891416dac7a27197ce760a0bcd1d9eca5a5efb",
+      "size": 176594,
       "state": "present"
     },
     "codex-rs/tui/src/app/exit_summary.rs": {
@@ -843,20 +999,20 @@
     },
     "codex-rs/tui/src/chatwidget/model_popups.rs": {
       "mode": "100644",
-      "sha256": "9f9bcce9b09c229d7b5880186f953105533cdcd28ec6b98c89f42d9a0c2ff5c5",
-      "size": 31812,
+      "sha256": "65714383a6c770ccc236fa3a85efde563f9ff5c1c9ee081e11b02825dc6fa8b0",
+      "size": 31714,
       "state": "present"
     },
     "codex-rs/tui/src/chatwidget/protocol.rs": {
       "mode": "100644",
-      "sha256": "4e189f3821dc5ae3ce010fc79398ed539f7909dd65a48d6a76baf9b4cfd70532",
-      "size": 32193,
+      "sha256": "4a39dbbd2c8e37eca2b9447bd42c511ca78ffe71faf7a7b19621ae2c291b4299",
+      "size": 33079,
       "state": "present"
     },
     "codex-rs/tui/src/chatwidget/settings.rs": {
       "mode": "100644",
-      "sha256": "bf087440983ba63ed0309b64afc3c948994ef9ca55eae7303fcdae06a6b2e0d9",
-      "size": 28165,
+      "sha256": "781c96bc752a1fa83debed70813680946401e1521bc86a277a994edb83889718",
+      "size": 30670,
       "state": "present"
     },
     "codex-rs/tui/src/chatwidget/snapshots/codex_tui__chatwidget__tests__jev_model_selection.snap": {
@@ -867,20 +1023,56 @@
     },
     "codex-rs/tui/src/chatwidget/tests/app_server.rs": {
       "mode": "100644",
-      "sha256": "fa05d1c3ea47eb48b1075249ced66882a920cb8eff4d65f2db718f747d3939b1",
-      "size": 82838,
+      "sha256": "dd53bb4964e44fd9b82ca00bf6f34dc145e238204f6d36bd7f4fd18cdcf3e4ad",
+      "size": 84254,
       "state": "present"
     },
     "codex-rs/tui/src/chatwidget/tests/popups_and_settings.rs": {
       "mode": "100644",
-      "sha256": "4b5efdd295b0bc18fcca36378dfae31da7d04d56d14b54e1bb1cea8249acdb36",
-      "size": 165752,
+      "sha256": "14005a42598134786355f2bb4f206ccc526891d3d4ef013591b36c76714f9001",
+      "size": 165738,
       "state": "present"
     },
     "codex-rs/tui/src/model_catalog.rs": {
       "mode": "100644",
       "sha256": "490e62237e96220af2d732c4c7e375fe593c1839bcc68a55a9d0c4b98e418ee1",
       "size": 1490,
+      "state": "present"
+    },
+    "sdk/python/.ruff_cache/.gitignore": {
+      "mode": "100644",
+      "sha256": "9e3a60f1e6ec4ae60215c11d54b171392745ec25e9dded433d5bd921363af316",
+      "size": 35,
+      "state": "present"
+    },
+    "sdk/python/.ruff_cache/0.15.8/1621866212988288104": {
+      "mode": "100644",
+      "sha256": "42600e084cf4d536d291d8997b596c861419633342955d61134c4ec9e631eb99",
+      "size": 118,
+      "state": "present"
+    },
+    "sdk/python/.ruff_cache/CACHEDIR.TAG": {
+      "mode": "100644",
+      "sha256": "5953156d7e0c564a427251316eaf26f8870e6483ae2197f916b630e4f93e31ae",
+      "size": 43,
+      "state": "present"
+    },
+    "sdk/python/src/openai_codex/api.py": {
+      "mode": "100644",
+      "sha256": "5d9c84a400f5591e4fb2d7c22b883bfd3c3794f5db2d46eb736091b5c9074237",
+      "size": 34053,
+      "state": "present"
+    },
+    "sdk/python/src/openai_codex/generated/notification_registry.py": {
+      "mode": "100644",
+      "sha256": "786b676c4e7f0b76ed4cf86e43e54dd2220a0543d9f60c17e726f6448ea05fa6",
+      "size": 15313,
+      "state": "present"
+    },
+    "sdk/python/src/openai_codex/generated/v2_all.py": {
+      "mode": "100644",
+      "sha256": "087997f79daba8e44d7e341df315bdc7701b59c3efd4c741ae2809136e9466a5",
+      "size": 419428,
       "state": "present"
     }
   }

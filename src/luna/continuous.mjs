@@ -1,6 +1,6 @@
 import {performance} from 'node:perf_hooks';
 import {randomUUID,createHash} from 'node:crypto';
-import {evaluationInput,validateJudgment} from './policy.mjs';
+import {evaluationInput,validateJudgment,validateRequiredEvidence} from './policy.mjs';
 import {hash} from '../common/hash.mjs';
 const identity=p=>({protocol:4,threadId:p.threadId,turnId:p.turnId,step:p.step,connectionEpoch:p.connectionEpoch});
 const keyOf=p=>JSON.stringify([p.threadId,p.turnId,p.adviceBasis?.ownerId]);
@@ -20,6 +20,7 @@ export class ContinuousService{
   constructor({evaluator,record=()=>{},waitMs=30000,clock=()=>performance.now(),configRevision='1',retentionMs=600000,taskForThread=null}){
     if(!evaluator||!Number.isFinite(waitMs)||waitMs<=0)throw new Error('Evaluator and positive wait budget required');
     Object.assign(this,{evaluator,record,waitMs,clock,configRevision,retentionMs,taskForThread});this.targets=new Map();this.closed=false;
+    this.judge={model:'gpt-6-luna',effort:'high',decisionSource:'llm/luna',...evaluator.descriptor};
   }
   controller(p){
     validateContinuousCheckpoint(p);
@@ -51,7 +52,7 @@ export class ContinuousService{
         ||p.confirmation!=='native_step_context_captured'
         ||(pending.type==='decision'&&p.effort!==pending.effort))throw new Error('Capture identity mismatch');
       this.record({type:'decision_captured',...identity(p),effort:p.effort,
-        decisionSource:pending.type==='decision'?'llm/luna':'native_fallback',dispatchConfirmed:null,responseCompleted:null});
+        decisionSource:pending.type==='decision'?this.judge.decisionSource:'native_fallback',dispatchConfirmed:null,responseCompleted:null});
       t.pending=null;return {...identity(p),type:'recorded'};
     }
     validateContinuousCheckpoint(p);
@@ -93,11 +94,19 @@ export class ContinuousService{
               sha256:task.sha256,nativeInputRevision:task.nativeInputRevision}}};
         }
       }
-      const snapshot=evaluationInput(supplied);
-      if(this.clock()-begun>=this.waitMs)throw Object.assign(new Error('Preparation used soft wait budget'),{category:'soft_timeout'});
-      this.record({type:'evaluation_requested',...trace,decisionSource:'llm/luna',requestedModel:'gpt-6-luna',
-        requestedEffort:'high',evidence:snapshot.stats});
-      const flight=Promise.resolve().then(()=>this.evaluator.evaluate(snapshot,{signal:abort.signal,trace}));
+      // Missing task evidence must not allocate an evaluator thread each generation.
+      validateRequiredEvidence(supplied);
+      // Luna's own resolved thread supplies its budget; Main's catalog cannot.
+      let snapshot;
+      const prepare=capacity=>{
+        snapshot=evaluationInput(supplied,{capacity,evaluatorModel:this.judge.model,
+          capacitySource:this.judge.capacitySource,outputReserveTokens:this.judge.outputReserveTokens});
+        if(this.clock()-begun>=this.waitMs)throw Object.assign(new Error('Preparation used soft wait budget'),{category:'soft_timeout'});
+        this.record({type:'evaluation_requested',...trace,decisionSource:this.judge.decisionSource,requestedModel:this.judge.model,
+          requestedEffort:this.judge.effort,evidence:snapshot.stats});
+        return snapshot;
+      };
+      const flight=Promise.resolve().then(()=>this.evaluator.evaluate({prepare},{signal:abort.signal,trace}));
       t.flight=flight;
       // Even after returning degraded, retain this target's slot until exact evaluator cleanup settles.
       flight.finally(()=>{if(t.flight===flight)t.flight=null;}).catch(()=>{});
@@ -108,11 +117,12 @@ export class ContinuousService{
       const result=await Promise.race([flight,deadline]);
       parentSignal?.throwIfAborted();
       if(this.clock()-begun>this.waitMs)throw Object.assign(new Error('Late result discarded'),{category:'soft_timeout'});
+      if(!snapshot)throw Object.assign(new Error('Evaluator did not prepare resolved input'),{category:'evaluator_protocol'});
       const judgment=validateJudgment(result.text,snapshot.supported);
-      this.record({type:'evaluation_completed',...trace,judgment,requestedModel:'gpt-6-luna',requestedEffort:'high',
+      this.record({type:'evaluation_completed',...trace,judgment,requestedModel:this.judge.model,requestedEffort:this.judge.effort,
         responseModel:result.responseModel??'UNKNOWN',usage:result.usage??null,evaluatorThreadId:result.threadId,
         evaluatorTurnId:result.turnId,elapsedMs:this.clock()-begun,cost:'UNKNOWN'});
-      t.failures=0;t.cooldownUntil=0;t.permanent=null;t.lastOutcome='llm/luna';t.lastReason=null;t.lastRecommendedEffort=judgment.effort;
+      t.failures=0;t.cooldownUntil=0;t.permanent=null;t.lastOutcome=this.judge.decisionSource;t.lastReason=null;t.lastRecommendedEffort=judgment.effort;
       if(judgment.action==='abstain')return this.degraded(t,p,'evaluator_abstain');
       return {...identity(p),type:'decision',effort:judgment.effort,leaseSteps:1,evaluatorMs:Math.round(this.clock()-begun)};
     }catch(error){
@@ -125,12 +135,12 @@ export class ContinuousService{
         permanent:!!error.permanent,localTokens:error.localTokens??null});
     }finally{clearTimeout(timer);parentSignal?.removeEventListener('abort',propagate);}
   }
-  status(){for(const[k,t]of this.targets)if(!t.connected&&!t.flight&&this.clock()-t.touched>this.retentionMs)this.targets.delete(k);return {mode:'luna-continuous-1',decisionSource:'llm/luna',targets:[...this.targets.values()].map(t=>({
+  status(){for(const[k,t]of this.targets)if(!t.connected&&!t.flight&&this.clock()-t.touched>this.retentionMs)this.targets.delete(k);return {mode:'luna-continuous-1',decisionSource:this.judge.decisionSource,judgeModel:this.judge.model,judgeEffort:this.judge.effort,targets:[...this.targets.values()].map(t=>({
     key:t.key,lastGeneration:t.lastStep,connected:t.connected,evaluationPending:!!t.flight,
     cooldownRemainingMs:Math.max(0,t.cooldownUntil-this.clock()),suspendedReason:t.permanent?.reason??null,
     lastOutcome:t.lastOutcome??null,lastReason:t.lastReason??null,lastRecommendedEffort:t.lastRecommendedEffort??null,
     state:t.flight?'evaluation_pending':!t.connected?'connection_closed':t.lastReason==='manual_owner'?'manual_fixed':
-      this.clock()<t.cooldownUntil?'recovery_wait':t.lastOutcome==='llm/luna'?'automatic':'native_baseline'})),
+      this.clock()<t.cooldownUntil?'recovery_wait':t.lastOutcome===this.judge.decisionSource?'automatic':'native_baseline'})),
     productionCallLimit:null};}
   async close(){this.closed=true;await this.evaluator.close();}
 }
