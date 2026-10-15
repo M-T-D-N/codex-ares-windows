@@ -28,8 +28,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 4653,
-      "sha256": "4004d9ed6cd2a9a28fb7ccf26378d6b375baa75740f605f3eff5b0509ab2f37c"
+      "bytes": 4625,
+      "sha256": "f10ba1c34f9d49b05a54d5ccede4d825cfe48a9be3252f720fc29b1199a02a20"
     },
     {
       "path": "LICENSE",
@@ -38,23 +38,23 @@
     },
     {
       "path": "README.ja.md",
-      "bytes": 9079,
-      "sha256": "b3aee037581f1cf2005915e2c7762f61dd387ca93e8f6bacbc6c8150267096ce"
+      "bytes": 8963,
+      "sha256": "15d29de5f0452ee004a937f2121573e700b584e0c89bdb88bf08545e3ee2c4d0"
     },
     {
       "path": "README.ko.md",
-      "bytes": 8783,
-      "sha256": "8c2004bc50afd1c0348c85e5864481a44e0abbf435cf03935f69de9bf8645561"
+      "bytes": 8662,
+      "sha256": "f6a9d2a653672e3a54a50d362485e43b031df527d4e8f34d60c254ab4a4c9aab"
     },
     {
       "path": "README.md",
-      "bytes": 7932,
-      "sha256": "db8fdd148572e8e93c4fb9e6ee1be3195e8921e8df889b7d6a61e8549270ab79"
+      "bytes": 7811,
+      "sha256": "991f8e16caa319c1ee7f75ba9a00dd572e68fbde93385d3806ab3647545b7cb9"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 7549,
-      "sha256": "f5c02e171336e557980c0ca7c23b5ef59fdd1138155acbcd581b42469e45e918"
+      "bytes": 7433,
+      "sha256": "22ed8c28a8986c980bbdb030e6ce657f6b24a28496abc3a826613672f60b05c0"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -78,18 +78,18 @@
     },
     {
       "path": "docs/build.md",
-      "bytes": 8818,
-      "sha256": "8e7ad69aab8e4a98cf4421b9a7abb04d67def41468eaf0994aad684ab6adf620"
+      "bytes": 8753,
+      "sha256": "62f5afebf33e2e1b761d157c1f6e2d03c60dfc5d6c084b7f0394aecf86e91826"
     },
     {
       "path": "docs/changes.ko.md",
-      "bytes": 4537,
-      "sha256": "a8786f93e5c105ff8e0fab0c1cca56c229911ab3c2847b2d7a004b3c762147a7"
+      "bytes": 4513,
+      "sha256": "407a5924920a292e58ccbeb5fd95298afbabc68b3c08f45de350357459a4546e"
     },
     {
       "path": "docs/compatibility.md",
-      "bytes": 1167,
-      "sha256": "9f506c083ca8414f225615422b3227170ecc8612ab99852acef7562860e7a450"
+      "bytes": 1160,
+      "sha256": "7df61eafac60c0adf7cf751f012f0ab06063c874443188414d6c6571b9ffd4a1"
     },
     {
       "path": "docs/pilot-results.md",
@@ -108,8 +108,8 @@
     },
     {
       "path": "docs/validation.md",
-      "bytes": 6547,
-      "sha256": "ca749c64e317fd294dd358d9f20ff4d39acda774a2aee41664e1f4eef609fea9"
+      "bytes": 6489,
+      "sha256": "434dfb5fed7484475d5125f17eb8cd5c3e0433260740a52ab51e9815d5866ab7"
     },
     {
       "path": "licenses/Apache-2.0.txt",
@@ -143,8 +143,8 @@
     },
     {
       "path": "patches/codex/PATCH_MAP.md",
-      "bytes": 848,
-      "sha256": "47a4fa686f9ce1fa797edaf5192de5719d3d2f177482bb964fbec03f538a13b4"
+      "bytes": 841,
+      "sha256": "e99d59aeac124f84e5e37061da34c2b0fe4dd576c0edee2a9d6e3c561d2eac3c"
     },
     {
       "path": "patches/codex/base-files.json",
@@ -153,8 +153,8 @@
     },
     {
       "path": "patches/codex/modified-files.json",
-      "bytes": 41354,
-      "sha256": "d5eaaef028469eaba16dd8c80400f661e36441208f6f09c9748c64e3345f2c86"
+      "bytes": 40257,
+      "sha256": "1039fe867f149f14aa977337b7c87bc52b09b2e781e363c6c268fcaa7f68e9c1"
     },
     {
       "path": "patches/codex/native.patch",
@@ -163,8 +163,8 @@
     },
     {
       "path": "patches/codex/upstream.lock.json",
-      "bytes": 5033,
-      "sha256": "7315651d60f1a7169671a5a389a48e3500883141bd40af1f5b437e0e27b6c5ed"
+      "bytes": 4906,
+      "sha256": "081a3258438b2a09eee775dec0d58d4af54752fe02f7c7256f6377ecd8817222"
     },
     {
       "path": "scripts/build-native.ps1",
@@ -218,8 +218,8 @@
     },
     {
       "path": "src/common/bridge.mjs",
-      "bytes": 5352,
-      "sha256": "8bb55b0ca6898ac5a684c84422d44390c63d2e4e941f5073f35405e78aaeca37"
+      "bytes": 5249,
+      "sha256": "8b72a120369c60f10b0bb1593b16b59a8a90aa321a508a6bff44e7268bfa1a52"
     },
     {
       "path": "src/common/environment.mjs",
@@ -248,13 +248,13 @@
     },
     {
       "path": "src/luna/app-server.mjs",
-      "bytes": 27692,
-      "sha256": "e5abf99648b7ca8c27f333e355ed27eab66ab2d3ee98403caf9dbe2b61e1481d"
+      "bytes": 27155,
+      "sha256": "915dff768a46345e8280a1cb18e521e1f06b08c0a7a6afeeb73de8ab1076da5b"
     },
     {
       "path": "src/luna/continuous.mjs",
-      "bytes": 11159,
-      "sha256": "46c5ea9398b56ea4c9a5441d6f01f45bb388ee50b21ca15a4b6e868ffc35cdea"
+      "bytes": 11013,
+      "sha256": "1f6a2c21680c7d83ad7e272627f26d2b3d748186786364740b7078a69f30175c"
     },
     {
       "path": "src/luna/policy.mjs",
@@ -283,8 +283,8 @@
     },
     {
       "path": "tests/unit/controller-cancellation.test.mjs",
-      "bytes": 4353,
-      "sha256": "cfceab16608a31bdaabae60e3b0959c18b3a59147bd7c10de773fa504be09f78"
+      "bytes": 4267,
+      "sha256": "b4723fdcc1cd168e5dd703f1c1499fb22c600560249df0f858495c3e42dfe20e"
     },
     {
       "path": "tests/unit/current-release.test.mjs",
@@ -303,13 +303,13 @@
     },
     {
       "path": "tests/unit/luna-app-server.test.mjs",
-      "bytes": 32114,
-      "sha256": "f7a34362d53d3ddbb461035fd8ff16d82c5871e8e72054f825d6bbfdf7f2e49e"
+      "bytes": 31524,
+      "sha256": "9b90e5b1ede18cac8d9cb3e53fa985c0d4ea05684f96689fc7a9f18414be2261"
     },
     {
       "path": "tests/unit/luna-policy.test.mjs",
-      "bytes": 12265,
-      "sha256": "0fb6840b47dd979c3868a21a86774f688a204786d343b7ddb952ad856b0abe50"
+      "bytes": 12059,
+      "sha256": "303d799a0d84fe7499edc7295468e86856793c4b202b33e1297f53d74b5f6618"
     },
     {
       "path": "tests/unit/packaging.test.mjs",
