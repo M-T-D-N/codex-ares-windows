@@ -8,6 +8,8 @@
 
 Reading a file, tracing a bug and weighing an implementation call for different amounts of reasoning. Ares checks the current state before each generation and adjusts the effort for the selected model's next response, while the task continues in the same conversation.
 
+**2026-10-15 source candidate:** Internal composer predictions bypass Luna using accepted metadata; ordinary user text is still evaluated. Cancellation and independent failures remain distinct. CLI 0.162.0-alpha.17.2 / Desktop 26.1007.9446.0. See [current validation](docs/validation.md); public-layout GUI/provider activation is not yet tested.
+
 <p align="center">
   <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a>
 </p>

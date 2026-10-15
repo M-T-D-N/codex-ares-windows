@@ -383,7 +383,8 @@ export class LunaAppServer{
         await state.exit.promise;
       }
     }
-    error=flight.abortError??error;
+    // Preserve an independent failure observed before cancellation during cleanup.
+    error??=flight.abortError;
     if(outcome)outcome.usage=flight.usage;
     clearTimeout(flight.cleanupTimer);
     flight.signal?.removeEventListener('abort',flight.abortListener);
@@ -397,11 +398,15 @@ export class LunaAppServer{
       this.threads.delete(flight.threadId);
     }
     this.active.delete(flight);
+    const rawCategory=error?.category??(error?.name==='AbortError'?'evaluator_cancelled':null);
+    const category=error?(typeof rawCategory==='string'&&/^[a-z][a-z0-9_]{0,63}$/.test(rawCategory)
+      ?rawCategory:'evaluator_unavailable'):null;
+    const cancelled=!!error&&['native_connection_closed','evaluator_cancelled'].includes(category);
     if(flight.threadId)this.note({type:'evaluator_thread_usage',epoch:flight.epoch,trace:flight.trace??null,
       threadId:flight.threadId,turnId:flight.turnId,requestedModel:'gpt-6-luna',
       requestedEffort:'high',selectedModel:flight.selectedModel??'UNKNOWN',
       responseModel:flight.responseModel,usage:flight.usage,
-      providerAttempts:flight.providerAttempts||'UNKNOWN',status:error?'failed':'completed'});
+      providerAttempts:flight.providerAttempts||'UNKNOWN',status:error?(cancelled?'cancelled':'failed'):'completed',category});
     if(error)flight.wait.reject(error);
     else flight.wait.resolve(outcome);
     if(this.draining)this.retireIfDrained(this.child);

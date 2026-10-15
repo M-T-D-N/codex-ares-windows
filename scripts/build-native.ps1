@@ -48,6 +48,9 @@ $record.stages=@()
 $record | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $recordPath -Encoding utf8
 $previousV8Archive=$env:RUSTY_V8_ARCHIVE
 $previousV8Binding=$env:RUSTY_V8_SRC_BINDING_PATH
+$previousIncremental=$env:CARGO_INCREMENTAL
+$env:CARGO_INCREMENTAL='0'
+$record.cargoIncremental='0'
 Push-Location (Join-Path $SourceDir 'codex-rs')
 try {
   if($IncludeCompanions){
@@ -79,6 +82,7 @@ try {
   Pop-Location
   $env:RUSTY_V8_ARCHIVE=$previousV8Archive
   $env:RUSTY_V8_SRC_BINDING_PATH=$previousV8Binding
+  $env:CARGO_INCREMENTAL=$previousIncremental
 }
 $record.status=if($code -eq 0){'built'}else{'build_failed'}
 $record.finishedAt=[DateTime]::UtcNow.ToString('o');$record.exitCode=$code

@@ -12,5 +12,14 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci --ignore-scripts --no-audit --no-fund
-      - run: npm test
+      - name: Run unit, cancellation and process-lifetime regressions
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path build/test-temp -Force | Out-Null
+          $env:ARES_TEST_TEMP = Join-Path $PWD 'build/test-temp'
+          $env:ARES_TEST_PYTHON = (Get-Command python).Source
+          $env:TEMP = $env:ARES_TEST_TEMP
+          $env:TMP = $env:ARES_TEST_TEMP
+          $env:TMPDIR = $env:ARES_TEST_TEMP
+          npm test
       - run: npm run doctor

@@ -29,10 +29,25 @@ export class PilotBridge {
       let buffer=Buffer.alloc(0),processing=false,owner=null,controller=null,failed=false;
       let authenticated=!this.tcp;
       const fail=(error)=>{
-        if(failed)return;failed=true;abort.abort();clearTimeout(authTimer);
-        this.record({type:'controller_error',owner,category:error?.details?.category??'protocol_or_evaluator_failure',status:error?.details?.status??null});
-        socket.end(frame({type:'error',message:'Pilot controller failed; inspect sanitized events. No effort applied.'}));
-        socket.destroySoon();
+        if(failed)return;
+        failed=true;clearTimeout(authTimer);
+        // A closed native socket already cancelled its pending evaluation.
+        // Do not send another failure frame to that socket or count it as a protocol error.
+        if(abort.signal.aborted&&error===abort.signal.reason){
+          this.record({type:'controller_cancelled',owner,reason:'native_connection_closed'});
+          return;
+        }
+        abort.abort();
+        const category=error?.details?.category??error?.category;
+        const status=error?.details?.status;
+        this.record({type:'controller_error',owner,
+          category:typeof category==='string'&&/^[a-z][a-z0-9_]{0,63}$/.test(category)
+            ?category:'protocol_or_evaluator_failure',
+          status:Number.isInteger(status)&&status>=100&&status<=599?status:null});
+        if(!socket.destroyed){
+          socket.end(frame({type:'error',message:'Pilot controller failed; inspect sanitized events. No effort applied.'}));
+          socket.destroySoon();
+        }
       };
       const authTimer=this.tcp?setTimeout(()=>fail(),5000):null;
       const processMessage=async p=>{
@@ -69,7 +84,7 @@ export class PilotBridge {
       });
       socket.on('error',()=>{});
       socket.on('close',()=>{
-        clearTimeout(authTimer);abort.abort();this.sockets.delete(socket);
+        clearTimeout(authTimer);abort.abort(Object.assign(new Error('Native connection closed'),{category:'native_connection_closed'}));this.sockets.delete(socket);
         if(owner)this.owners.delete(owner);
         if(controller?.close)void Promise.resolve(controller.close()).catch(()=>this.record({type:"controller_close_failed",owner}));
       });

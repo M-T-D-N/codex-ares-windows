@@ -475,3 +475,117 @@ test('loaded snapshot and later thread/closed are distinct observations',async()
   assert.equal(events.filter(e=>e.type==='evaluator_thread_closed').length,1);
   await app.close();
 });
+
+for(const category of ['native_connection_closed','soft_timeout']){
+  test(`evaluation telemetry distinguishes ${category} after exact cleanup`,async()=>{
+    let held;
+    const {app,events}=adapter((child,request)=>{
+      if(request.method==='thread/start')child.reply(request,
+        {thread:{id:'telemetry-thread'},model:'gpt-6-luna'});
+      else if(request.method==='turn/start'){
+        held={child,request};child.reply(request,{turn:{id:'telemetry-turn',status:'inProgress',items:[]}});
+      }else if(request.method==='turn/interrupt'){
+        child.reply(request,{});
+        child.emitFrame({method:'turn/completed',params:{threadId:request.params.threadId,
+          turn:{id:request.params.turnId,status:'interrupted',items:[]}}});
+      }else if(request.method==='thread/unsubscribe')child.reply(request,{status:'unsubscribed'});
+    });
+    const abort=new AbortController();
+    const result=app.evaluate({input:'synthetic classification'},{signal:abort.signal});
+    await until(()=>held);
+    const rejection=assert.rejects(result,error=>error.category===category);
+    abort.abort(Object.assign(new Error('private reason'),{category}));
+    await rejection;
+    const telemetry=events.find(e=>e.type==='evaluator_thread_usage');
+    assert.equal(telemetry.category,category);
+    assert.equal(telemetry.status,category==='native_connection_closed'?'cancelled':'failed');
+    assert.equal(events.filter(e=>e.type==='evaluator_thread_cleanup').length,1);
+    assert.equal(JSON.stringify(events).includes('private reason'),false);
+    await app.close();
+  });
+}
+
+test('provider turn failure stays failed and retains a bounded category',async()=>{
+  const {app,events}=adapter((child,request)=>{
+    if(request.method==='thread/start')child.reply(request,
+      {thread:{id:'failed-thread'},model:'gpt-6-luna'});
+    else if(request.method==='turn/start'){
+      child.reply(request,{turn:{id:'failed-turn',status:'inProgress',items:[]}});
+      child.emitFrame({method:'turn/completed',params:{threadId:'failed-thread',
+        turn:{id:'failed-turn',status:'failed',items:[],error:{message:'private provider error'}}}});
+    }else if(request.method==='thread/unsubscribe')child.reply(request,{status:'unsubscribed'});
+  });
+  await assert.rejects(app.evaluate({input:'synthetic classification'}),error=>error.category==='evaluator_turn');
+  const telemetry=events.find(e=>e.type==='evaluator_thread_usage');
+  assert.equal(telemetry.status,'failed');assert.equal(telemetry.category,'evaluator_turn');
+  assert.equal(JSON.stringify(events).includes('private provider error'),false);
+  await app.close();
+});
+
+test('independent preparation failure survives native abort during exact cleanup',async()=>{
+  const abort=new AbortController();
+  const independent=Object.assign(new Error('private independent failure'),{category:'capacity_unavailable'});
+  const cancellation=Object.assign(new Error('private native close'),{category:'native_connection_closed'});
+  const {app,children,events}=adapter((child,request)=>{
+    if(request.method==='thread/start')child.reply(request,{thread:{id:'cleanup-race'},
+      model:'gpt-6-luna',modelProvider:'openai',modelContextWindow:258400});
+    else if(request.method==='thread/unsubscribe'){
+      abort.abort(cancellation);
+      child.reply(request,{status:'unsubscribed'});
+    }
+  });
+  try{
+    await assert.rejects(app.evaluate({prepare(){throw independent;}},{signal:abort.signal}),
+      error=>error===independent);
+    assert.equal(children[0].frames.filter(f=>f.method==='turn/start').length,0);
+    assert.equal(children[0].frames.filter(f=>f.method==='thread/unsubscribe').length,1);
+    const telemetry=events.find(e=>e.type==='evaluator_thread_usage');
+    assert.equal(telemetry.status,'failed');
+    assert.equal(telemetry.category,'capacity_unavailable');
+    assert.equal(JSON.stringify(events).includes('private'),false);
+  }finally{await app.close();}
+});
+test('native bridge cancellation reason crosses continuous service and app-server unchanged',async t=>{
+  const {PilotBridge,frame}=await import('../../src/common/bridge.mjs');
+  const {ContinuousService}=await import('../../src/luna/continuous.mjs');
+  const {connect}=await import('node:net');
+  const {once}=await import('node:events');
+  let held,receivedReason;
+  const {app,children,events}=adapter((child,request)=>{
+    if(request.method==='thread/start')child.reply(request,{thread:{id:'pipeline'},model:'gpt-6-luna',
+      modelProvider:'openai',modelContextWindow:258400});
+    else if(request.method==='turn/start'){
+      held=true;child.reply(request,{turn:{id:'pipeline-turn',status:'inProgress',items:[]}});
+    }else if(request.method==='turn/interrupt'){
+      setImmediate(()=>{child.reply(request,{});child.emitFrame({method:'turn/completed',params:{threadId:'pipeline',
+        turn:{id:'pipeline-turn',status:'interrupted',items:[]}}});});
+    }else if(request.method==='thread/unsubscribe')child.reply(request,{status:'unsubscribed'});
+  });
+  const original=app.evaluate.bind(app);
+  app.evaluate=(snapshot,options)=>{
+    options.signal.addEventListener('abort',()=>{receivedReason=options.signal.reason;},{once:true});
+    return original(snapshot,options).catch(error=>{assert.equal(error,receivedReason);throw error;});
+  };
+  const service=new ContinuousService({evaluator:app,record:e=>events.push(e)});
+  const bridge=new PilotBridge({tcp:{host:'127.0.0.1',port:0,token:'b'.repeat(64)},
+    record:e=>events.push(e),controllerForCheckpoint:p=>service.controller(p)});
+  await bridge.start();
+  const socket=connect(bridge.address.port,'127.0.0.1');socket.on('error',()=>{});
+  t.after(async()=>{socket.destroy();await bridge.stop();await service.close();});
+  await once(socket,'connect');const auth=once(socket,'data');
+  socket.write(frame({type:'authenticate',token:'b'.repeat(64)}));await auth;
+  socket.write(frame({protocol:4,type:'checkpoint',threadId:'main',turnId:'turn',step:1,
+    connectionEpoch:'epoch',model:'gpt-6.1-sol',supportedEfforts:['medium','high','xhigh','max'],
+    currentEffort:'high',adviceBasis:{ownerId:'owner',acceptedInputRevision:0,settingsRevision:0},
+    project:{rootUser:true,cwd:'D:/synthetic',workspaceRoots:['D:/synthetic']},context:{
+      schema:'CODEX_STEP_CONTROLLER_CONTEXT_V3',originalTurnPrompt:'Classify synthetic state.',
+      latestUserPrompt:'Classify synthetic state.',publicNotes:[],priorUserPrompts:[],recentToolCalls:[]}}));
+  await until(()=>held);socket.destroy();
+  await until(()=>events.some(e=>e.type==='controller_cancelled'));
+  assert.equal(receivedReason.category,'native_connection_closed');
+  assert.equal(events.filter(e=>e.type==='controller_error').length,0);
+  assert.equal(events.filter(e=>e.type==='controller_cancelled').length,1);
+  assert.equal(events.filter(e=>e.type==='evaluator_thread_cleanup').length,1);
+  assert.equal(events.find(e=>e.type==='evaluator_thread_usage').status,'cancelled');
+  assert.equal(children[0].frames.filter(f=>f.method==='turn/interrupt').length,1);
+});

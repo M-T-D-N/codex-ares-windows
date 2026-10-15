@@ -8,6 +8,8 @@
 
 파일을 확인할 때와 복잡한 구현을 판단할 때 필요한 추론 강도는 다릅니다. Ares는 매 생성 단계 직전에 현재 상황을 다시 보고, 선택한 모델이 다음 응답에 사용할 추론 강도를 조절합니다. 작업은 같은 대화에서 계속됩니다.
 
+**2026-10-15 소스 후보:** 실제 metadata의 내부 추천 요청을 Luna 평가에서 제외하고 일반 사용자 입력은 유지합니다. 취소와 독립 오류를 구분합니다. CLI 0.162.0-alpha.17.2 / Desktop 26.1007.9446.0. [현재 검증 범위](docs/validation.md)를 확인하세요. 공개 폴더의 실제 GUI·provider 기동은 미실시입니다.
+
 <p align="center">
   <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a>
 </p>

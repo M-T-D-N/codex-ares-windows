@@ -127,7 +127,7 @@ export class ContinuousService{
       return {...identity(p),type:'decision',effort:judgment.effort,leaseSteps:1,evaluatorMs:Math.round(this.clock()-begun)};
     }catch(error){
       abort.abort(error);
-      if(parentSignal?.aborted)throw parentSignal.reason;
+      if(parentSignal?.aborted)throw error;
       const reason=error.category??'evaluator_unavailable';
       if(error.permanent)t.permanent={revision:error.scope==='config'?this.configRevision:revision,reason,scope:error.scope??'context'};
       else{t.failures++;t.cooldownUntil=this.clock()+this.waitMs*Math.min(4,2**Math.min(t.failures-1,2));}

@@ -1,5 +1,28 @@
 # What was verified
 
+## 2026-10-15 candidate validation
+
+This candidate is not published. The previous GitHub CI result applies to the previous commit only; the new CI run is POSTPUBLISH, not a local PASS.
+
+| Check | Current evidence |
+|---|---|
+| Pinned base + latest cumulative patch | Applied once: 8,993 base, 162 modified, 20 added, 9,013 restored files; every byte and Git mode/tree matched. Exact tree is in the lock. |
+| Portable cancellation/failure regressions | 47 tests passed, including 11 added cases: native disconnect, protocol failure, sanitized category, timeout versus cancellation, independent failure races and the bridge/service/adapter pipeline. |
+| Complete public suite | 80 passed; two lifetime cases initially skipped without the required project temp. Both passed in the explicit follow-up with natural process exit; CI now supplies the temp and Python. |
+| Native regression/build reuse | Existing matching-source controller14 and metadata25 tests retained. Composer source/trigger exclusion, ordinary user wording, goal continuations and supported manual effort overrides remain covered. Native is unchanged by portable packaging. |
+| Runtime reuse | Same 9,013-file source identity, Cargo lock, compiler and dev/scrypt profile; CLI plus four companions match recorded SHA256. No cold rebuild claimed. |
+| Public bundle / Doctor / actual start preflight | 1,557 inputs verified; CLI 0.162.0-alpha.17.2 and registered Desktop 26.1007.9446.0 matched. Desktop not started. |
+| Matching local natural traffic | Three real composer-metadata turns had no Luna evaluation/checkpoint/effort change. About110 minutes:277 recommendation/capture matches; two failed generation keys later completed. This is bounded local native evidence, not public-layout GUI/provider activation. |
+
+The host did not expose an `npm` command. The single `gpt-tokenizer@4.0.0` tarball was fetched from the lock URL, SHA512-integrity checked and materialized only in the candidate. `node --test` executed the same test script; `npm ci` itself is NOT_RUN here. CI retains npm ci on a disposable runner. The first scoped attempt also hit sandbox loopback EACCES and the missing package; those were execution failures, not test passes.
+
+The public environment implementation and pinned portable tokenizer imports were retained. Historical local-only phase-evidence/question changes are not dependencies of this cancellation/composer port and are not included. The selected Main, ordinary Luna opt-out, effort schema, lease and policy meanings remain those of the public base.
+
+Current public-layout GUI/provider startup, an entirely cold native rebuild, response model version, billing, meaning/quality, savings and long-term reliability remain NOT_RUN or UNKNOWN. A user normal startup can supply the GUI/provider evidence later; it is not induced during preparation. Source preview contains no native binaries, raw traces, private manifests, process command lines or credentials.
+
+The following sections retain the earlier published evidence and its original sample boundaries.
+
+
 This page explains existing evidence. This documentation update ran no new build, Desktop restart, model pilot or quality test.
 
 ## Source and portable packaging

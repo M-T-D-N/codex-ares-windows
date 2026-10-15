@@ -8,6 +8,8 @@
 
 ファイルの確認、不具合の調査、実装方針の検討。次の作業に必要な思考量は、その都度変わります。Aresは生成の直前に状況を評価し、選択したモデルが次の応答で使う推論強度を調整します。作業は同じ会話の中で続きます。
 
+**2026-10-15 ソース候補:** 実際の metadata に基づく内部予測を Luna 評価から除外し、通常の入力は維持します。キャンセルと独立した障害を区別します。CLI 0.162.0-alpha.17.2 / Desktop 26.1007.9446.0。[検証範囲](docs/validation.md)。公開構成での GUI・provider 起動は未検証です。
+
 <p align="center">
   <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a>
 </p>

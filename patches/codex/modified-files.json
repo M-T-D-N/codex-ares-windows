@@ -261,8 +261,8 @@
     },
     "codex-rs/core/src/session/decision_context.rs": {
       "mode": "100644",
-      "sha256": "7020599d9f8127acad0f3f7fd0e64ba2edfe9450f1e80a960988ba24e6a64525",
-      "size": 7122,
+      "sha256": "ee2df9b282d09fa8e1d2b301444b69f761a3ddced0f47cb18e6af61e4d1958bc",
+      "size": 10898,
       "state": "present"
     },
     "codex-rs/core/src/session/input_queue.rs": {
@@ -315,14 +315,14 @@
     },
     "codex-rs/core/src/session/step_controller_luna.rs": {
       "mode": "100644",
-      "sha256": "fb1daffd0248e9f55f87fa9fee125f30be2487d4d050e9314751b674d740a089",
-      "size": 35806,
+      "sha256": "1d4d7cfdb4c00f688f66e508fe3c1e3e1636760cb7e6a086b46d2508ec0f1233",
+      "size": 36328,
       "state": "present"
     },
     "codex-rs/core/src/session/step_controller_tests.rs": {
       "mode": "100644",
-      "sha256": "c479ba7a833a366e282bdb601b6fdc2966c60c518133ae7c3dd13b8afe8e21e4",
-      "size": 24950,
+      "sha256": "f1b09b4206fedccf03572d0a14b2d72543a5a165369c431f5738f1cd5c704a18",
+      "size": 29148,
       "state": "present"
     },
     "codex-rs/core/src/session/tests.rs": {
@@ -379,10 +379,16 @@
       "size": 3509,
       "state": "present"
     },
+    "codex-rs/core/src/tools/handlers/mcp_restart.rs": {
+      "mode": "100644",
+      "sha256": "83860f0651825d8fbc9aff43bdb16dd6949b8c28fd50f13de71afede88a432bb",
+      "size": 11484,
+      "state": "present"
+    },
     "codex-rs/core/src/tools/handlers/mod.rs": {
       "mode": "100644",
-      "sha256": "598af768107e5771eb17c1c29b089f8ea407a1ac0fcf657f2d93f71525dd50c0",
-      "size": 24264,
+      "sha256": "bc1041f13530632f4a905c3fcdac5a4ecc120a0b3dac05f559e0643fd7d9be14",
+      "size": 24321,
       "state": "present"
     },
     "codex-rs/core/src/tools/lifecycle.rs": {
@@ -399,8 +405,20 @@
     },
     "codex-rs/core/src/tools/spec_plan.rs": {
       "mode": "100644",
-      "sha256": "f1d3f213d167055f9016d96382050b580c3b547537234d0dede995bfb8d800a8",
-      "size": 64572,
+      "sha256": "cd43d6fbb779776441bf6cc01750ffec79258f183eb85c3a10925806514720ec",
+      "size": 64657,
+      "state": "present"
+    },
+    "codex-rs/core/src/turn_metadata.rs": {
+      "mode": "100644",
+      "sha256": "3f0b24d6dd9a8e1f1ab206fc292e83287fc0be88124538d5c155e3cc656ea2dc",
+      "size": 22582,
+      "state": "present"
+    },
+    "codex-rs/core/src/turn_metadata_tests.rs": {
+      "mode": "100644",
+      "sha256": "8fb95a8fd6cb3b104e4d7a9f804f35113c8aa36784f4aada5ef8fc27d99af314",
+      "size": 53383,
       "state": "present"
     },
     "codex-rs/core/tests/suite/reasoning_effort_override.rs": {

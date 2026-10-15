@@ -1,5 +1,14 @@
 # What changed
 
+## 2026-10-15 source candidate (unpublished)
+
+- Exclude only accepted composer-prediction source/trigger metadata from Luna; retain ordinary user wording and normal Ares boundaries.
+- Preserve independent evaluation failures when native cancellation races cleanup. Record bounded cancellation/failure categories without error bodies.
+- Include 11 cancellation regressions in the normal suite and enable the Windows lifetime fixtures in CI.
+- Refresh the full pinned native patch, source/mode manifest and Desktop compatibility to 26.1007.9446.0; preserve the selected Main and effort policy.
+- Public-layout GUI/provider activation remains NOT_RUN. Local native evidence, portable checks and historical CI are distinct; see [validation](docs/validation.md).
+
+
 ## 2026-10-10 — Codex 0.162 source preview
 
 The adapter now targets **Codex CLI 0.162.0-alpha.17.2** and the tested registered **Desktop 26.1007.2314.0**. This publication brings earlier local fixes into one complete patch. It does not introduce a new judging policy or a new paid pilot.

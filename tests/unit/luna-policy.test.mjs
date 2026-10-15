@@ -191,3 +191,17 @@ test('effort schema and unsupported effort rejection remain unchanged',()=>{
   assert.throws(()=>validateJudgment({action:'recommend',effort:'max',reason:'Enough.'},['high']),
     e=>e.category==='invalid_judgment');
 });
+
+test('continuous service preserves an independent rejection after parent abort',async()=>{
+  const parent=new AbortController();
+  const independent=Object.assign(new Error('private transport error'),{category:'evaluator_transport'});
+  const cancellation=Object.assign(new Error('native connection closed'),{category:'native_connection_closed'});
+  const service=new ContinuousService({evaluator:{async evaluate(){
+    parent.abort(cancellation);
+    throw independent;
+  },async close(){}}});
+  const p=checkpoint();
+  try{
+    await assert.rejects(service.controller(p).handle(p,parent.signal),error=>error===independent);
+  }finally{await service.close();}
+});

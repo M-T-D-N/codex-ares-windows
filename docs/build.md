@@ -16,7 +16,7 @@ The release is https://github.com/openai/codex/releases/tag/rusty-v8-v150.4.0. F
 
 ## Verified build scope
 
-The current native lock targets Codex **0.160.0** and includes all accepted Ares corrections through context-history recovery. The existing local build produced the CLI and all four companions from that source with the valid shared toolchain and reusable target cache. Actual local Desktop startup and a Luna→native effort→completed Main response were observed. Full public-source patch restoration, public adapter regressions and local runtime evidence establish different boundaries; see [validation](validation.md).
+The current native lock targets Codex **0.162.0-alpha.17.2** and includes all accepted Ares corrections through context-history recovery. The existing local build produced the CLI and all four companions from that source with the valid shared toolchain and reusable target cache. Actual local Desktop startup and a Luna→native effort→completed Main response were observed. Full public-source patch restoration, public adapter regressions and local runtime evidence establish different boundaries; see [validation](validation.md).
 
 A completely cold dependency rebuild, a project-local Rust installer run, a fresh public-layout Desktop GUI trial, and a binary convenience release are not claimed. The source package excludes toolchains, native executables, installed Desktop files and build caches. A binary release would need a separate complete dependency notice inventory and approval.
 
@@ -56,3 +56,10 @@ For bounded diagnostics on that next normal start:
 ```
 
 The option is validated and explicitly forwarded through the MSIX boundary. Omit it for the normal default with detailed context tracing off. Startup options do not mutate an already running app.
+
+
+## 2026-10-15 candidate
+
+The complete patch restores 8,993 base files with 162 modified and 20 added files (9,013 total), including metadata-based composer prediction exclusion and its controller tests. The default build uses `CARGO_INCREMENTAL=0` and restores the caller value afterward. CLI and all four companions must come from this exact source, lock and dev profile. The local verification reused the matching five-file build; it did not claim a new cold build.
+
+Run `npm ci --ignore-scripts --no-audit --no-fund`, then `npm test`. For the two Windows process-lifetime fixtures, create `build/test-temp`, set `ARES_TEST_TEMP` to its absolute path and `ARES_TEST_PYTHON` to the selected Python executable. The CI source-check job now sets these values. Run `node scripts/doctor.mjs` and `./scripts/start.ps1 -PreflightOnly` after bundling. These commands do not prove GUI or provider activation.
