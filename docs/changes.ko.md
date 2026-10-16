@@ -22,3 +22,7 @@ GPT-6 Luna/High app-server 평가, 한 generation lease, 같은 turn의 fresh �
 현재 실사용의 완전한 연결 173건에서 강도 불일치는 0건입니다. fallback 응답 49건과 같은 turn 회복 8건도 확인했습니다. 이전 응답 근거가 없는 1건, 취소와 일부 generic 오류 원인은 UNKNOWN입니다. 짧은 연결 확인을 장기 안정성·판단 품질·절감률 검증으로 확대하지 않습니다.
 
 [검증 결과](validation.md) · [호환 범위](compatibility.md) · [빌드·업데이트 절차](build.md) · [English](../CHANGELOG.md)
+
+## 2026-10-16 소스 프리뷰
+
+검증 후보 실행 코드를 유지하고 공개 문서의 실제 수용 범위를 갱신한다. 82검사·9,013파일 복원과 새 출력 native 빌드, 기존 MSIX/Node 환경의 Sol/Luna xhigh 응답·운영 복귀를 기록한다. 새 PC 설치·환경 전달·요약 별칭·평가 입력 누락 등의 제한은 validation.md에 명시한다.

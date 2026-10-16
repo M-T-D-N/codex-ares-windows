@@ -1,5 +1,31 @@
 # What was verified
 
+## 2026-10-16 source preview acceptance
+
+This release uses reviewed candidate `5b5b477d13521dd5286017bd14f4425a36ac2634`. Release documentation changes preserve the tested adapter source, native patch, source locks and dependency inputs.
+
+| Check | Result and boundary |
+|---|---|
+| Native source | 9,013 restored files with exact contents and Git mode/tree. Content SHA256 `df43b9cd4e6364a46a07d6d4985d1d8d4249c5f8e147485e0b4ffb03c17baa0e`; tree `c66dbe4b5edc376cd2c8e428959de43f1a36aeb0`. |
+| Public dependencies and tests | Actual npm ci and complete suite:82 passed, zero failed/skipped. Earlier executions below retain their original scope. |
+| New native output | CLI and four companions built into a previously absent target using the locked compiler and incremental OFF. Existing compiler/source/download caches were available; this was not a clean-machine test. |
+| Doctor and preflight | Passed, including1,557 input checks. Acceptance native SHA256 `51b0fe22f934145e363b29c3c05ebaf08549d46cc771aa7d7028082aa3f581cf` identifies the local binary; this release does not distribute it. |
+| Actual GUI/provider | Existing registered Desktop26.1007.9446.0 and existing Node, explicit MSIX packaged launch. One same-conversation scheduled follow-up turn completed a real GPT-6.1 Sol response with Luna recommendation xhigh, native capture xhigh and request effort xhigh. Multiple natural tool generations occurred; this is not a one-API-call measurement or a separate manual composer test. |
+| Operating return | Normal exit, return through the original operating launcher and an operating Main response completed. One-shot restart helpers were removed and the test heartbeat paused. |
+| CI | The final release commit must have its own successful source-check run. Older green CI applies only to its recorded commit. The manual Windows build job and real Desktop acceptance are separate checks. |
+
+### Known issues and unverified behavior
+
+- Fresh-PC setup, the project-local Rust installer branch and default unpackaged-to-MSIX Node/environment handoff are not independently accepted. The GUI acceptance used an explicit packaged context. A returning launcher without a verified live backend is not successful activation; recover through the installed app and report versions/environment instead of weakening checks.
+- Operating traffic included missing evaluator evidence and evaluator timeouts. Affected generations continued at native baseline, not successful Luna recommendations. The missing-evidence cause/scope remain unresolved.
+- A remote conversation-compaction attempt rejected the custom `Sol 6.1-Ares` alias. Compaction compatibility remains unresolved despite successful ordinary Main generation. Selecting an ordinary supported model at a turn boundary is a possible mitigation, not an independently accepted compaction test.
+- Main stream failures were observed with later same-turn completed responses. Provider availability and zero latency are not guaranteed.
+- Remote cross-host task messaging encountered an absolute-path request parsing failure. Its offending field and product cause remain unresolved; this preview does not claim a fix.
+- Response model version, billed cost, judgment quality, savings and long-term stability are UNKNOWN or unmeasured. Public evidence excludes private conversations, DBs, auth, machine paths and raw logs.
+
+The sections below preserve earlier evidence at its original date. Historical NOT_RUN values do not override the bounded later acceptance above.
+
+
 ## 2026-10-15 candidate validation
 
 This candidate is not published. The previous GitHub CI result applies to the previous commit only; the new CI run is POSTPUBLISH, not a local PASS.

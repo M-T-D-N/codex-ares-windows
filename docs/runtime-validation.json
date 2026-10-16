@@ -46,5 +46,35 @@
   "cost": "UNKNOWN",
   "coldPublicDesktopLaunch": "NOT_RUN",
   "inflightExcludedFromSuccess": true,
-  "requestEffortRule": "last configuration update; otherwise previous response chain; initial baseline only without previousResponseId"
+  "requestEffortRule": "last configuration update; otherwise previous response chain; initial baseline only without previousResponseId",
+  "publicSourcePreviewAcceptance20261015": {
+    "status": "PASS_WITH_SCOPE",
+    "testedPublicCandidate": "5b5b477d13521dd5286017bd14f4425a36ac2634",
+    "sourceContentSha256": "df43b9cd4e6364a46a07d6d4985d1d8d4249c5f8e147485e0b4ffb03c17baa0e",
+    "desktop": "26.1007.9446.0",
+    "native": "0.162.0-alpha.17.2",
+    "npmCi": "PASS",
+    "tests": {
+      "passed": 82,
+      "failed": 0,
+      "skipped": 0
+    },
+    "freshOutputNativeExecutables": 5,
+    "existingDependencyCachesAvailable": true,
+    "inputChecks": 1557,
+    "publicGuiProvider": {
+      "existingRegisteredMsixAndNode": true,
+      "explicitPackagedContext": true,
+      "experimentalTurns": 1,
+      "main": "gpt-6.1-sol",
+      "lunaRecommendedEffort": "xhigh",
+      "capturedAndTransmittedEffort": "xhigh",
+      "mainResponseCompleted": true
+    },
+    "operatingRestoreAndResponseCompleted": true,
+    "cleanMachineSetup": "NOT_RUN",
+    "defaultUnpackagedEnvironmentHandoff": "NOT_INDEPENDENTLY_VERIFIED",
+    "costQualityLongTermStability": "UNKNOWN",
+    "rawRuntimeEvidenceIncluded": false
+  }
 }

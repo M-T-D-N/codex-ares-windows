@@ -8,7 +8,7 @@
 
 查看文件、定位故障、权衡实现方案，下一步需要多少推理会随任务变化。Ares 在每次生成前重新评估当前状态，为所选模型设置下一次响应的推理强度。任务继续在同一段对话中完成。
 
-**2026-10-15 源码候选：** 根据实际 metadata 排除内部预测的 Luna 评估，保留普通用户输入，并区分取消与独立故障。CLI 0.162.0-alpha.17.2 / Desktop 26.1007.9446.0。[验证范围](docs/validation.md)。公开目录中的 GUI/provider 启动尚未验证。
+**2026-10-16 源码预览：** 根据已接受的元数据跳过内部 composer 预测的 Luna 评估，普通用户请求仍会评估。相同源码已通过新输出目录的原生构建，并在已有注册 Desktop26.1007.9446.0 环境完成 Sol 6.1/Luna xhigh 实际响应。此预览不保证新电脑安装、长期稳定性、质量或费用优势。已知限制见[验证](docs/validation.md)与[兼容性](docs/compatibility.md)。
 
 <p align="center">
   <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a>

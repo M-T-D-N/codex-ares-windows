@@ -8,7 +8,7 @@
 
 파일을 확인할 때와 복잡한 구현을 판단할 때 필요한 추론 강도는 다릅니다. Ares는 매 생성 단계 직전에 현재 상황을 다시 보고, 선택한 모델이 다음 응답에 사용할 추론 강도를 조절합니다. 작업은 같은 대화에서 계속됩니다.
 
-**2026-10-15 소스 후보:** 실제 metadata의 내부 추천 요청을 Luna 평가에서 제외하고 일반 사용자 입력은 유지합니다. 취소와 독립 오류를 구분합니다. CLI 0.162.0-alpha.17.2 / Desktop 26.1007.9446.0. [현재 검증 범위](docs/validation.md)를 확인하세요. 공개 폴더의 실제 GUI·provider 기동은 미실시입니다.
+**2026-10-16 소스 프리뷰:** 수락된 metadata로 내부 composer 추천을 Luna 평가에서 제외하며 일반 사용자 요청은 계속 평가합니다. 동일 소스의 새 출력 native 빌드와 기존 등록 Desktop26.1007.9446.0 환경의 실제 Sol 6.1/Luna xhigh 응답을 확인했습니다. 새 PC 설치·장기 안정성·품질·비용을 보장하지 않으며 알려진 제한이 있습니다. [검증](docs/validation.md)·[호환성](docs/compatibility.md)을 확인하세요.
 
 <p align="center">
   <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a>

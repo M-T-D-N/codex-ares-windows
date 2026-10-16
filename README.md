@@ -8,7 +8,7 @@
 
 Reading a file, tracing a bug and weighing an implementation call for different amounts of reasoning. Ares checks the current state before each generation and adjusts the effort for the selected model's next response, while the task continues in the same conversation.
 
-**2026-10-15 source candidate:** Internal composer predictions bypass Luna using accepted metadata; ordinary user text is still evaluated. Cancellation and independent failures remain distinct. CLI 0.162.0-alpha.17.2 / Desktop 26.1007.9446.0. See [current validation](docs/validation.md); public-layout GUI/provider activation is not yet tested.
+**2026-10-16 source preview:** composer predictions bypass Luna using accepted metadata; ordinary user requests retain evaluation. The exact source candidate passed a fresh-output native build and a real Sol 6.1/Luna xhigh response in an existing registered Desktop 26.1007.9446.0 environment. This is a source preview with known limitations, not a clean-machine installation or stability/quality/cost guarantee. See [validation](docs/validation.md) and [compatibility](docs/compatibility.md).
 
 <p align="center">
   <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a>

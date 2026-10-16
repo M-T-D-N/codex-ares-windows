@@ -18,7 +18,7 @@ The release is https://github.com/openai/codex/releases/tag/rusty-v8-v150.4.0. F
 
 The current native lock targets Codex **0.162.0-alpha.17.2** and includes all accepted Ares corrections through context-history recovery. The existing local build produced the CLI and all four companions from that source with the valid shared toolchain and reusable target cache. Actual local Desktop startup and a Luna→native effort→completed Main response were observed. Full public-source patch restoration, public adapter regressions and local runtime evidence establish different boundaries; see [validation](validation.md).
 
-A completely cold dependency rebuild, a project-local Rust installer run, a fresh public-layout Desktop GUI trial, and a binary convenience release are not claimed. The source package excludes toolchains, native executables, installed Desktop files and build caches. A binary release would need a separate complete dependency notice inventory and approval.
+A completely cold dependency rebuild, a project-local Rust installer run and a binary convenience release are not claimed. The later public-layout GUI/provider trial used the existing registered MSIX/Node environment with explicit packaged launch; its bounded acceptance is recorded in validation.md. The source package excludes toolchains, native executables, installed Desktop files and build caches. A binary release would need a separate complete dependency notice inventory and approval.
 
 ## Keeping up with upstream
 
@@ -63,3 +63,16 @@ The option is validated and explicitly forwarded through the MSIX boundary. Omit
 The complete patch restores 8,993 base files with 162 modified and 20 added files (9,013 total), including metadata-based composer prediction exclusion and its controller tests. The default build uses `CARGO_INCREMENTAL=0` and restores the caller value afterward. CLI and all four companions must come from this exact source, lock and dev profile. The local verification reused the matching five-file build; it did not claim a new cold build.
 
 Run `npm ci --ignore-scripts --no-audit --no-fund`, then `npm test`. For the two Windows process-lifetime fixtures, create `build/test-temp`, set `ARES_TEST_TEMP` to its absolute path and `ARES_TEST_PYTHON` to the selected Python executable. The CI source-check job now sets these values. Run `node scripts/doctor.mjs` and `./scripts/start.ps1 -PreflightOnly` after bundling. These commands do not prove GUI or provider activation.
+
+
+## Source preview installation, update, removal and recovery
+
+Use the tagged source archive or checkout the documented preview tag. Keep its SHA256, PUBLICATION_MANIFEST.json and source commit together. The manifest checks source consistency; it is not a vendor signature. Requirements:Windows x64, compatible registered Codex Desktop, Node22+/npm, Git, rustup, x64 Visual Studio C++ tools and network access to pinned public dependencies. Python is needed for two process-lifetime tests, not ordinary runtime. Sign-in, model access, terms and any usage charges remain those of the user's Codex account.
+
+The latest GUI acceptance used existing Node and registered Desktop in an explicit MSIX package context. Default launch environment forwarding and fresh-PC setup remain unverified. Read validation.md before using the ordinary launcher. Do not overwrite installed Desktop or disable version/package checks to work around startup failure.
+
+For updates, preserve local work and retain the previous validated checkout/bundle. Read the new tag's lock, compatibility and checksums. Restore into a new empty source directory and apply the exact cumulative patch once; do not patch already patched source. Reuse a compatible target cache without concurrent writers. Run Doctor and preflight before activation. Finish tasks, quit normally and start the intended checkout's launcher. If activation fails, open the official installed app normally or return to the retained accepted launcher after normal exit. No forced termination, DB rewrite or authentication copy is required.
+
+To stop using Ares, finish work and quit Codex normally, then open the installed Start-menu app. Remove only shortcuts created for the Ares checkout. When no process uses the checkout, remove its source/build/bundle or move it to the Recycle Bin according to your retention needs. Preserve needed diagnostics privately. Leave Codex home, conversations, databases, authentication, shared runtimes and installed Desktop intact. Setup installs no global service and publishes no npm package.
+
+This preview distributes source only. Native executables/companions, installed Desktop, Node/Rust/V8, dependency trees and local acceptance logs are excluded. Local builds fetch the locked dependencies; preserve the listed upstream licenses/notices. Binary convenience releases require a separate linked-dependency notice review.

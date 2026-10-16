@@ -1,5 +1,10 @@
 # What changed
 
+## 2026-10-16 — source preview.1
+
+The reviewed composer-metadata exclusion and cancellation/failure corrections are prepared for source preview publication. Public suite:82 passed with zero skips; exact native restoration:9,013 files. A new-output CLI/four-companion build and a real Sol6.1/Luna xhigh response completed in the existing Desktop26.1007.9446.0/Node environment; the operating launcher was restored. Fresh-PC installation, default unpackaged environment handoff, cost, quality and long-term stability are not established. Evaluator-evidence, compaction-alias and remote-messaging limits are recorded in docs/validation.md. Release documentation preserves tested code/patch/dependency inputs; native binaries and private runtime evidence are excluded.
+
+
 ## 2026-10-15 source candidate (unpublished)
 
 - Exclude only accepted composer-prediction source/trigger metadata from Luna; retain ordinary user wording and normal Ares boundaries.
