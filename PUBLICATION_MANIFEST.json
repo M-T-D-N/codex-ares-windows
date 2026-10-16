@@ -208,8 +208,8 @@
     },
     {
       "path": "scripts/start.ps1",
-      "bytes": 8849,
-      "sha256": "dc2349160c20b141f68259a810ba034ed5a021b4c2a57ffdcc78cb06ff488d16"
+      "bytes": 14128,
+      "sha256": "d7b0544b1a7635e3e18179fadb7631f29743e9007829e0bba94a4f7d13df5f8a"
     },
     {
       "path": "scripts/status.ps1",
@@ -278,8 +278,8 @@
     },
     {
       "path": "tests/desktop-startup.ps1",
-      "bytes": 6380,
-      "sha256": "e4d4d3c59135c82f0f1bf3ad2d4126aed63c4b98185a2da59d2d368155d3af27"
+      "bytes": 13506,
+      "sha256": "ab66d2ba3d55c9eab4d2085c33da32b18f33c6b8a02b0bebee7525d41064d39d"
     },
     {
       "path": "tests/unit/controller-cancellation.test.mjs",
@@ -293,8 +293,8 @@
     },
     {
       "path": "tests/unit/desktop-startup.test.mjs",
-      "bytes": 968,
-      "sha256": "6e36662855154915d1d3aad9229a7230f0247b2b51706054bc7bb6a414582498"
+      "bytes": 1173,
+      "sha256": "760107bdc556680d16c757a8d56729e7fa2efe76d2d8fd72f6c37527fc0ef49a"
     },
     {
       "path": "tests/unit/launch-lifecycle.test.mjs",

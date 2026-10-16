@@ -1,8 +1,78 @@
-param([switch]$PreflightOnly,[int]$WaitForDesktopPid=0,[switch]$PackagedLaunch,[string]$ContextTraceThreadId=$env:CODEX_CONTEXT_TRACE_THREAD_ID)
+param([switch]$PreflightOnly,[int]$WaitForDesktopPid=0,[switch]$PackagedLaunch,[string]$ContextTraceThreadId=$env:CODEX_CONTEXT_TRACE_THREAD_ID,[string]$NodePath,[string]$InvocationId)
 $ErrorActionPreference='Stop'
 # Use this host's bundled utilities even with an inherited PowerShell 7 module path.
 Import-Module (Join-Path $PSHOME 'Modules\Microsoft.PowerShell.Utility\Microsoft.PowerShell.Utility.psd1') -ErrorAction Stop
 $repoRoot=Split-Path -Parent $PSScriptRoot
+# Resolve Node before MSIX activation; that child does not inherit the caller's PATH.
+function Resolve-AresNodePath([string]$NodePath,[bool]$PackagedLaunch) {
+  if(-not $NodePath) {
+    if($PackagedLaunch){throw 'Packaged launch requires the absolute NodePath selected by its caller.'}
+    $NodePath=(Get-Command node -CommandType Application -ErrorAction Stop).Source
+  }
+  if(-not [IO.Path]::IsPathRooted($NodePath) -or ([IO.Path]::GetPathRoot($NodePath)).Length -lt 3) {
+    throw 'NodePath must be an absolute executable path.'
+  }
+  $file=Get-Item -LiteralPath $NodePath -ErrorAction Stop
+  if($file.PSIsContainer -or $file.Extension -ine '.exe'){throw 'NodePath must identify an existing executable.'}
+  return $file.FullName
+}
+function Get-AresCompletionPath([string]$Root,[string]$InvocationId) {
+  if($InvocationId -cnotmatch '^[a-f0-9]{32}$'){throw 'Launch invocation must be one exact GUID in N format.'}
+  $owner=Get-Item -LiteralPath ([IO.Path]::GetFullPath($Root)) -Force
+  if(-not $owner.PSIsContainer -or ($owner.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+    throw 'Launch completion owner must not be redirected.'
+  }
+  $directory=Join-Path $owner.FullName 'desktop-bindings'
+  New-Item -ItemType Directory -Path $directory -Force | Out-Null
+  $item=Get-Item -LiteralPath $directory -Force
+  if(-not $item.PSIsContainer -or ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+    throw 'Launch completion directory must stay in the candidate owner folder without redirection.'
+  }
+  $path=Join-Path $directory ('launch-'+$InvocationId+'.json')
+  if((Test-Path -LiteralPath $path) -and ((Get-Item -LiteralPath $path -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+    throw 'Launch completion file must not be redirected.'
+  }
+  return $path
+}
+function Write-AresLaunchCompletion([string]$Root,[string]$InvocationId,
+  [ValidateSet('candidate_backend_verified','candidate_already_running','failed','unknown')][string]$Status,[string]$Message) {
+  if(-not $InvocationId){return}
+  $path=Get-AresCompletionPath $Root $InvocationId
+  [ordered]@{schema=1;invocationId=$InvocationId;status=$Status;message=$Message;
+    completedAt=[datetimeoffset]::UtcNow.ToString('o')} |
+    ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $path -Encoding utf8
+}
+function Wait-AresLaunchCompletion([string]$Path,[string]$InvocationId,[datetimeoffset]$NotBefore,[int]$TimeoutSeconds) {
+  $timer=[Diagnostics.Stopwatch]::StartNew()
+  do {
+    $result=$null
+    if(Test-Path -LiteralPath $Path -PathType Leaf) {
+      try {$result=Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json} catch {}
+    }
+    if($result) {
+      $validTime=$false
+      try {$time=[datetimeoffset]$result.completedAt;$validTime=$time -ge $NotBefore -and $time -le [datetimeoffset]::UtcNow.AddSeconds(5)} catch {}
+      if($result.schema -ne 1 -or $result.invocationId -cne $InvocationId -or -not $validTime -or
+        $result.status -notin @('candidate_backend_verified','candidate_already_running','failed','unknown') -or
+        $result.message -isnot [string] -or -not $result.message) {
+        throw "Packaged launch outcome UNKNOWN: invalid or stale completion receipt at $Path. No retry was attempted."
+      }
+      if($result.status -eq 'unknown'){throw "Packaged launch outcome UNKNOWN: $($result.message) Completion receipt: $Path. No retry was attempted."}
+      if($result.status -eq 'failed'){throw "Packaged launch failed: $($result.message) Completion receipt: $Path"}
+      return $result
+    }
+    if($timer.Elapsed.TotalSeconds -ge $TimeoutSeconds){break}
+    Start-Sleep -Milliseconds 200
+  } while($true)
+  throw "Packaged launch outcome UNKNOWN: completion was not observed within $TimeoutSeconds seconds. Inspect $Path. No relaunch or process termination was attempted."
+}
+$completionPath=$null
+$launch=$null
+try {
+  if($InvocationId) {
+    if(-not $PackagedLaunch -or $PreflightOnly){throw 'Launch invocation is internal to packaged activation.'}
+    $completionPath=Get-AresCompletionPath $repoRoot $InvocationId
+  }
 $principal=[Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
 if($principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
   throw 'Use normal, non-administrator PowerShell. No settings were changed.'
@@ -19,14 +89,22 @@ $package=$packages[0]
 $compat=Get-Content -LiteralPath (Join-Path $repoRoot 'patches/codex/upstream.lock.json') -Raw | ConvertFrom-Json
 $validatedPackageVersion=if($compat.desktop.observedPackageVersion){$compat.desktop.observedPackageVersion}else{$compat.desktop.observedVersion}
 if($package.Version.ToString() -ne $validatedPackageVersion){throw 'This Desktop version has not been validated with the locked native protocol. Use the installed app normally; no update or installation was changed.'}
+$node=Resolve-AresNodePath $NodePath ([bool]$PackagedLaunch)
 # The registered MSIX Desktop needs package identity. Direct EXE launch loses it.
 # Keep this context within the Ares process tree; do not change installation or user settings.
 if(-not $PreflightOnly -and -not $PackagedLaunch) {
-  $packagedArgs='-NoProfile -NonInteractive -WindowStyle Hidden -File "{0}" -PackagedLaunch' -f $PSCommandPath
+  $InvocationId=[guid]::NewGuid().ToString('N')
+  $completionPath=Get-AresCompletionPath $repoRoot $InvocationId
+  if(Test-Path -LiteralPath $completionPath){throw 'Launch invocation already has a completion receipt.'}
+  $notBefore=[datetimeoffset]::UtcNow
+  $packagedArgs='-NoProfile -NonInteractive -WindowStyle Hidden -File "{0}" -PackagedLaunch -NodePath "{1}" -InvocationId {2}' -f $PSCommandPath,$node,$InvocationId
   if($WaitForDesktopPid){$packagedArgs+=' -WaitForDesktopPid '+$WaitForDesktopPid}
   if($ContextTraceThreadId){$packagedArgs+=' -ContextTraceThreadId '+$ContextTraceThreadId}
   Invoke-CommandInDesktopPackage -PackageFamilyName $package.PackageFamilyName -AppId App `
     -Command (Join-Path ([Environment]::SystemDirectory) 'WindowsPowerShell\v1.0\powershell.exe') -Args $packagedArgs -PreventBreakaway
+  $timeout=if($WaitForDesktopPid){240}else{60}
+  $result=Wait-AresLaunchCompletion $completionPath $InvocationId $notBefore $timeout
+  Write-Output $result.message
   return
 }
 # Set the option only in the new packaged launcher process, never in its caller.
@@ -37,7 +115,6 @@ $desktopPath=Join-Path $package.InstallLocation 'app\ChatGPT.exe'
 if(-not(Test-Path -LiteralPath $desktopPath -PathType Leaf)){throw 'The registered Desktop executable is missing.'}
 $manifestPath=Join-Path $repoRoot 'bundle\candidate.json'
 $candidateManifest=Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-$node=(Get-Command node -ErrorAction Stop).Source
 $candidateManifest.native.path=[IO.Path]::GetFullPath((Join-Path $repoRoot $candidateManifest.native.path))
 $stamp=Get-Date -Format 'yyyyMMdd-HHmmss-fff'
 $bindingDir=Join-Path $repoRoot 'desktop-bindings'
@@ -79,6 +156,7 @@ if($existing.Count -gt 0) {
   if($backend.Count -gt 0) {
     if($ContextTraceThreadId){throw 'Context diagnostics are selected at startup. Quit Codex normally first. The running app was not changed.'}
     Start-Process -FilePath $desktopPath
+    Write-AresLaunchCompletion $repoRoot $InvocationId 'candidate_already_running' 'This candidate is already running. Opened its existing window.'
     Write-Output 'This candidate is already running. Opened its existing window.'
     return
   }
@@ -114,6 +192,7 @@ do {
     $launch.status='candidate_backend_verified';$launch.verifiedAt=[DateTime]::UtcNow.ToString('o');$launch.backend=$backend
     $launch.desktop=Get-CimInstance Win32_Process -Filter "ProcessId = $($receipt.desktop.pid)" | Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine
     $launch | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $launchPath -Encoding utf8
+    Write-AresLaunchCompletion $repoRoot $InvocationId 'candidate_backend_verified' "Ares candidate backend verified. Run: $run"
     Write-Output "Ares candidate backend verified. Run: $run"
     return
   }
@@ -121,3 +200,13 @@ do {
 $launch.status='backend_not_verified'
 $launch | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $launchPath -Encoding utf8
 throw 'Backend not verified within 40 seconds. Inspect the receipt and actual processes before retrying.'
+
+} catch {
+  $failure=$_
+  if($PackagedLaunch -and $completionPath) {
+    $completionStatus=if($launch -and $launch.status -eq 'backend_not_verified'){'unknown'}else{'failed'}
+    try {Write-AresLaunchCompletion $repoRoot $InvocationId $completionStatus $failure.Exception.Message}
+    catch {Write-Warning "Could not record packaged launch failure at $completionPath. $($_.Exception.Message)"}
+  }
+  throw $failure
+}
