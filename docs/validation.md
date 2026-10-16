@@ -12,7 +12,9 @@ This release uses reviewed candidate `5b5b477d13521dd5286017bd14f4425a36ac2634`.
 | Doctor and preflight | Passed, including1,557 input checks. Acceptance native SHA256 `51b0fe22f934145e363b29c3c05ebaf08549d46cc771aa7d7028082aa3f581cf` identifies the local binary; this release does not distribute it. |
 | Actual GUI/provider | Existing registered Desktop26.1007.9446.0 and existing Node, explicit MSIX packaged launch. One same-conversation scheduled follow-up turn completed a real GPT-6.1 Sol response with Luna recommendation xhigh, native capture xhigh and request effort xhigh. Multiple natural tool generations occurred; this is not a one-API-call measurement or a separate manual composer test. |
 | Operating return | Normal exit, return through the original operating launcher and an operating Main response completed. One-shot restart helpers were removed and the test heartbeat paused. |
-| CI | The final release commit must have its own successful source-check run. Older green CI applies only to its recorded commit. The manual Windows build job and real Desktop acceptance are separate checks. |
+| CI | **PASS** for release commit `fa128fc50e095eb26251665eb3e4978874f80901`: [source-check run 38833918204](https://github.com/M-T-D-N/codex-ares-windows/actions/runs/38833918204). Candidate CI is a distinct run and applies only to its recorded candidate commit. The manual Windows build job and real Desktop acceptance are separate checks. |
+
+The main-only documentation correction clarifies startup limits and records the release CI result. It does not replace the immutable `v0.1.0-preview.1` tag or its ZIP assets. Any later documentation CI run is separate from the release and candidate runs.
 
 ### Known issues and unverified behavior
 

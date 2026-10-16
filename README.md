@@ -64,6 +64,9 @@ npm run setup
 
 Setup downloads the pinned source and dependencies, applies the native patch, and builds Ares locally. It verifies the V8 downloads and keeps reusable build caches in the project. Your installed Codex, authentication and default Rust toolchain stay in place.
 
+> [!WARNING]
+> **Startup limitation:** the default unpackaged-to-MSIX Node/environment handoff below has not been independently verified. Acceptance used an explicit MSIX packaged launch with the existing registered Desktop 26.1007.9446.0 and existing Node. See [validation boundaries](docs/validation.md#known-issues-and-unverified-behavior).
+
 After the build finishes, complete any active local tasks and quit Codex from its app menu. In a normal, non-administrator PowerShell, start Ares:
 
 ```powershell

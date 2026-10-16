@@ -38,23 +38,23 @@
     },
     {
       "path": "README.ja.md",
-      "bytes": 9135,
-      "sha256": "b6ad0206e6ff66b6d794e26771696c6ce3ff60727835a95596a2dea9d66cc654"
+      "bytes": 9587,
+      "sha256": "47342bd611e17115a5b1843f548a2e4c24acfac47663a2dea32b207020ebd130"
     },
     {
       "path": "README.ko.md",
-      "bytes": 8793,
-      "sha256": "03364b3e344fa70519b737ed00dd5bd149908c2d41b188996f7c804cf7105c7d"
+      "bytes": 9213,
+      "sha256": "9904dcbebc4c9502bc13e8ad0f55007945bc1bad64ab73b20b92174216b736da"
     },
     {
       "path": "README.md",
-      "bytes": 7959,
-      "sha256": "aeb12644ecac0d625afc27a61f138737b89011b4672a6dbce729d30530993a63"
+      "bytes": 8304,
+      "sha256": "df6b18d85667b84eafb6ef685a57bbb416126a487a28f23e5c373c579461d8e5"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 7584,
-      "sha256": "979739fd7b3de7eb3017bc901b5cfa4141b166082d38f1b2111080c312cc8ddd"
+      "bytes": 7929,
+      "sha256": "bd266270e0f4d6e7ec7762cd1e62bf7e3058c81875b5c4f52372e652fa90d036"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -108,8 +108,8 @@
     },
     {
       "path": "docs/validation.md",
-      "bytes": 10239,
-      "sha256": "6b05e665440176230d53a4fe48f45953435ae6fa4e665632ced891589686fa61"
+      "bytes": 10629,
+      "sha256": "cf5a6df493da10dae5f9483e9a6d4f4f63914834da5f6ebf5c368cc1945bfae6"
     },
     {
       "path": "licenses/Apache-2.0.txt",

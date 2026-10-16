@@ -63,6 +63,9 @@ npm run setup
 
 セットアップは固定されたソースと依存関係を取得し、nativeパッチを適用してPC上でAresをビルドします。V8のダウンロードを検証し、再利用できるビルドキャッシュをプロジェクト内に保持します。インストール済みのCodex、認証情報、標準のRust toolchainは変更しません。
 
+> [!WARNING]
+> **起動経路の制約:** 以下の標準起動で unpackaged から MSIX に移る際の Node・環境の引き継ぎは、独立した検証を行っていません。受け入れ検証では、既存の登録済み Desktop 26.1007.9446.0 と既存の Node を使い、MSIX パッケージ環境を明示して起動しました。[検証範囲](docs/validation.md#known-issues-and-unverified-behavior)を確認してください。
+
 ビルド後、進行中のローカル作業を終え、アプリメニューからCodexを通常終了してください。管理者権限ではないPowerShellでAresを起動します。
 
 ```powershell

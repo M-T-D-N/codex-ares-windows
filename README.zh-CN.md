@@ -63,6 +63,9 @@ npm run setup
 
 安装命令会获取固定版本的源码和依赖，应用 native 补丁，并在本机构建 Ares。它会验证下载的 V8 文件，把可复用的构建缓存留在项目内。已安装的 Codex、认证信息和默认 Rust toolchain 保持不变。
 
+> [!WARNING]
+> **启动路径限制：** 以下默认启动从 unpackaged 环境转入 MSIX 时，Node 与环境的传递尚未经过独立验证。验收使用了现有已注册的 Desktop 26.1007.9446.0、现有 Node，以及显式 MSIX 打包环境启动。请查看[验证范围](docs/validation.md#known-issues-and-unverified-behavior)。
+
 构建完成后，请先结束正在进行的本地任务，再从应用菜单正常退出 Codex。在非管理员 PowerShell 中启动 Ares：
 
 ```powershell

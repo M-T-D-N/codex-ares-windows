@@ -64,6 +64,9 @@ npm run setup
 
 설치 명령은 고정된 소스와 의존성을 받고 native patch를 적용한 뒤 Ares를 PC에서 빌드합니다. V8 다운로드를 검증하고, 재사용할 빌드 캐시는 프로젝트에 보관합니다. 설치된 Codex와 인증정보, 기본 Rust toolchain은 유지합니다.
 
+> [!WARNING]
+> **시작 경로의 제한:** 아래 기본 실행의 unpackaged→MSIX 전환에서 Node와 환경이 전달되는 경로는 독립적으로 검증하지 않았습니다. 수용 검증은 기존 등록 Desktop 26.1007.9446.0과 기존 Node를 사용한 명시적 MSIX 패키지 실행으로 수행했습니다. [검증 범위](docs/validation.md#known-issues-and-unverified-behavior)를 확인하세요.
+
 빌드가 끝나면 진행 중인 로컬 작업을 마치고 앱 메뉴에서 Codex를 정상 종료하세요. 일반 권한 PowerShell에서 Ares를 시작합니다.
 
 ```powershell
