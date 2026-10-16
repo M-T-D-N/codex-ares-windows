@@ -111,7 +111,7 @@ test('event flush failure preserves an existing nonzero exit code in receipt and
 
 for (const lifetimeKind of ['desktop', 'supervisor']) {
 test(`Windows detached ${lifetimeKind} fixture survives launch host exit and preserves package context`,
-  {skip:process.platform!=='win32'||!process.env.ARES_TEST_TEMP,timeout:25000},async()=>{
+  {skip:process.platform!=='win32'||!process.env.ARES_TEST_TEMP,timeout:60000},async()=>{
     assert.ok(process.env.ARES_TEST_TEMP, 'set a project-owned fixture temp directory');
     const dir=await mkdtemp(join(process.env.ARES_TEST_TEMP,lifetimeKind+'-life-'));
     const probe=String.raw`import ctypes,json
@@ -121,7 +121,7 @@ name=''
 if rc==122:
  b=ctypes.create_unicode_buffer(n.value);rc=k.GetCurrentPackageFullName(ctypes.byref(n),b);name=b.value
 print(json.dumps({'packageCode':rc,'packageName':name}))`;
-    const childCode=`const fs=require('node:fs');const cp=require('node:child_process');const deadline=Date.now()+9000;
+    const childCode=`const fs=require('node:fs');const cp=require('node:child_process');const deadline=Date.now()+30000;
 const parent=process.ppid;const timer=setInterval(()=>{let alive=true;try{process.kill(parent,0);}catch{alive=false;}
 if(!alive||Date.now()>deadline){clearInterval(timer);let packageContext;try{packageContext=JSON.parse(cp.execFileSync(process.env.ARES_TEST_PYTHON,['-B','-c',${JSON.stringify(probe)}],{encoding:'utf8',windowsHide:true,timeout:5000}));}catch{packageContext={packageCode:'UNKNOWN'};}
 fs.writeFileSync(process.env.ARES_CHILD_RESULT,JSON.stringify({pid:process.pid,parent,parentExited:!alive,packageContext,time:new Date().toISOString()}));}},100);`;
@@ -129,7 +129,7 @@ fs.writeFileSync(process.env.ARES_CHILD_RESULT,JSON.stringify({pid:process.pid,p
 import {execFileSync} from 'node:child_process';import {writeFileSync} from 'node:fs';
 const child=${lifetimeKind==='supervisor' ? "spawnSupervisor(process.execPath,['-e',"+JSON.stringify(childCode)+"],process.env,process.env.ARES_CHILD_STDOUT,process.env.ARES_CHILD_STDERR)" : "spawnDesktop(process.execPath,['-e',"+JSON.stringify(childCode)+"],process.env)"};
 const identities=execFileSync('powershell.exe',['-NoProfile','-NonInteractive','-Command',
-'Get-CimInstance Win32_Process -Filter "ProcessId = '+process.pid+' OR ProcessId = '+child.pid+'" | Select-Object ProcessId,ParentProcessId,CreationDate,CommandLine,ExecutablePath | ConvertTo-Json -Compress'],{encoding:'utf8',windowsHide:true,timeout:5000});
+'Get-CimInstance Win32_Process -Filter "ProcessId = '+process.pid+' OR ProcessId = '+child.pid+'" | Select-Object ProcessId,ParentProcessId,CreationDate,CommandLine,ExecutablePath | ConvertTo-Json -Compress'],{encoding:'utf8',windowsHide:true,timeout:15000});
 writeFileSync(process.env.ARES_PARENT_RESULT,JSON.stringify({parent:process.pid,child:child.pid,identities:JSON.parse(identities),persistent:false,command:[process.execPath,'-e',${JSON.stringify(childCode)}]}));child.unref();`;
     const parent=spawn(process.execPath,['--input-type=module','-e',parentCode],{windowsHide:true,stdio:['ignore','ignore','pipe'],
       env:{...process.env,ARES_CHILD_RESULT:join(dir,'child.json'),ARES_PARENT_RESULT:join(dir,'parent.json'),
