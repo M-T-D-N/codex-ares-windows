@@ -31,3 +31,5 @@ The adapter now targets **Codex CLI 0.162.0-alpha.17.2** and the tested register
 The release keeps GPT-6 Luna/High through Codex app-server, one-generation leases, fresh evaluation and the selected Main model. Ordinary Luna stays outside Ares control. Trial budgets are not production call limits. There is no new Decisions API, Responses evaluator, Jev route or automatic model swap in this public update.
 
 See [validation](docs/validation.md) for the evidence, [compatibility](docs/compatibility.md) for support boundaries, and [build](docs/build.md) before installing. [한국어 변경 안내](docs/changes.ko.md).
+
+CI follow-up: the cold GitHub Windows runner exceeded the lifecycle fixture PowerShell/CIM 5-second budget. Fixture limits are now CIM15s, child30s and test60s. Parent-exit, child-survival, process-identity and natural-exit assertions remain; product/native inputs are unchanged.

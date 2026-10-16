@@ -28,8 +28,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 5394,
-      "sha256": "aae36a39b0e606acc58d9a464ff65d4491564c6e2ab45e41c1d4b3866ded4e34"
+      "bytes": 5675,
+      "sha256": "344b213d0ea2be61ac3f3bbe917e61d0e8914d5cdd4f7d05df3a04caff6df329"
     },
     {
       "path": "LICENSE",
@@ -298,8 +298,8 @@
     },
     {
       "path": "tests/unit/launch-lifecycle.test.mjs",
-      "bytes": 11213,
-      "sha256": "577e515e755b7ec1ca32427a419b6b28a06692445e4541e588f8ae25bfff733e"
+      "bytes": 11215,
+      "sha256": "0af4a14cb2fc8e3800e4fb6b86e7b085521183c8643b36a7a8e97c419de16dff"
     },
     {
       "path": "tests/unit/luna-app-server.test.mjs",
