@@ -34,13 +34,55 @@ function Get-AresCompletionPath([string]$Root,[string]$InvocationId) {
   }
   return $path
 }
+function Get-AresProcessStartMilliseconds($Value) {
+  if($Value -is [string] -and $Value -match '^/Date\((-?\d+)(?:[+-]\d{4})?\)/$'){return [long]$Matches[1]}
+  return ([datetimeoffset]$Value).ToUnixTimeMilliseconds()
+}
+function Test-AresProcessIdentity($Expected,$Actual) {
+  if(-not $Expected -or -not $Actual -or -not $Expected.CommandLine -or -not $Actual.CommandLine){return $false}
+  try {
+    return $Expected.ProcessId -eq $Actual.ProcessId -and $Expected.ParentProcessId -eq $Actual.ParentProcessId -and
+      $Expected.ExecutablePath -ceq $Actual.ExecutablePath -and $Expected.CommandLine -ceq $Actual.CommandLine -and
+      (Get-AresProcessStartMilliseconds $Expected.CreationDate) -eq (Get-AresProcessStartMilliseconds $Actual.CreationDate)
+  } catch {return $false}
+}
+function Confirm-AresLaunchIdentity($Result,[string]$Root,[string]$NativePath,[string]$DesktopPath) {
+  $desktopPid=[uint32]0;$backendPid=[uint32]0
+  if(-not [uint32]::TryParse([string]$Result.desktop.ProcessId,[ref]$desktopPid) -or $desktopPid -eq 0 -or
+    -not [uint32]::TryParse([string]$Result.backend.ProcessId,[ref]$backendPid) -or $backendPid -eq 0 -or
+    $Result.desktop.ExecutablePath -cne $DesktopPath -or $Result.desktop.CommandLine -match ' --type=' -or
+    $Result.backend.ExecutablePath -cne $NativePath -or $Result.backend.ParentProcessId -ne $desktopPid -or
+    $Result.backend.CommandLine -notmatch ' app-server ') {
+    throw 'Packaged launch outcome UNKNOWN: completion does not identify the expected Desktop and candidate backend.'
+  }
+  $run=[IO.Path]::GetFullPath([string]$Result.runDir)
+  $owner=[IO.Path]::GetFullPath($Root)
+  if([IO.Path]::GetDirectoryName($run) -cne $owner -or [IO.Path]::GetFileName($run) -notlike 'run-*' -or
+    -not (Test-Path -LiteralPath $run -PathType Container) -or
+    ((Get-Item -LiteralPath $run -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+    throw 'Packaged launch outcome UNKNOWN: completion run directory is outside this candidate.'
+  }
+  $runReceipt=Get-Content -LiteralPath (Join-Path $run 'run.json') -Raw | ConvertFrom-Json
+  $recordedDesktop=@($runReceipt.processIdentities | Where-Object {$_.ProcessId -eq $desktopPid}) | Select-Object -First 1
+  if(-not (Test-AresProcessIdentity $recordedDesktop $Result.desktop) -or
+    [IO.Path]::GetFullPath([string]$runReceipt.manifestPath) -cne (Join-Path $owner 'bundle\candidate.json') -or
+    $runReceipt.desktop.pid -ne $desktopPid) {
+    throw 'Packaged launch outcome UNKNOWN: completion does not match its candidate run receipt.'
+  }
+  $desktop=Get-CimInstance Win32_Process -Filter "ProcessId = $desktopPid" -ErrorAction Stop
+  $backend=Get-CimInstance Win32_Process -Filter "ProcessId = $backendPid" -ErrorAction Stop
+  if(-not (Test-AresProcessIdentity $Result.desktop $desktop) -or -not (Test-AresProcessIdentity $Result.backend $backend)) {
+    throw 'Packaged launch outcome UNKNOWN: recorded Desktop/backend identities do not match live processes. No retry was attempted.'
+  }
+}
 function Write-AresLaunchCompletion([string]$Root,[string]$InvocationId,
-  [ValidateSet('candidate_backend_verified','candidate_already_running','failed','unknown')][string]$Status,[string]$Message) {
+  [ValidateSet('candidate_backend_verified','candidate_already_running','failed','unknown')][string]$Status,[string]$Message,$Desktop,$Backend,[string]$RunDir) {
   if(-not $InvocationId){return}
   $path=Get-AresCompletionPath $Root $InvocationId
-  [ordered]@{schema=1;invocationId=$InvocationId;status=$Status;message=$Message;
-    completedAt=[datetimeoffset]::UtcNow.ToString('o')} |
-    ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $path -Encoding utf8
+  $result=[ordered]@{schema=1;invocationId=$InvocationId;status=$Status;message=$Message;
+    completedAt=[datetimeoffset]::UtcNow.ToString('o')}
+  if($Status -in @('candidate_backend_verified','candidate_already_running')){$result.desktop=$Desktop;$result.backend=$Backend;$result.runDir=$RunDir}
+  $result | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $path -Encoding utf8
 }
 function Wait-AresLaunchCompletion([string]$Path,[string]$InvocationId,[datetimeoffset]$NotBefore,[int]$TimeoutSeconds) {
   $timer=[Diagnostics.Stopwatch]::StartNew()
@@ -89,6 +131,11 @@ $package=$packages[0]
 $compat=Get-Content -LiteralPath (Join-Path $repoRoot 'patches/codex/upstream.lock.json') -Raw | ConvertFrom-Json
 $validatedPackageVersion=if($compat.desktop.observedPackageVersion){$compat.desktop.observedPackageVersion}else{$compat.desktop.observedVersion}
 if($package.Version.ToString() -ne $validatedPackageVersion){throw 'This Desktop version has not been validated with the locked native protocol. Use the installed app normally; no update or installation was changed.'}
+$desktopPath=Join-Path $package.InstallLocation 'app\ChatGPT.exe'
+if(-not(Test-Path -LiteralPath $desktopPath -PathType Leaf)){throw 'The registered Desktop executable is missing.'}
+$manifestPath=Join-Path $repoRoot 'bundle\candidate.json'
+$candidateManifest=Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+$candidateManifest.native.path=[IO.Path]::GetFullPath((Join-Path $repoRoot $candidateManifest.native.path))
 $node=Resolve-AresNodePath $NodePath ([bool]$PackagedLaunch)
 # The registered MSIX Desktop needs package identity. Direct EXE launch loses it.
 # Keep this context within the Ares process tree; do not change installation or user settings.
@@ -104,6 +151,7 @@ if(-not $PreflightOnly -and -not $PackagedLaunch) {
     -Command (Join-Path ([Environment]::SystemDirectory) 'WindowsPowerShell\v1.0\powershell.exe') -Args $packagedArgs -PreventBreakaway
   $timeout=if($WaitForDesktopPid){240}else{60}
   $result=Wait-AresLaunchCompletion $completionPath $InvocationId $notBefore $timeout
+  Confirm-AresLaunchIdentity $result $repoRoot $candidateManifest.native.path $desktopPath
   Write-Output $result.message
   return
 }
@@ -111,11 +159,6 @@ if(-not $PreflightOnly -and -not $PackagedLaunch) {
 if(-not $PreflightOnly -and $PackagedLaunch -and $ContextTraceThreadId) {
   $env:CODEX_CONTEXT_TRACE_THREAD_ID=$ContextTraceThreadId
 }
-$desktopPath=Join-Path $package.InstallLocation 'app\ChatGPT.exe'
-if(-not(Test-Path -LiteralPath $desktopPath -PathType Leaf)){throw 'The registered Desktop executable is missing.'}
-$manifestPath=Join-Path $repoRoot 'bundle\candidate.json'
-$candidateManifest=Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-$candidateManifest.native.path=[IO.Path]::GetFullPath((Join-Path $repoRoot $candidateManifest.native.path))
 $stamp=Get-Date -Format 'yyyyMMdd-HHmmss-fff'
 $bindingDir=Join-Path $repoRoot 'desktop-bindings'
 New-Item -ItemType Directory -Path $bindingDir -Force | Out-Null
@@ -155,8 +198,14 @@ if($existing.Count -gt 0) {
   })
   if($backend.Count -gt 0) {
     if($ContextTraceThreadId){throw 'Context diagnostics are selected at startup. Quit Codex normally first. The running app was not changed.'}
+    $current=Get-Content -LiteralPath (Join-Path $repoRoot 'current-run.json') -Raw | ConvertFrom-Json
+    $activeRun=[IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($current.receiptPath))
+    $activeBackend=$backend[0] | Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine
+    $activeDesktop=$existing | Where-Object {$_.ProcessId -eq $activeBackend.ParentProcessId} |
+      Select-Object -First 1 ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine
+    Confirm-AresLaunchIdentity ([pscustomobject]@{desktop=$activeDesktop;backend=$activeBackend;runDir=$activeRun}) $repoRoot $candidateManifest.native.path $desktopPath
     Start-Process -FilePath $desktopPath
-    Write-AresLaunchCompletion $repoRoot $InvocationId 'candidate_already_running' 'This candidate is already running. Opened its existing window.'
+    Write-AresLaunchCompletion $repoRoot $InvocationId 'candidate_already_running' 'This candidate is already running. Opened its existing window.' $activeDesktop $activeBackend $activeRun
     Write-Output 'This candidate is already running. Opened its existing window.'
     return
   }
@@ -192,7 +241,7 @@ do {
     $launch.status='candidate_backend_verified';$launch.verifiedAt=[DateTime]::UtcNow.ToString('o');$launch.backend=$backend
     $launch.desktop=Get-CimInstance Win32_Process -Filter "ProcessId = $($receipt.desktop.pid)" | Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine
     $launch | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $launchPath -Encoding utf8
-    Write-AresLaunchCompletion $repoRoot $InvocationId 'candidate_backend_verified' "Ares candidate backend verified. Run: $run"
+    Write-AresLaunchCompletion $repoRoot $InvocationId 'candidate_backend_verified' "Ares candidate backend verified. Run: $run" $launch.desktop $backend[0] $run
     Write-Output "Ares candidate backend verified. Run: $run"
     return
   }

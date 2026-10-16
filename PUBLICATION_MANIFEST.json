@@ -208,8 +208,8 @@
     },
     {
       "path": "scripts/start.ps1",
-      "bytes": 14128,
-      "sha256": "d7b0544b1a7635e3e18179fadb7631f29743e9007829e0bba94a4f7d13df5f8a"
+      "bytes": 18158,
+      "sha256": "5600af3e47c993129f8e3ef4bfcf288b41f80f4dc62841e6e18de8a395b81af1"
     },
     {
       "path": "scripts/status.ps1",
@@ -278,8 +278,8 @@
     },
     {
       "path": "tests/desktop-startup.ps1",
-      "bytes": 13506,
-      "sha256": "ab66d2ba3d55c9eab4d2085c33da32b18f33c6b8a02b0bebee7525d41064d39d"
+      "bytes": 18841,
+      "sha256": "3664a691bbdf409e1b728500c83bd042b5a64c864998af676f76fad1ebfb8012"
     },
     {
       "path": "tests/unit/controller-cancellation.test.mjs",
