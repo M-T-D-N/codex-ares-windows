@@ -63,6 +63,8 @@ let modes='';for(const [rel,meta]of Object.entries(base))if(meta.mode!=='100644'
 }
 if(modes)git(['update-index','-z','--index-info'],modes);
 if(git(['write-tree']).trim()!==lock.baseTree)throw Error('Clean base tree mismatch');
+// Refresh stat data after index-info mode changes before Windows --index checks.
+git(['update-index','--refresh']);
 git(['apply','--check','--index',patch]);git(['apply','--index',patch]);
 const expected={...base,...changed};
 for(const [rel,meta]of Object.entries(expected)){

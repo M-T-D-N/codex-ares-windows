@@ -1,60 +1,30 @@
 # Codex Ares for Windows
 
-<p align="center">
-  <img src="docs/assets/ares-banner.svg" alt="Codex Ares — automatic reasoning control for Astra and Sol" width="1120" />
-</p>
+<p align="center"><img src="docs/assets/ares-banner.svg" alt="Codex Ares — automatic reasoning control for Astra and Sol" width="1120" /></p>
 
 **Choose your model. Let Ares handle the reasoning level.**
 
-Reading a file, tracing a bug and weighing an implementation call for different amounts of reasoning. Ares checks the current state before each generation and adjusts the effort for the selected model's next response, while the task continues in the same conversation.
+Ares checks the current task before each generation and selects the reasoning effort for your chosen model. The work continues in the same conversation.
 
-**2026-10-16 source preview:** composer predictions bypass Luna using accepted metadata; ordinary user requests retain evaluation. The exact source candidate passed a fresh-output native build and a real Sol 6.1/Luna xhigh response in an existing registered Desktop 26.1007.9446.0 environment. This is a source preview with known limitations, not a clean-machine installation or stability/quality/cost guarantee. See [validation](docs/validation.md) and [compatibility](docs/compatibility.md).
+[English](README.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md)
 
-<p align="center">
-  <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a>
-</p>
+**0.1.0-preview.2 source candidate:** the native base is official Codex **0.163.0**, with the existing Ares controls carried forward. Matching private-runtime checks covered GUI Stop, recovery in the same conversation, and compaction/resume. The exact public layout has not had a fresh GUI/provider acceptance run. Restoration (9,193 files/modes), 95 tests and bundle/Doctor/preflight passed with reused native bytes. See [validation](docs/validation.md) for what each observation establishes.
 
-<p align="center">
-  <a href="https://github.com/M-T-D-N/codex-ares-windows/actions/workflows/test.yml"><img src="https://github.com/M-T-D-N/codex-ares-windows/actions/workflows/test.yml/badge.svg" alt="Source checks" /></a>
-  <a href="docs/build.md"><img src="https://img.shields.io/badge/status-source_preview-d89a44" alt="Source preview" /></a>
-  <a href="docs/compatibility.md"><img src="https://img.shields.io/badge/platform-Windows_x64-286b85" alt="Windows x64" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT_%2B_Apache--2.0-447a64" alt="MIT adapter + Apache-2.0 native patch" /></a>
-</p>
+## What it does
 
-<p align="center">
-  <a href="#get-started">Get started</a> · <a href="#pick-your-route">Choose a route</a> · <a href="docs/architecture.md">How it works</a> · <a href="docs/pilot-results.md">Test results</a>
-</p>
-
-> [!NOTE]
-> **Source preview:** build locally using the pinned dependencies. Read the [build guide](docs/build.md), [compatibility scope](docs/compatibility.md) and [development validation](docs/validation.md) before setup.
-
-Development note: this downstream is AI-generated and user-tested; [read the
-full disclosure](#ai-development-disclosure).
-
-[Changes and documentation](docs/README.md) · [Change history](CHANGELOG.md)
-
-## What Ares adds to Codex
-
-- **Automatic effort changes during a task.** Ares evaluates the next step from the first generation onward and can select `medium`, `high`, `xhigh` or `max`. You don't have to stop and change the selector for each step.
-- **The model you chose.** Astra stays Astra; Sol stays Sol; Sol 6.1 stays Sol 6.1. Effort changes apply to the next generation in the same turn. Your existing workers keep their own roles.
-- **A way through evaluator delays.** If evaluation times out or becomes unavailable, the Main continues at its baseline effort while the controller handles recovery.
-
-Ordinary Astra, Sol, Sol 6.1 and Luna remain available. Automatic control starts when you choose an Ares route.
-
-## Pick your route
-
-| Choose in Codex | Main model | Who selects the effort |
+| Choose in Codex | Main model | Effort evaluator |
 |---|---|---|
-| **Astra Ares** | GPT-6 Astra | Independent GPT-6 Luna / High |
-| **Sol Ares** | GPT-6 Sol | Independent GPT-6 Luna / High |
-| **Sol 6.1-Ares** | GPT-6.1 Sol | Independent GPT-6 Luna / High |
+| Astra Ares | GPT-6 Astra | Independent GPT-6 Luna / High |
+| Sol Ares | GPT-6 Sol | Independent GPT-6 Luna / High |
+| Sol 6.1-Ares | GPT-6.1 Sol | Independent GPT-6 Luna / High |
 
-**Luna evaluates; your Main works.** The Luna routes use your existing Codex sign-in. A separate evaluator reads the current decision context without tools or MCP access and returns an effort recommendation.
+Luna evaluates the next generation and can recommend `medium`, `high`, `xhigh` or `max`. Your Main model stays selected. Each judgment belongs to one generation; old judgments are not reused as fresh decisions. If evaluation is unavailable or times out, Main can continue at its baseline effort while the controller handles recovery.
 
+Ordinary model choices remain available. Ordinary Luna and subagents do not acquire Ares control. Internal composer predictions bypass evaluation using accepted metadata; an ordinary request containing the same words still follows the normal route. The separate evaluator uses your existing Codex sign-in and has no tools or MCP access.
 
 ## Get started
 
-You need **Windows x64**, Node.js 22+ with npm, Git, rustup, Visual Studio x64 C++ build tools and a compatible Codex Desktop installation. The native source targets **Codex 0.162.0-alpha.17.2**. The existing local Ares runtime passed an actual Desktop launch and Luna→Main response check; see [compatibility](docs/compatibility.md) for the tested scope.
+This preview contains **source to build locally**. You need Windows x64, Node.js 22+/npm, Git, rustup, Visual Studio x64 C++ build tools and the compatible registered Codex Desktop. The observed Desktop version is **26.1013.4894.0**; the launcher enforces the version in the [source lock](patches/codex/upstream.lock.json).
 
 ```powershell
 git clone https://github.com/M-T-D-N/codex-ares-windows.git
@@ -62,63 +32,39 @@ Set-Location codex-ares-windows
 npm run setup
 ```
 
-Setup downloads the pinned source and dependencies, applies the native patch, and builds Ares locally. It verifies the V8 downloads and keeps reusable build caches in the project. Your installed Codex, authentication and default Rust toolchain stay in place.
+Use the intended source revision or archive and retain its checksum. Setup restores the pinned Codex base, applies the cumulative patch once, restores dependencies and builds the CLI and four companions. It preserves the installed Desktop, authentication and default Rust toolchain. Read the [build guide](docs/build.md) before setup or update; fresh-PC installation and the project-local Rust installer branch remain unaccepted.
 
-> [!WARNING]
-> **Startup limitation:** the default unpackaged-to-MSIX Node/environment handoff below has not been independently verified. Acceptance used an explicit MSIX packaged launch with the existing registered Desktop 26.1007.9446.0 and existing Node. See [validation boundaries](docs/validation.md#known-issues-and-unverified-behavior).
-
-After the build finishes, complete any active local tasks and quit Codex from its app menu. In a normal, non-administrator PowerShell, start Ares:
+After building, finish active work and quit Codex normally from its app menu. In a normal, non-administrator PowerShell:
 
 ```powershell
+.\scripts\doctor.ps1
+.\scripts\start.ps1 -PreflightOnly
 .\scripts\start.ps1
 ```
 
-Select **Astra Ares**, **Sol Ares** or **Sol 6.1-Ares** in the model picker to use Luna evaluation.
+Preflight checks inputs without starting Desktop or calling a model. Startup resolves Node before entering MSIX, waits for a completion receipt and checks the live Desktop/backend identity. An absent or uncertain completion is not successful activation; inspect the reported receipt before retrying. These mechanisms do not replace exact-public GUI acceptance.
+
+Choose an Ares route in the model picker. `.\scripts\status.ps1` checks backend/controller identity and freshness; an old receipt is not proof of a live controller.
 
 | To… | Do this |
 |---|---|
-| Check the running backend and controller | Run `.\scripts\status.ps1` |
 | Return to fixed effort | Choose an ordinary model at a turn boundary |
 | Stop the current task | Use Codex's normal Stop control |
-| Return to the installed app | Quit normally, then open Codex as usual |
+| Return to installed Codex | Quit normally, then open the installed app |
+| Update, recover or remove Ares | Follow the [lifecycle guide](docs/build.md#update-recovery-and-removal) |
 
-[Full build guide and recovery steps](docs/build.md)
+## Evidence and limits
 
-## Tested in real Codex work
+In the matching private 0.163 runtime, GUI Stop cancelled the request in 452 ms, with no extra Main generation in that cancelled turn. A subsequent request in the same conversation completed in 3,001 ms with the expected visible marker. Earlier GUI Medium and compaction/resume checks passed on the same fixed native source. These are bounded functional observations.
 
-The existing trials covered all four routes, effort changes within a turn, overlapping conversations and recovery after evaluator delay. The [published results](docs/pilot-results.md) include the full 12-condition workload comparison and analysis of 51 Jev judgments.
+Isolated RPC checks covered accepted task delivery; ordinary GUI generation of that delivery path was not observed. The original PowerShell failure cause and the historical launch-manifest byte hash remain UNKNOWN. GUID completion/error propagation and backend identity continuity are separate fixes, not proof of that historical cause.
 
-<details>
-<summary><strong>Results and current recommendations</strong></summary>
+The [historical pilot](docs/pilot-results.md) retains small comparisons and negative Jev results. Those trials and the later small quality sample establish no general quality equivalence, savings or long-term stability. This source preparation adds no paid pilot.
 
-- **Astra:** Luna-assisted effort is an option when its evaluation wait is acceptable; fixed Astra/xhigh is simpler when latency matters.
-- **Sol:** fixed Sol/High remains the default recommendation from the measured workloads.
-- **Historical Jev trial:** all 51 judgments deferred. The Jev routes have been removed; the measurements remain in the pilot report.
+[Changes](CHANGELOG.md) · [Compatibility](docs/compatibility.md) · [Build](docs/build.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md) · [Privacy](docs/privacy.md)
 
-These small comparisons demonstrate control behavior, not a general cost or quality advantage. Failures, missing measurements and the distinction between natural escalation and forced control tests are included in the results.
+## AI development disclosure and attribution
 
-</details>
+Most downstream modifications were generated and revised by OpenAI Codex from user requirements and acceptance feedback. The repository owner did not manually review the source. Validation uses automated checks and functional trials in the owner's Windows/Codex environment; no independent third-party code or security audit is claimed.
 
-This release provides **source to build locally**. Recent fixes keep the evaluator bridge alive after its launch host exits, reduce oversized evaluator evidence while preserving current goals, and recover interrupted tool history in development builds. A real Sol 6.1-Ares turn completed after Luna/High selected Medium. [Development validation](docs/validation.md) separates this local runtime evidence from the public layout checks and records delays and failures.
-
-## Go deeper
-
-[Architecture](docs/architecture.md) · [Build and dependencies](docs/build.md) · [Compatibility](docs/compatibility.md) · [Privacy](docs/privacy.md) · [Test results](docs/pilot-results.md)
-
-The README is available in English, Korean, Japanese and Simplified Chinese. Technical guides are currently in English.
-
-## AI development disclosure
-
-Most downstream modifications were generated and revised by OpenAI Codex from
-user-provided requirements and iterative acceptance requests. The repository
-owner did not manually review the source code. Validation is based on automated
-tests and live functional testing in the owner's Windows/Codex environment. No
-independent third-party code or security audit has been performed.
-
-**In short:** AI-generated, user-tested, not manually code-reviewed.
-
-## Upstream attribution and license
-
-This adapter derives from [Astra-Ares](https://github.com/miuuyy/Astra-Ares) and patches [OpenAI Codex](https://github.com/openai/codex). Exact source identities are in the [lock](patches/codex/upstream.lock.json). It is not an official OpenAI product or a promise of upstream support.
-
-The [license](LICENSE) preserves MIT for the bridge and new adapter, and Apache-2.0 for native changes. [Third-party notices](THIRD_PARTY_NOTICES.md) preserve the upstream terms. The installed Desktop and bundled executable dependencies are not redistributed in this source preview.
+Derived from [Astra-Ares](https://github.com/miuuyy/Astra-Ares), with patches to [OpenAI Codex](https://github.com/openai/codex). This is not an official OpenAI product. [LICENSE](LICENSE) preserves MIT for the adapter and Apache-2.0 for native changes; see [third-party notices](THIRD_PARTY_NOTICES.md). Native executables, installed Desktop, toolchains, dependency trees and private runtime evidence are excluded from the source distribution.

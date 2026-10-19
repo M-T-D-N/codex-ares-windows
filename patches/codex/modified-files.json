@@ -1,22 +1,21 @@
 {
-  "schema": 1,
   "files": {
     "codex-rs/Cargo.lock": {
       "mode": "100644",
-      "sha256": "49575eeb44a747925fd1acef51bff88316f728b77d7f63d989835c8623c344cb",
-      "size": 410082,
+      "sha256": "cae541406f7ec43a418e126be2bcd5de00b243e7bbf6382570028727d99c1069",
+      "size": 408689,
       "state": "present"
     },
     "codex-rs/Cargo.toml": {
       "mode": "100644",
-      "sha256": "7e3d66b0034b9ffc7e232d6908728a968299bc25f94d88499e01dd0038b364d7",
-      "size": 21189,
+      "sha256": "4da6cd0be15226f3a659ff35a727b3636088b8d2b87540d7cdfefa2130841d4e",
+      "size": 21083,
       "state": "present"
     },
     "codex-rs/analytics/src/client_tests.rs": {
       "mode": "100644",
-      "sha256": "9879593d49507a13fe00c5756f157bbad8b53f94580a21748b5b8868a9cf808f",
-      "size": 44403,
+      "sha256": "3131084e65156baaa658c5ce6665212559d081b849b15a0ea8087252a35bf4b3",
+      "size": 46161,
       "state": "present"
     },
     "codex-rs/analytics/src/tests/support.rs": {
@@ -27,20 +26,20 @@
     },
     "codex-rs/app-server-protocol/schema/json/ServerNotification.json": {
       "mode": "100644",
-      "sha256": "585089254fe0ef1be7c518f2f3d923b36299dd452b4f426fce96974eed944225",
-      "size": 210995,
+      "sha256": "0f56142b5c24fef37686f7913c0b50664c9cf1b841d6aa0fb255c9b575b9cf83",
+      "size": 214076,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.schemas.json": {
       "mode": "100644",
-      "sha256": "855a9b429e1f657e73a69f7b8ca69b3a7545e8c445ed8f464a9c99f40bc772fd",
-      "size": 725359,
+      "sha256": "bc578f362b6732d2b38b7fc9a74220c55b4fa536b15fe56fccb12c0ccc0b15d8",
+      "size": 732533,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/json/codex_app_server_protocol.v2.schemas.json": {
       "mode": "100644",
-      "sha256": "f79422c49fbec33f03ecc7a9a61a64e3c0cc5dfae2327c67d69bea06c41b4780",
-      "size": 623435,
+      "sha256": "98aa7477e44a702b1d80529e7646ac5f3d2941e2e9440ccf9e5ca85dfd8cfc94",
+      "size": 630114,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/json/v2/ReasoningEffortUpdatedNotification.json": {
@@ -51,32 +50,32 @@
     },
     "codex-rs/app-server-protocol/schema/json/v2/ThreadStartResponse.json": {
       "mode": "100644",
-      "sha256": "6531ec52855791714f37088d7084ace01ecf9e49d740324c36aba7d38421e467",
-      "size": 79238,
+      "sha256": "4dd78a0ba2fed9f916bd11f34a07f29e97ab8a542f5ac3afb2f8ae89b2b41af4",
+      "size": 79829,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-experimental.json.zst": {
       "mode": "100644",
-      "sha256": "d13d7e365efce17ddc06abe215ef153ef3304723930f049127089660f933a531",
-      "size": 163336,
+      "sha256": "6954b7a161549cb66e0565d45e3f96062375efe5a9957985a6399002050605ee",
+      "size": 165859,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/precomputed/app-server-exports-stable.json.zst": {
       "mode": "100644",
-      "sha256": "8693f3dc4b292e6e99075d1d1997a686efda3ec802a1dba4b73a249cf885e408",
-      "size": 158640,
+      "sha256": "bb2652c2be767b7bd2f9098fce8166bbcbd734aea051aeff5994bb1de252fe8c",
+      "size": 159832,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/typescript/ServerNotification.ts": {
       "mode": "100644",
-      "sha256": "fb3c633c651c47c8f12fd2505f798a2233e4be637005e086728d2e6bb376267e",
-      "size": 15711,
+      "sha256": "d3db1578c504a3caed528c964225f423e0c7024be9856561696aac1703d0740a",
+      "size": 15899,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/typescript/ServerNotificationEnvelope.ts": {
       "mode": "100644",
-      "sha256": "8760575cd81ed45af335830dd7ed099e90592c4766836f057aa0a86114ba4113",
-      "size": 16109,
+      "sha256": "317333885dc5c8627bb19c844fa56b0dec4705acdaa77cfc22fe193f6cdbbeb8",
+      "size": 16297,
       "state": "present"
     },
     "codex-rs/app-server-protocol/schema/typescript/v2/ReasoningEffortUpdatedNotification.ts": {
@@ -93,14 +92,14 @@
     },
     "codex-rs/app-server-protocol/schema/typescript/v2/index.ts": {
       "mode": "100644",
-      "sha256": "906254beec2b531f7bb7b7255c277db2c425bff8c53cf10418add3cc5304a40f",
-      "size": 47955,
+      "sha256": "62c8e9138786f117d980aac93805abcb88e4864c708c9e195450d1b227b264e0",
+      "size": 48253,
       "state": "present"
     },
     "codex-rs/app-server-protocol/src/protocol/common.rs": {
       "mode": "100644",
-      "sha256": "cfd57b3184637198bb124430e9030822c310f30d70a38224baca3cd2ac50828c",
-      "size": 175825,
+      "sha256": "026daff7bdc123744995edfcf0d0da3381176f046ac130882184fcade4b98455",
+      "size": 174984,
       "state": "present"
     },
     "codex-rs/app-server-protocol/src/protocol/v2/notification.rs": {
@@ -111,14 +110,14 @@
     },
     "codex-rs/app-server-protocol/src/protocol/v2/thread.rs": {
       "mode": "100644",
-      "sha256": "837841478b7ffeb51d3f5b5dc096dfdd38a114535375fa459d68c5f8d78f8cbe",
-      "size": 79799,
+      "sha256": "fc7c2bc7372a88528f34177a0719307e06cebf199c28b3c24ed1c5a1c9cbe4e8",
+      "size": 83353,
       "state": "present"
     },
     "codex-rs/app-server/src/bespoke_event_handling.rs": {
       "mode": "100644",
-      "sha256": "6753b64faeb0861d17414d1bc7093c798ab5059e00bcb2fa2c232b83cfea6e05",
-      "size": 156559,
+      "sha256": "92261e9777b577f24681cf07c598daeab96c2901df0c400b7af51f1a6c6dc681",
+      "size": 156845,
       "state": "present"
     },
     "codex-rs/app-server/src/current_time.rs": {
@@ -141,20 +140,20 @@
     },
     "codex-rs/app-server/src/notification_media.rs": {
       "mode": "100644",
-      "sha256": "e930ce217219e813747bb21b17f0bc571896f5864f9880a743eda04e55a99da9",
-      "size": 10592,
+      "sha256": "0ec514ae9b9f66708bae54b9123e00ca59af0fcdf93b9ad5ef116837dde532eb",
+      "size": 10648,
       "state": "present"
     },
     "codex-rs/app-server/src/outgoing_message.rs": {
       "mode": "100644",
-      "sha256": "f02ccc0a48c05995aef6a9b734751bd96ae65dcd720e606064f26be0035f2194",
-      "size": 59487,
+      "sha256": "110c0584c81f035d16904dae4b9c7b2b6854024dafb6f256973f55434f04b9ca",
+      "size": 59734,
       "state": "present"
     },
     "codex-rs/app-server/src/request_processors/thread_processor.rs": {
       "mode": "100644",
-      "sha256": "80612911bc673e2b89243b7fa90895edefedd5c679d4092ef05d02594dae28be",
-      "size": 256726,
+      "sha256": "77b4da8a9d16d93fe26a4a4037394d71ab7d75b771b77dd491d0617ab2bf9f18",
+      "size": 266757,
       "state": "present"
     },
     "codex-rs/app-server/tests/suite/v2/thread_start.rs": {
@@ -165,32 +164,44 @@
     },
     "codex-rs/cli/src/main.rs": {
       "mode": "100644",
-      "sha256": "0d4554e725323176ccf1f92fdf9f4317e7345e203666a7d70bdf2424093475e9",
-      "size": 180965,
+      "sha256": "c2a73b0d497987185a6125523e470561cfeacac00245d2a6cf194b9ab745428f",
+      "size": 182562,
+      "state": "present"
+    },
+    "codex-rs/code-mode-runtime/src/v8_init.rs": {
+      "mode": "100644",
+      "sha256": "faebfb5f1d79372b614321d6049f257929923deda3445f09552ef03b106b26de",
+      "size": 3041,
+      "state": "present"
+    },
+    "codex-rs/code-mode-runtime/tests/jit.rs": {
+      "mode": "100644",
+      "sha256": "59ad20e67be3e5df35450a4e155af1a7e13e055eb075ebf3690b2fe8a2928168",
+      "size": 2996,
       "state": "present"
     },
     "codex-rs/code-mode/src/grpc_session/callbacks.rs": {
       "mode": "100644",
-      "sha256": "4d9094a36cb7d0c1eafbea26c8fe529ecfc298bfef0707bd96929c81e7c6963f",
-      "size": 10496,
+      "sha256": "58d3ecd30ba9c211a423524d21bfcd9e954c18fff826ec42c0208af95f78a40a",
+      "size": 10473,
       "state": "present"
     },
     "codex-rs/codex-api/src/endpoint/responses_websocket.rs": {
       "mode": "100644",
-      "sha256": "fb46a62af436bd2877e2543af4a759b68eeab4e7ead9e5029cada2f789f1a9b3",
-      "size": 48279,
+      "sha256": "36e935389092dd70909e371f53bcd145495c1f6d2af4e22be2fc3b10230f70ad",
+      "size": 54922,
       "state": "present"
     },
     "codex-rs/core/src/client.rs": {
       "mode": "100644",
-      "sha256": "d6a19a46323b7dedbf2eb57d7c1d4a71325ad74ca1e2002980e62d52a6122131",
-      "size": 123926,
+      "sha256": "0ca88f6d4d47c56de45d86860e7b03d32bba0f3501956f23a3366ca579400cdb",
+      "size": 129994,
       "state": "present"
     },
     "codex-rs/core/src/client_tests.rs": {
       "mode": "100644",
-      "sha256": "d805ee88cb907cf2d85c96d742263a8422c57d247c1164e77b98548ce6077129",
-      "size": 80288,
+      "sha256": "5ca50dc75833e3efc4b9542e68e048f6733c4cec4a28318a5e0182666c4afa47",
+      "size": 110185,
       "state": "present"
     },
     "codex-rs/core/src/context/contextual_user_message.rs": {
@@ -213,8 +224,8 @@
     },
     "codex-rs/core/src/context_manager/history_tests.rs": {
       "mode": "100644",
-      "sha256": "6031397529253b057812fa257585db583f3435b811d0616a323d3d0d67a722e8",
-      "size": 121578,
+      "sha256": "ad84a4ad0f861bd108523c6dcce186bef0243d2856a1827d5700f8a832a3193c",
+      "size": 125969,
       "state": "present"
     },
     "codex-rs/core/src/context_manager/normalize.rs": {
@@ -225,44 +236,44 @@
     },
     "codex-rs/core/src/hook_runtime.rs": {
       "mode": "100644",
-      "sha256": "b4d28be663c4379ff710c5d77d55985429531c47b2d3bfe3411b59a9d026b3f9",
-      "size": 50441,
+      "sha256": "b34a2130a2ab1de383703dc8a103118f8ac9ef7278121230b2aae312e5c3d23e",
+      "size": 50475,
       "state": "present"
     },
     "codex-rs/core/src/lib.rs": {
       "mode": "100644",
-      "sha256": "73f20d193feb09070dba1c42a95230b61dbdf994d3a993270892466da125eea2",
-      "size": 8885,
+      "sha256": "5df582351a232069da5a93a695050ac5d5cc8bbc4e6f28d63e601249897d8c04",
+      "size": 9164,
       "state": "present"
     },
     "codex-rs/core/src/mcp.rs": {
       "mode": "100644",
-      "sha256": "fda0f58779ba37099288acbb86d5a2a6f651aa6714072d6cd5922488ef896503",
-      "size": 19458,
+      "sha256": "c735e4c50e298d60c313b992732a40ad5c9caf1881d80dab6a1de13472d8bfa6",
+      "size": 19997,
       "state": "present"
     },
     "codex-rs/core/src/mcp_tool_call.rs": {
       "mode": "100644",
-      "sha256": "df22312b18802f9e843536dec868e839500d31d9f7a995e75b32674054f77577",
-      "size": 91420,
+      "sha256": "e39ab0a01bf965dff987a300de73ce5b04173b79294b3c4fa4bff573aab8045c",
+      "size": 91038,
       "state": "present"
     },
     "codex-rs/core/src/pilot_trace.rs": {
       "mode": "100644",
-      "sha256": "76833dea005759c46c60aff460aace2a3321ae3033b2a6d5859abc387efc9cde",
-      "size": 10055,
+      "sha256": "4fd719746e9c3de3c3a623271548f27b73fceb4b7e3fd73b65269c9d9682684f",
+      "size": 15547,
       "state": "present"
     },
     "codex-rs/core/src/pilot_trace_tests.rs": {
       "mode": "100644",
-      "sha256": "cdb8f67f08f7381357cf0bd68fc12f480cef429edbfc21b34e324d607d4b1ab7",
-      "size": 9105,
+      "sha256": "1eb03fe340143162e8b73780e4d13b7e40174cfea01bb93112bffa02c05de7c9",
+      "size": 16115,
       "state": "present"
     },
     "codex-rs/core/src/session/decision_context.rs": {
       "mode": "100644",
-      "sha256": "ee2df9b282d09fa8e1d2b301444b69f761a3ddced0f47cb18e6af61e4d1958bc",
-      "size": 10898,
+      "sha256": "8498ec33a19c0b0cbd6c8d7517ce21eee74f8453798764453c65af9ca567e53e",
+      "size": 10965,
       "state": "present"
     },
     "codex-rs/core/src/session/input_queue.rs": {
@@ -285,26 +296,26 @@
     },
     "codex-rs/core/src/session/mod.rs": {
       "mode": "100644",
-      "sha256": "66fb6d8861c75712964a3bc7ffb2af330da663167060daeadc793efa7c55f458",
-      "size": 216513,
+      "sha256": "d4660c6e3f010738b707e58e017ca915bf63a7395602e79d6f037624d1fa6352",
+      "size": 228913,
       "state": "present"
     },
     "codex-rs/core/src/session/session.rs": {
       "mode": "100644",
-      "sha256": "d46c2d575404c2c5e5eaa11985ecbdbab68e61bd065ff10b15b8961fa2e55383",
-      "size": 97382,
+      "sha256": "7e85ccf743122bb187e3acd055bd7385663d42607d59c6804cdd7bb0a5af9b84",
+      "size": 96832,
       "state": "present"
     },
     "codex-rs/core/src/session/step_activation.rs": {
       "mode": "100644",
-      "sha256": "b1b16502dc2f6c2009343f417d12fdfab3df610425767e8a5a8acbb2a1057c14",
-      "size": 25501,
+      "sha256": "a7b7cfda97004e565ef6cca3f2d615b2041e19ce5df9fc0f474949cf97a7ac40",
+      "size": 25602,
       "state": "present"
     },
     "codex-rs/core/src/session/step_activation_tests.rs": {
       "mode": "100644",
-      "sha256": "f22f23407fad564dfe75f13c8edf503d1914891e2af4eea48a42af6dba6a2170",
-      "size": 60435,
+      "sha256": "ca9b692646d49f77478e35067b3bdf19c1e9c9b04862324c97858f95d72bdcb5",
+      "size": 59624,
       "state": "present"
     },
     "codex-rs/core/src/session/step_controller.rs": {
@@ -315,20 +326,20 @@
     },
     "codex-rs/core/src/session/step_controller_luna.rs": {
       "mode": "100644",
-      "sha256": "1d4d7cfdb4c00f688f66e508fe3c1e3e1636760cb7e6a086b46d2508ec0f1233",
-      "size": 36328,
+      "sha256": "b49c61dea734b906889dfb678e67f6d2344dc1b6137a159f96a283b208bef9fe",
+      "size": 38843,
       "state": "present"
     },
     "codex-rs/core/src/session/step_controller_tests.rs": {
       "mode": "100644",
-      "sha256": "f1b09b4206fedccf03572d0a14b2d72543a5a165369c431f5738f1cd5c704a18",
-      "size": 29148,
+      "sha256": "36c477c238bbcf41d26a04b8909c8ee4580ff943ddc5e138de0aae9e25159fe1",
+      "size": 40517,
       "state": "present"
     },
     "codex-rs/core/src/session/tests.rs": {
       "mode": "100644",
-      "sha256": "772200dde34767062a33b24cf058d52601fac7c66f3b31ea81ec49cf84112699",
-      "size": 498470,
+      "sha256": "1e88f08ac7181071cf6886f3891ec1dc544c9d214ea59c8b61a2fbd6ba2fae9d",
+      "size": 498893,
       "state": "present"
     },
     "codex-rs/core/src/session/time_reminder.rs": {
@@ -339,26 +350,26 @@
     },
     "codex-rs/core/src/session/turn.rs": {
       "mode": "100644",
-      "sha256": "77d7f7f00f432ab2b0f63f843d32a8bd66fa5278979cf11bc8bb56f3c8bf88a8",
-      "size": 131070,
+      "sha256": "0289ba507607eee4ce40a82444b22122d626f10f5e1abf19b6a27b5799234faa",
+      "size": 136187,
       "state": "present"
     },
     "codex-rs/core/src/session/turn_context.rs": {
       "mode": "100644",
-      "sha256": "1081cdef8d177d6709710d95ce7cef2c08152d0b2d9fd61825c2112977437e03",
-      "size": 69138,
+      "sha256": "4adf4910e83d46b5dcf7be5a0372a6b178761d84956ea169171b0591f7ac4347",
+      "size": 65883,
       "state": "present"
     },
     "codex-rs/core/src/session/world_state.rs": {
       "mode": "100644",
-      "sha256": "6f25e9c473624e00199a4ec3f7be87e010a4e6378ba74cb927c28f150e47dc6a",
-      "size": 18305,
+      "sha256": "7adeea8669570ad160b270138648e6e0e3661b87193da2df119c1ad874958796",
+      "size": 19267,
       "state": "present"
     },
     "codex-rs/core/src/state/turn.rs": {
       "mode": "100644",
-      "sha256": "3ef6a21d90ee4b57c1127380d70677655c8bb7421f9678e9105d8fd7209f9f8d",
-      "size": 8006,
+      "sha256": "c2b28fabf84efde8d90db0b6c06fddc81723c135f7693d6c60dbe555b9845309",
+      "size": 8244,
       "state": "present"
     },
     "codex-rs/core/src/tools/code_mode/delegate.rs": {
@@ -399,14 +410,14 @@
     },
     "codex-rs/core/src/tools/registry.rs": {
       "mode": "100644",
-      "sha256": "ccc0ef2f4053aeb5af4e53b66cc4e0b041b98b2f1c6331db3b530e093d2366d4",
-      "size": 36132,
+      "sha256": "8072b49ba92d8ce3335e2032952e6c0059762b6f5a2956ffaaa3dc9dadda4f38",
+      "size": 40221,
       "state": "present"
     },
     "codex-rs/core/src/tools/spec_plan.rs": {
       "mode": "100644",
-      "sha256": "cd43d6fbb779776441bf6cc01750ffec79258f183eb85c3a10925806514720ec",
-      "size": 64657,
+      "sha256": "4ba75c60e8556c13714e24b55abac01dee8479cd88377876b86bb1c506dc6597",
+      "size": 67652,
       "state": "present"
     },
     "codex-rs/core/src/turn_metadata.rs": {
@@ -417,8 +428,14 @@
     },
     "codex-rs/core/src/turn_metadata_tests.rs": {
       "mode": "100644",
-      "sha256": "8fb95a8fd6cb3b104e4d7a9f804f35113c8aa36784f4aada5ef8fc27d99af314",
-      "size": 53383,
+      "sha256": "bef4c675d79c10f11c2d4a1daf1b99f28378dc04453c45b3ad246a8ef4d0181c",
+      "size": 53556,
+      "state": "present"
+    },
+    "codex-rs/core/tests/suite/compact.rs": {
+      "mode": "100644",
+      "sha256": "bd15811ea026406b1789663ab60a9c347aebcc797aa2840682568531467c8b23",
+      "size": 211223,
       "state": "present"
     },
     "codex-rs/core/tests/suite/reasoning_effort_override.rs": {
@@ -427,16 +444,28 @@
       "size": 69355,
       "state": "present"
     },
+    "codex-rs/core/tests/suite/snapshots/all__suite__scenarios__retained_tool_outputs__retained_tool_output_retention_disabled.snap": {
+      "mode": "100644",
+      "sha256": "5ad5f110fe842fa84e95bcd09d119add04306225ad13ced71d2ba3f1307ae880",
+      "size": 5314,
+      "state": "present"
+    },
+    "codex-rs/core/tests/suite/snapshots/all__suite__scenarios__retained_tool_outputs__retained_tool_output_survives_compaction_and_resume.snap": {
+      "mode": "100644",
+      "sha256": "718f9893edf979473491b6b400a5571e56b9dbd439ff592dd9dcbb054f726e1d",
+      "size": 3761,
+      "state": "present"
+    },
     "codex-rs/exec/src/event_processor_with_human_output.rs": {
       "mode": "100644",
-      "sha256": "105b77b0e6d6014a8b40aa9880206a52c052561b025ac2509c66da5911b4c3d6",
-      "size": 20791,
+      "sha256": "fd149586410b89136cb2ec4740294324bfaa68fccfad103f7989846e6af437ee",
+      "size": 21140,
       "state": "present"
     },
     "codex-rs/exec/src/lib.rs": {
       "mode": "100644",
-      "sha256": "d69ab503727166e8fd57a8b2c5aa9fa6663c294c9114a97deebfeeb0fea8c6d3",
-      "size": 89509,
+      "sha256": "b43f20aed42dda3ca52298a830dd25ee67224a1b0e407bc16fe021029f388c03",
+      "size": 89623,
       "state": "present"
     },
     "codex-rs/exec/src/lib_tests.rs": {
@@ -459,38 +488,38 @@
     },
     "codex-rs/protocol/src/openai_models.rs": {
       "mode": "100644",
-      "sha256": "2ddb65c2fea0742dd050df6dea14b4f291366f7b0b5406f3189dfcdc2eb9c4d6",
-      "size": 80010,
+      "sha256": "3b70c10673b617cb54b7a158504ee25fca9408799d404851209be4d41df42b9c",
+      "size": 81029,
       "state": "present"
     },
     "codex-rs/protocol/src/protocol.rs": {
       "mode": "100644",
-      "sha256": "411401586472232191983fa405fd8f30bd4d5dfb29be707af312dfb62076b97a",
-      "size": 234443,
+      "sha256": "b976f3fa1f73ec670add418a86391b0d680487e9a6458aaa3e3ed7de39759f24",
+      "size": 240354,
       "state": "present"
     },
     "codex-rs/rollout-trace/src/protocol_event.rs": {
       "mode": "100644",
-      "sha256": "4e6489d1e7953f033e61630cd5992cc675afea1f4cf63275dfd9b251ca2ed179",
-      "size": 22447,
+      "sha256": "fd6ddddf8b106ac9a5b9d5d54cbd154a923dd65ef607e99a983493d9959fefd5",
+      "size": 22535,
       "state": "present"
     },
     "codex-rs/rollout/src/policy.rs": {
       "mode": "100644",
-      "sha256": "1b442b6d61a3b9be885888b49573ed990ee09f6db5db75780aada0ef7022fe74",
-      "size": 11555,
+      "sha256": "9139eee9ebe936f9657010569213bc8cfba9e249688d4bbce98bc482487fabc2",
+      "size": 11599,
       "state": "present"
     },
     "codex-rs/rollout/src/recorder.rs": {
       "mode": "100644",
-      "sha256": "780e51ce754898b534728447dbcabb73d55aed94ef38a85ab326efd586c4381f",
-      "size": 80193,
+      "sha256": "2eebd7a3def7561b051150ce2c4fe0be112c3c3fdd144c4d226a51fc9dd26e53",
+      "size": 80422,
       "state": "present"
     },
     "codex-rs/rollout/src/recorder_tests.rs": {
       "mode": "100644",
-      "sha256": "a9db646812d3b7401a1e6ef0db27a9a91025927c50968fb383a45afac3d2dc8d",
-      "size": 69176,
+      "sha256": "222f6b59b7aa29248d22d556689c1a220062acc5aacb87c49cdf70a9b5c8e98c",
+      "size": 68993,
       "state": "present"
     },
     "codex-rs/state/goals_migrations/0001_thread_goals.sql": {
@@ -883,6 +912,18 @@
       "size": 123,
       "state": "present"
     },
+    "codex-rs/state/migrations/0060_guardian_review_feedback.sql": {
+      "mode": "100644",
+      "sha256": "8dc9746913ee9d503f782bd96598c5b7f4c7627878bc2ba20a9318930978b3b5",
+      "size": 177,
+      "state": "present"
+    },
+    "codex-rs/state/migrations/0061_thread_read_state.sql": {
+      "mode": "100644",
+      "sha256": "b02b93aa494699604311dc18544e3979a8fd248c130c88755b79164d1017e36c",
+      "size": 358,
+      "state": "present"
+    },
     "codex-rs/state/queue_migrations/0001_queued_items.sql": {
       "mode": "100644",
       "sha256": "4f1924728ef4efb58500a3decd2509b0f123f29a9fed0f732c8d90821d517b0c",
@@ -957,8 +998,8 @@
     },
     "codex-rs/thread-store/src/local/mod.rs": {
       "mode": "100644",
-      "sha256": "1df90c08d76961033f0758782b7d46299c80668806df4bed7daa8fc62d3650d9",
-      "size": 82954,
+      "sha256": "aca5c083249a1b79e3df31f61ac958b3cb857de296d118c1f57bc514578674c1",
+      "size": 82826,
       "state": "present"
     },
     "codex-rs/thread-store/src/local/thread_history.rs": {
@@ -975,8 +1016,8 @@
     },
     "codex-rs/thread-store/src/local/thread_history_materialization_tests.rs": {
       "mode": "100644",
-      "sha256": "e779263cc3ea44e236bc20c61b8157a7945ef60b62615e2b939b535184431a45",
-      "size": 106608,
+      "sha256": "a09fd6a281567e9cd2e86260df0c173783fca5bd972129d57fe08c3ab92d390d",
+      "size": 106671,
       "state": "present"
     },
     "codex-rs/thread-store/src/local/timestamp_metadata_tests.rs": {
@@ -993,14 +1034,14 @@
     },
     "codex-rs/tui/src/app/app_server_event_targets.rs": {
       "mode": "100644",
-      "sha256": "8f1ba0a8de93b3053a3d1387a825b82442fab0413a045b91e1bf430b67498d0a",
-      "size": 17384,
+      "sha256": "18d8e8e8fd841b884e41095c44fd979241cac6c3dba5ff1fff5d81f4401195f0",
+      "size": 17440,
       "state": "present"
     },
     "codex-rs/tui/src/app/event_dispatch.rs": {
       "mode": "100644",
-      "sha256": "cb80c99482677dd2defd5f4c19891416dac7a27197ce760a0bcd1d9eca5a5efb",
-      "size": 176594,
+      "sha256": "3f61ed8f5494bd89bcb2269bf143ce4db4267d1962d429c01bd12f9440c65bed",
+      "size": 182946,
       "state": "present"
     },
     "codex-rs/tui/src/app/exit_summary.rs": {
@@ -1023,14 +1064,14 @@
     },
     "codex-rs/tui/src/chatwidget/protocol.rs": {
       "mode": "100644",
-      "sha256": "4a39dbbd2c8e37eca2b9447bd42c511ca78ffe71faf7a7b19621ae2c291b4299",
-      "size": 33079,
+      "sha256": "398046b871ee3610922f6ccfab355713958d6601b6e2dfa196edade7a40a4b40",
+      "size": 33170,
       "state": "present"
     },
     "codex-rs/tui/src/chatwidget/settings.rs": {
       "mode": "100644",
-      "sha256": "781c96bc752a1fa83debed70813680946401e1521bc86a277a994edb83889718",
-      "size": 30670,
+      "sha256": "ff766e19c1c68c011f4232687ba5a3a329976cb4e8b817f3cb9966881bedc6a2",
+      "size": 31442,
       "state": "present"
     },
     "codex-rs/tui/src/chatwidget/snapshots/codex_tui__chatwidget__tests__jev_model_selection.snap": {
@@ -1041,14 +1082,14 @@
     },
     "codex-rs/tui/src/chatwidget/tests/app_server.rs": {
       "mode": "100644",
-      "sha256": "dd53bb4964e44fd9b82ca00bf6f34dc145e238204f6d36bd7f4fd18cdcf3e4ad",
-      "size": 84254,
+      "sha256": "ec99ceb2526ee2b8657aafbce9240c814badaa5263925772d328e61660fe7ba8",
+      "size": 86457,
       "state": "present"
     },
     "codex-rs/tui/src/chatwidget/tests/popups_and_settings.rs": {
       "mode": "100644",
-      "sha256": "14005a42598134786355f2bb4f206ccc526891d3d4ef013591b36c76714f9001",
-      "size": 165738,
+      "sha256": "584d1f326153c81ebd844c498933c13cb392e4ad11d4f8360f985b3b97eaa5c2",
+      "size": 167644,
       "state": "present"
     },
     "codex-rs/tui/src/model_catalog.rs": {
@@ -1057,41 +1098,25 @@
       "size": 1490,
       "state": "present"
     },
-    "sdk/python/.ruff_cache/.gitignore": {
+    "codex-rs/vendor/bubblewrap/LICENSE": {
       "mode": "100644",
-      "sha256": "9e3a60f1e6ec4ae60215c11d54b171392745ec25e9dded433d5bd921363af316",
-      "size": 35,
-      "state": "present"
-    },
-    "sdk/python/.ruff_cache/0.15.8/1621866212988288104": {
-      "mode": "100644",
-      "sha256": "42600e084cf4d536d291d8997b596c861419633342955d61134c4ec9e631eb99",
-      "size": 118,
-      "state": "present"
-    },
-    "sdk/python/.ruff_cache/CACHEDIR.TAG": {
-      "mode": "100644",
-      "sha256": "5953156d7e0c564a427251316eaf26f8870e6483ae2197f916b630e4f93e31ae",
-      "size": 43,
-      "state": "present"
-    },
-    "sdk/python/src/openai_codex/api.py": {
-      "mode": "100644",
-      "sha256": "5d9c84a400f5591e4fb2d7c22b883bfd3c3794f5db2d46eb736091b5c9074237",
-      "size": 34053,
+      "sha256": "b7993225104d90ddd8024fd838faf300bea5e83d91203eab98e29512acebd69c",
+      "size": 25383,
       "state": "present"
     },
     "sdk/python/src/openai_codex/generated/notification_registry.py": {
       "mode": "100644",
-      "sha256": "786b676c4e7f0b76ed4cf86e43e54dd2220a0543d9f60c17e726f6448ea05fa6",
-      "size": 15313,
+      "sha256": "6d14a63041275839dd393017417b1d5264a4534bde8ba42d1853f36f85eb27d6",
+      "size": 15480,
       "state": "present"
     },
     "sdk/python/src/openai_codex/generated/v2_all.py": {
       "mode": "100644",
-      "sha256": "087997f79daba8e44d7e341df315bdc7701b59c3efd4c741ae2809136e9466a5",
-      "size": 419428,
+      "sha256": "db89fa89fb9303be198f3816a694cd236918a522c257964a8a73aaf7481c3057",
+      "size": 423776,
       "state": "present"
     }
-  }
+  },
+  "schema": 1,
+  "notice": "Ares modifies every path listed in files relative to the pinned Codex base. Retain this map with reconstructed source. Original third-party licenses remain applicable."
 }

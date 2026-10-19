@@ -222,6 +222,7 @@ $launch=[ordered]@{startedAt=[DateTime]::UtcNow.ToString('o');status='starting';
   stdout=$stdout;stderr=$stderr;bindingPath=$bindingPath;trial=$false;persistentUntilDesktopExit=$true}
 $launchPath=Join-Path $repoRoot 'activation-launch.json'
 $launch | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $launchPath -Encoding utf8
+$observedBackendIdentity=$null
 $deadline=(Get-Date).AddSeconds(40)
 do {
   Start-Sleep -Seconds 1
@@ -237,7 +238,11 @@ do {
   $backend=@(Get-CimInstance Win32_Process -Filter "ParentProcessId = $($receipt.desktop.pid) AND Name = 'codex.exe'" | Where-Object {
     $_.ExecutablePath -ceq $candidateManifest.native.path -and $_.CommandLine -match ' app-server '
   } | Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine)
-  if($backend.Count -gt 0) {
+  if($backend.Count -eq 1) {
+    if(-not (Test-AresProcessIdentity $observedBackendIdentity $backend[0])) {
+      $observedBackendIdentity=$backend[0]
+      continue
+    }
     $launch.status='candidate_backend_verified';$launch.verifiedAt=[DateTime]::UtcNow.ToString('o');$launch.backend=$backend
     $launch.desktop=Get-CimInstance Win32_Process -Filter "ProcessId = $($receipt.desktop.pid)" | Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine
     $launch | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $launchPath -Encoding utf8

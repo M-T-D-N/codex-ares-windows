@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "version": "0.1.0-preview.2",
+  "scope": "source-only public preparation; no additional model calls",
+  "nativeSourceContentSha256": "185ee6348a857e4b6d2a967f0e9a38afda89091c0e127c36f6632cfb9f6513d2",
+  "checks": {
+    "restore": {
+      "status": "PASS",
+      "files": 9193,
+      "gitModesAndTree": true
+    },
+    "adapterTests": {
+      "status": "PASS",
+      "passed": 95,
+      "failed": 0,
+      "skipped": 0
+    },
+    "npmCi": {
+      "status": "PASS",
+      "dependency": "gpt-tokenizer@4.0.0"
+    },
+    "bundleDoctor": {
+      "status": "PASS",
+      "nativeRebuilt": false,
+      "reusedNativeFiles": 5
+    },
+    "preflight": {
+      "status": "PASS",
+      "artifactsChecked": 1557,
+      "desktopStarted": false
+    },
+    "freshPublicGuiProvider": "NOT_RUN",
+    "freshNativeBuild": "NOT_RUN",
+    "freshPcSetup": "NOT_RUN",
+    "rustInstallerBranch": "NOT_RUN",
+    "newRemoteCI": "NOT_RUN_UNTIL_REVIEWED_PUSH"
+  },
+  "privateMatchingRuntime": {
+    "guiStopCancelledMs": 452,
+    "extraMainInCancelledTurn": 0,
+    "sameConversationRecoveryCompletedMs": 3001,
+    "mediumCompactResume": "PASS",
+    "ordinaryGuiNativeTaskDelivery": "NOT_OBSERVED"
+  },
+  "historicalUnknowns": [
+    "original PowerShell error cause",
+    "historical launch-manifest byte hash"
+  ],
+  "claimsExcluded": [
+    "general quality equivalence",
+    "cost savings",
+    "long-term stability"
+  ],
+  "failureHistory": "Initial source restore failed on index stat state; refresh fix verified by clean restoration. Initial sandbox test run 80/95; host serial run 95/95. These are not public GUI acceptance."
+}

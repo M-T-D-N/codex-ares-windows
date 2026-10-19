@@ -23,3 +23,7 @@ Desktop starts through the registered MSIX context; direct executable launch is 
 Detailed context-phase tracing is opt-in for one exact UUID at startup. Normal structured Ares telemetry remains available; default sidecar logging removes prompt/result bodies and judgment explanations. [Privacy](privacy.md) describes local diagnostics and publication exclusions.
 
 This public route is Luna via app-server. It is not Decisions API or a Sign in with ChatGPT Responses integration. Retired Jev/Main aliases are handled as compatibility metadata, not an active Jev client. [Change history](../CHANGELOG.md) explains why the current boundaries were added.
+
+## 0.163 boundaries
+
+Native task delivery requires accepted host metadata and matching receiver identity; ordinary tool/XML strings do not grant authority. The general GUI delivery input was not observed; isolated RPC coverage remains separate. Packaged startup uses a GUID completion, two consecutive backend identity observations and parent-side receipt/live identity checks. An uncertain result is not successful activation; it does not establish the cause of a historical PowerShell error.

@@ -1,5 +1,21 @@
 # What changed
 
+## 0.1.0-preview.2 — Codex 0.163 source candidate
+
+The native base advances to official Codex **0.163.0**, commit `83086188ae0614bd882818ff1aa23f3194962012`, with the cumulative Ares controls retained. This is a source-only candidate; publication and the next tag/assets are not yet confirmed.
+
+| Trigger or problem | Change | Evidence and boundary |
+|---|---|---|
+| Desktop/backend advanced beyond the 0.162 base | Port the cumulative native changes to 0.163 and keep CLI/four companions tied to one locked source | Matching private-runtime functional evidence exists. Public restoration (9,193 files/modes), 95 tests, npm ci, bundle/Doctor and 1,557 preflight checks passed with reused native binaries; fresh public-layout GUI/provider acceptance is NOT_RUN. |
+| Accepted task delivery and alias compaction/resume need the current request and model contract | Carry accepted delivery input into evaluation; preserve supported model behavior through compaction/resume | Delivery input was checked by isolated RPC. Matching fixed-native GUI Medium and compaction/resume passed; ordinary GUI generation of native task delivery was not observed. |
+| A packaged launch could return without a trustworthy activation outcome | Use a unique GUID completion receipt, propagate packaged errors and confirm live Desktop/backend identity and candidate run continuity | Separate launch correctness checks support these mechanisms. The original PowerShell error cause and historical launch-manifest byte hash remain UNKNOWN. |
+| Cancellation must stop the active request and allow later work | Retain cancellation/recovery behavior on the new native base | Private GUI Stop: 452 ms, no extra Main generation in the cancelled turn; same-conversation recovery completed in 3,001 ms with a visible marker. This is bounded runtime evidence. |
+
+The observed Desktop is **26.1013.4894.0**. GPT-6 Luna/High app-server evaluation, selected Main, one-generation leases, ordinary Luna opt-out and composer-metadata exclusion remain. No general quality equivalence, savings or long-term stability claim follows from these checks or the small quality sample. No additional paid acceptance calls are part of source preparation.
+
+See [validation](docs/validation.md), [compatibility](docs/compatibility.md), [build and lifecycle](docs/build.md), and [한국어](docs/changes.ko.md). Earlier entries below retain their original dates, source identities and validation boundaries.
+
+
 ## 2026-10-16 — source preview.1
 
 The reviewed composer-metadata exclusion and cancellation/failure corrections are prepared for source preview publication. Public suite:82 passed with zero skips; exact native restoration:9,013 files. A new-output CLI/four-companion build and a real Sol6.1/Luna xhigh response completed in the existing Desktop26.1007.9446.0/Node environment; the operating launcher was restored. Fresh-PC installation, default unpackaged environment handoff, cost, quality and long-term stability are not established. Evaluator-evidence, compaction-alias and remote-messaging limits are recorded in docs/validation.md. Release documentation preserves tested code/patch/dependency inputs; native binaries and private runtime evidence are excluded.

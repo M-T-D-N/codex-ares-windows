@@ -1,78 +1,72 @@
-# Locked source restoration and build boundary
+# Build and lifecycle
 
-The authoritative build inputs are `patches/codex/upstream.lock.json`, `native.patch`, `base-files.json`, `modified-files.json`, and `package-lock.json`. The public Codex archive is pinned by commit and SHA-256. The Ares revision records source attribution; setup applies only this repository's cumulative patch.
+The [lock](../patches/codex/upstream.lock.json), cumulative patch, base/modified-file manifests and npm lock own the build inputs. This candidate uses official Codex **0.163.0**, commit `83086188ae0614bd882818ff1aa23f3194962012`. Archive SHA-256: `e57f1d4f914c71c3532a12d5c14f740909fca4e7e041fa1b3db71618c88e5567`; Cargo.lock SHA-256: `cae541406f7ec43a418e126be2bcd5de00b243e7bbf6382570028727d99c1069`.
 
-`setup.ps1 -RestoreOnly` fetches or accepts `-Archive`, checks its exact digest, rejects a nonempty `-SourceDir`, extracts only the expected entries in `base-files.json`, constructs the clean Git index with original modes, applies the cumulative patch once with `git apply --check --index` then `git apply --index`, and verifies all final contents and the complete Git tree. No original repository is reset or cleaned. One Linux-only bubblewrap LICENSE symlink is materialized as link text on Windows while its Git mode remains 120000; no administrator symlink privilege is requested.
+## Requirements
 
-The cumulative Windows patch preserves CRLF bytes in the 75 SQL migration files so their embedded checksums match the installed Windows build. Their SQL statements are unchanged. Git can report trailing-whitespace warnings for these CRLF patch lines; do not apply whitespace-fixing or normalize those SQL files to LF. Full restored contents and Git modes are the criterion. Rust source remains LF to avoid needless whole-source changes between updates.
+Windows x64, Node.js 22+/npm, Git, rustup, Visual Studio x64 C++ build tools and compatible registered Codex Desktop are required. Observed Desktop: **26.1013.4894.0**; startup enforces the lock. Python is needed for the process-lifetime tests, not ordinary runtime. Existing Codex sign-in/model access and any usage charges remain those of the user's account.
 
-Full setup next performs `npm ci --ignore-scripts --no-audit --no-fund`, dev native build and the four companions from the same source, bundle hashing, then Doctor. Rust/Cargo are pinned to 1.98.0 with recorded full versions; target is the default `x86_64-pc-windows-msvc` host, dev profile, jobs2 and inherited scrypt opt-level3. Visual Studio tools are discovered or supplied through `-VcVarsPath`. Build/cache directories are separate from the source preview; repeated native changes may reuse a valid target without copying it. Do not run concurrent writers against one target. No `cargo clean` or release-profile switch is performed.
+Compiler pins remain `rustc 1.98.0 (88d9e12ae 2026-08-18)` and `cargo 1.98.0 (797e8a9bc 2026-08-05)`. Build uses the default `x86_64-pc-windows-msvc` host, dev profile, jobs 2, scrypt opt-level 3 and `CARGO_INCREMENTAL=0`; the incremental value is restored afterward. Runtime dependency: `gpt-tokenizer@4.0.0`. Do not substitute a release profile or copy another target's internal cache files.
 
-## V8 dependency preparation
+## Setup and restore
 
-The locked Codex source requires `v8_enable_sandbox`, which also enables pointer compression. Its Windows archive and generated bindings are published by **OpenAI Codex**, not the default Deno release location. `prepare-v8.ps1` follows Codex's `.github/actions/setup-rusty-v8/action.yml` procedure: verify the checksum manifest against the pinned source and build lock, then verify both the library and binding file. It supplies `RUSTY_V8_ARCHIVE` and `RUSTY_V8_SRC_BINDING_PATH` together for the native build. No sandbox feature is disabled and no ordinary V8 library is substituted.
+From the intended source checkout:
 
-The release is https://github.com/openai/codex/releases/tag/rusty-v8-v150.4.0. Files are cached under the selected target's `v8-cache` directory and reverified on reuse. `-Offline` on `build-native.ps1` requires valid cached V8 files and also passes Cargo's `--offline`; it does not sandbox unrelated dependency build scripts. The outer setup still needs its source and npm packages. A bad or missing V8 cache fails before compilation in offline mode.
+```powershell
+npm run setup
+```
 
-## Verified build scope
+Setup verifies the archive, restores the base with Git modes and applies the complete patch once. Nonempty source is rejected. It verifies final contents/tree, restores npm, builds the CLI/four companions, bundles and runs Doctor. Restoration, building and GUI activation are separate outcomes.
 
-The current native lock targets Codex **0.162.0-alpha.17.2** and includes all accepted Ares corrections through context-history recovery. The existing local build produced the CLI and all four companions from that source with the valid shared toolchain and reusable target cache. Actual local Desktop startup and a Luna→native effort→completed Main response were observed. Full public-source patch restoration, public adapter regressions and local runtime evidence establish different boundaries; see [validation](validation.md).
+Setup reuses an exact compiler or installs it in project-owned Rust/Cargo directories, preserving the default toolchain. The installer branch remains unaccepted on a fresh PC. The Node entrypoint removes incompatible inherited PowerShell module paths.
 
-A completely cold dependency rebuild, a project-local Rust installer run and a binary convenience release are not claimed. The later public-layout GUI/provider trial used the existing registered MSIX/Node environment with explicit packaged launch; its bounded acceptance is recorded in validation.md. The source package excludes toolchains, native executables, installed Desktop files and build caches. A binary release would need a separate complete dependency notice inventory and approval.
+To restore only, optionally supplying an already downloaded archive:
 
-## Keeping up with upstream
+```powershell
+.\scripts\setup.ps1 -RestoreOnly -SourceDir .\build\source
+```
 
-Keep one canonical source path and one target cache. Inspect the official release delta, retain Ares changes and update the exact source lock only after related checks. A Desktop-only change calls for launch/protocol acceptance; model or generation-contract changes also need their focused native checks. Build only affected targets after source changes and automatic-fix review are finished. Preserve Windows SQL checksum bytes while retaining LF Rust source.
+`-Archive` must identify bytes matching the lock. Do not apply this patch over previously patched source. Preserve CRLF bytes in Windows SQL migrations so embedded checksums remain compatible; do not fix patch whitespace by normalizing them. Rust source remains LF.
 
-Cargo decides whether cached artifacts are valid. The unchanged CLI rebuild in this cycle took 1.41 seconds; changing source paths, features or compiler inputs can still require compilation. This single observation is not a general speedup claim. Do not copy `deps`, `.fingerprint` or `build` manually, clear the target routinely, or treat every app update as a new full pilot.
-
-## Automatic dependency setup
-
-Like upstream Ares, Node/npm, Git, a Windows x64 C++ toolchain and rustup are prerequisites. `npm run setup` downloads/checks the pinned source, restores npm dependencies, reuses an exact existing Rust compiler or installs the exact toolchain into this repository's `build/toolchains/rustup` and `build/cache/cargo`, then prepares V8, builds and bundles. Its Node entrypoint lets the child Windows PowerShell select its own module paths even when npm inherits a PowerShell 7 environment. It never changes the user's default toolchain or global module configuration. The project-local Rust installation branch was not executed here because the exact compiler already existed.
-
-After source restoration has succeeded, resume a failed build without extracting another source copy:
+After successful restoration, resume a failed build from that source:
 
 ```powershell
 .\scripts\build-native.ps1 -SourceDir .\build\source -TargetDir .\build\target -IncludeCompanions
 .\scripts\doctor.ps1
+.\scripts\start.ps1 -PreflightOnly
 ```
 
-Use the exact Rust/Cargo compiler from the lock in an x64 developer shell, or provide `-VcVarsPath`. A previous bundle is never overwritten automatically. Keep build failure details separate from a verified bundle; a source restore, native build, and GUI trial establish different claims.
+Use an x64 developer shell or `-VcVarsPath`. The four companions must share the locked source: code-mode host, command runner, sandbox setup and sandbox service. Existing `bundle` is never overwritten. Reuse compatible target caches without concurrent writers; no routine `cargo clean` is required.
 
-## Updating an existing build
+## V8 and offline behavior
 
-Read the [change history](../CHANGELOG.md) and [compatibility scope](compatibility.md) first. The machine authority for base, archive, patch, dependencies and companions is `patches/codex/upstream.lock.json`.
+The pin remains **rusty_v8 150.4.0**, using the Codex pointer-compression/sandbox library and generated bindings together. `prepare-v8.ps1` verifies the checksum manifest against the locked source and then both artifacts. It uses the [Codex V8 release](https://github.com/openai/codex/releases/tag/rusty-v8-v150.4.0), not an ordinary Deno archive, and keeps verified files in the target's `v8-cache`.
 
-Each update restores the **complete** patch onto its exact clean base once. Do not apply it on top of a previously patched source or treat it as a small incremental patch. Restore into a new empty source directory; existing source and bundle directories are never overwritten by setup. A new source directory may reuse an existing target cache only with the locked toolchain and no concurrent writer. Source restoration does not require copying a whole cache.
+`build-native.ps1 -Offline` requires valid cached V8 artifacts and passes Cargo `--offline`. Outer setup still needs the source/npm dependencies; this switch does not sandbox unrelated build scripts or guarantee a fully offline setup.
 
-Build the CLI and all four companions from that restored source, then bundle and run Doctor and `scripts/start.ps1 -PreflightOnly`. Preflight verifies inputs/version/binding without launching Desktop or calling a model. A cache hit or preflight pass alone does not prove Desktop/model execution.
-
-When ready to switch, finish active local work, quit Desktop normally and start the new bundle through `scripts/start.ps1`. The installed Start-menu app remains available for rollback. A shortcut that points to a stable launcher can remain unchanged; a shortcut pointing at a moved checkout must be updated to that checkout's launcher. No forced shutdown is part of this procedure.
-
-For bounded diagnostics on that next normal start:
+## Checks and activation
 
 ```powershell
-.\scripts\start.ps1 -ContextTraceThreadId '<exact-thread-UUID>'
+npm ci --ignore-scripts --no-audit --no-fund
+New-Item -ItemType Directory -Path build/test-temp -Force | Out-Null
+$env:ARES_TEST_TEMP = Join-Path $PWD 'build/test-temp'
+$env:ARES_TEST_PYTHON = (Get-Command python).Source
+$env:TEMP = $env:ARES_TEST_TEMP
+$env:TMP = $env:ARES_TEST_TEMP
+$env:TMPDIR = $env:ARES_TEST_TEMP
+npm test
 ```
 
-The option is validated and explicitly forwarded through the MSIX boundary. Omit it for the normal default with detailed context tracing off. Startup options do not mutate an already running app.
+CI uses Node 24 and the same fixture settings; native CI is manual. Doctor can pass without a bundle. These checks do not prove GUI execution or model quality. Exact-public restoration and 95 local tests passed; fresh public GUI/provider acceptance is NOT_RUN. See [validation](validation.md).
 
+Finish active work and quit Codex normally. Run `.\scripts\start.ps1` in non-administrator PowerShell. The launcher checks the registered package/version and actual candidate backend. If completion is missing or uncertain, inspect the reported receipt and live status before retrying. `-WaitForDesktopPid` waits for normal exit of the identified root Desktop; it does not force termination.
 
-## 2026-10-15 candidate
+Detailed context tracing is opt-in at startup: `-ContextTraceThreadId '<exact-thread-UUID>'`. It cannot change an already running app. Use `.\scripts\status.ps1` for identity/freshness-aware status.
 
-The complete patch restores 8,993 base files with 162 modified and 20 added files (9,013 total), including metadata-based composer prediction exclusion and its controller tests. The default build uses `CARGO_INCREMENTAL=0` and restores the caller value afterward. CLI and all four companions must come from this exact source, lock and dev profile. The local verification reused the matching five-file build; it did not claim a new cold build.
+## Update, recovery and removal
 
-Run `npm ci --ignore-scripts --no-audit --no-fund`, then `npm test`. For the two Windows process-lifetime fixtures, create `build/test-temp`, set `ARES_TEST_TEMP` to its absolute path and `ARES_TEST_PYTHON` to the selected Python executable. The CI source-check job now sets these values. Run `node scripts/doctor.mjs` and `./scripts/start.ps1 -PreflightOnly` after bundling. These commands do not prove GUI or provider activation.
+Retain the previous validated checkout/bundle. Restore each new revision in a separate checkout with an empty source directory and absent bundle; apply its exact cumulative patch once. Reuse only a compatible target cache with no concurrent writer. Run relevant checks, Doctor and preflight before normal activation. Keep the intended source commit, archive checksum and publication manifest together; the manifest is a consistency check, not a vendor signature.
 
+If activation is uncertain, inspect before retrying. After normal exit, use the official installed app or retained accepted launcher. Do not disable version checks, rewrite databases, copy authentication or force shutdown to switch.
 
-## Source preview installation, update, removal and recovery
-
-Use the tagged source archive or checkout the documented preview tag. Keep its SHA256, PUBLICATION_MANIFEST.json and source commit together. The manifest checks source consistency; it is not a vendor signature. Requirements:Windows x64, compatible registered Codex Desktop, Node22+/npm, Git, rustup, x64 Visual Studio C++ tools and network access to pinned public dependencies. Python is needed for two process-lifetime tests, not ordinary runtime. Sign-in, model access, terms and any usage charges remain those of the user's Codex account.
-
-The latest GUI acceptance used existing Node and registered Desktop in an explicit MSIX package context. Default launch environment forwarding and fresh-PC setup remain unverified. Read validation.md before using the ordinary launcher. Do not overwrite installed Desktop or disable version/package checks to work around startup failure.
-
-For updates, preserve local work and retain the previous validated checkout/bundle. Read the new tag's lock, compatibility and checksums. Restore into a new empty source directory and apply the exact cumulative patch once; do not patch already patched source. Reuse a compatible target cache without concurrent writers. Run Doctor and preflight before activation. Finish tasks, quit normally and start the intended checkout's launcher. If activation fails, open the official installed app normally or return to the retained accepted launcher after normal exit. No forced termination, DB rewrite or authentication copy is required.
-
-To stop using Ares, finish work and quit Codex normally, then open the installed Start-menu app. Remove only shortcuts created for the Ares checkout. When no process uses the checkout, remove its source/build/bundle or move it to the Recycle Bin according to your retention needs. Preserve needed diagnostics privately. Leave Codex home, conversations, databases, authentication, shared runtimes and installed Desktop intact. Setup installs no global service and publishes no npm package.
-
-This preview distributes source only. Native executables/companions, installed Desktop, Node/Rust/V8, dependency trees and local acceptance logs are excluded. Local builds fetch the locked dependencies; preserve the listed upstream licenses/notices. Binary convenience releases require a separate linked-dependency notice review.
+To stop using Ares, finish work, quit normally and open installed Codex. Remove only Ares-owned shortcuts and unused checkout/build/bundle files, using the Recycle Bin if needed. Preserve needed private diagnostics; leave Codex home, conversations, databases, authentication, shared runtimes and installed Desktop intact. Setup installs no global service and publishes no npm package. This source preview redistributes no native executables, installed Desktop, toolchains, dependency trees or private runtime evidence.

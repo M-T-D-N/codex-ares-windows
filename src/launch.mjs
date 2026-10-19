@@ -83,7 +83,7 @@ export async function finishSupervisor({services, app, reason, code, record,
 }
 export function validateCompanionRelease(manifest) {
   const required = ['codex-code-mode-host.exe', 'codex-command-runner.exe', 'codex-windows-sandbox-setup.exe'];
-  if (/^0\.162\./.test(manifest.native?.sourceRelease ?? ''))
+  if (/^0\.162\./.test(manifest.native?.sourceRelease ?? '') || manifest.native?.sourceRelease === '0.163.0')
     required.push('codex-windows-sandbox-service.exe');
   if (!Array.isArray(manifest.companions) || manifest.companions.length !== required.length ||
       required.some(name => manifest.companions.filter(a => basename(a.path).toLowerCase() === name).length !== 1) ||

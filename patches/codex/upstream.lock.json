@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "repository": "https://github.com/openai/codex",
-  "commit": "740e5af33c71225640e0c1c1555c514c2c93ab74",
+  "commit": "83086188ae0614bd882818ff1aa23f3194962012",
   "archive": {
-    "url": "https://api.github.com/repos/openai/codex/tarball/740e5af33c71225640e0c1c1555c514c2c93ab74",
-    "sha256": "25747823ea4ec852a146cbbe75d805b8df19190ca5b3fb21052d8e1cb75f2f83"
+    "url": "https://codeload.github.com/openai/codex/tar.gz/83086188ae0614bd882818ff1aa23f3194962012",
+    "sha256": "e57f1d4f914c71c3532a12d5c14f740909fca4e7e041fa1b3db71618c88e5567"
   },
   "ares": {
     "repository": "https://github.com/miuuyy/Astra-Ares",
@@ -19,11 +19,11 @@
     "profile": "dev",
     "scryptOptLevel": 3,
     "jobs": 2,
-    "cargoLockSha256": "49575eeb44a747925fd1acef51bff88316f728b77d7f63d989835c8623c344cb",
+    "cargoLockSha256": "cae541406f7ec43a418e126be2bcd5de00b243e7bbf6382570028727d99c1069",
     "nodeMinimum": "22",
     "nodeDependency": "gpt-tokenizer@4.0.0",
     "nodeLockFile": "package-lock.json",
-    "nodeLockSha256": "a3dafa3ea11e1baa26d1339408cbbb4d8dd802b351ca875f40cc849918a82c69",
+    "nodeLockSha256": "4804ddfcf08ef238e74c961441151d41859c469418fadad353a06c8437264167",
     "externalNativeDependency": {
       "name": "rusty_v8",
       "version": "150.4.0",
@@ -36,7 +36,7 @@
     },
     "cargoIncremental": "0"
   },
-  "nativeVersion": "codex-cli 0.162.0-alpha.17.2",
+  "nativeVersion": "codex-cli 0.163.0",
   "bridgeProtocol": 4,
   "policy": {
     "lease": 1,
@@ -87,41 +87,32 @@
     "Portable relative imports and project-owned TEMP; default log redaction; app-server evaluator only"
   ],
   "sourcePreparation": {
-    "sourceContentSha256": "df43b9cd4e6364a46a07d6d4985d1d8d4249c5f8e147485e0b4ffb03c17baa0e",
-    "deltaFromAlpha17Preparation": [
-      "codex-rs/core/src/pilot_trace.rs",
-      "codex-rs/core/src/pilot_trace_tests.rs",
-      "codex-rs/core/src/session/world_state.rs",
-      "codex-rs/core/src/session/step_controller_luna.rs",
-      "codex-rs/core/src/session/step_controller_tests.rs",
-      "codex-rs/core/src/turn_metadata.rs",
-      "codex-rs/core/src/turn_metadata_tests.rs"
-    ],
-    "gitModes": "VERIFIED by pinned archive restoration, complete file contents and Git tree"
+    "sourceContentSha256": "185ee6348a857e4b6d2a967f0e9a38afda89091c0e127c36f6632cfb9f6513d2",
+    "sourceIdentityMethod": "SHA256 of UTF-8 compact JSON array of sorted relative path/sha256 objects",
+    "nativeFileCount": 9193,
+    "gitModes": "Windows materialized source modes; complete contents/index tree verified by setup-native.mjs"
   },
   "patch": {
     "file": "native.patch",
-    "sha256": "630312128e9323c2ea9a1d52b5a1bbbf192d9d189ef8a34750dc9c9016484d23",
-    "changedFiles": 182,
+    "sha256": "e3dae6dec0cb3af5ae48f194700ec3f9bf6afd602c6b1951b1288a6644ef187d",
+    "changedFiles": 186,
     "applyCount": 1,
     "restoration": "Complete content and Git modes; checked by scripts/setup-native.mjs",
     "command": "git -c core.autocrlf=false apply --binary native.patch",
-    "modifiedFiles": 162,
-    "newFiles": 20
+    "modifiedFiles": 169,
+    "newFiles": 17
   },
-  "baseTree": "8d3f62d2b7cf4bbc92d226542c397fa007f74c49",
-  "restoredTree": "c66dbe4b5edc376cd2c8e428959de43f1a36aeb0",
+  "baseTree": "e91f335e7a03e1d14fa1e5fc7fc7620cdfc60842",
+  "restoredTree": "f7aad6f71d433421f5750016d1a12d2fffe7c958",
   "desktop": {
-    "observedVersion": "26.1007.9446.0",
-    "observedPackageVersion": "26.1007.9446.0",
+    "observedVersion": "26.1013.4894.0",
+    "observedPackageVersion": "26.1013.4894.0",
     "freshPublicBundleGui": "NOT_RUN",
     "redistribute": false,
     "verifiedLocalRuntime": {
-      "nativeVersion": "codex-cli 0.162.0-alpha.17.2",
-      "mainModel": "gpt-6.1-sol",
-      "evaluationModel": "gpt-6-luna",
-      "evaluationEffort": "high",
-      "scope": "same native source; portable packaging checked separately"
+      "nativeVersion": "codex-cli 0.163.0",
+      "nativeSha256": "eea9fb698fe3c680de5f7ff9d650fc4525c22d88e8f74f6295212acfb8a6e723",
+      "scope": "Same native source; private operating GUI Stop/recovery and compact/resume; exact portable public GUI not repeated"
     }
   }
 }

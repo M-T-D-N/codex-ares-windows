@@ -1,28 +1,30 @@
-# 이번 업데이트에서 바뀐 내용
+# 0.1.0-preview.2 소스 후보 변경 안내
 
-## 2026-10-15 미게시 소스 후보
+공식 Codex **0.163.0** commit `83086188ae0614bd882818ff1aa23f3194962012` 위에 기존 Ares 제어를 이식했습니다. 관측 Desktop은 **26.1013.4894.0**입니다. 실행파일을 배포하는 버전이 아니라 고정된 소스에서 사용자가 빌드하는 후보이며, 게시·태그·자산 업로드 완료를 뜻하지 않습니다.
 
-실제 composer metadata 요청만 Luna 평가에서 제외하며, 일반 사용자 본문에 같은 단어가 있는 경우는 계속 평가합니다. 취소와 독립 오류의 경합에서 원래 오류를 보존하고, 본문 없는 제한된 분류를 기록합니다. 공개 suite에 회귀11개를 추가하고 CI에서 Windows 수명 시험을 실행하도록 했습니다. 최신 누적 native patch·mode manifest와 Desktop26.1007.9446.0을 연결했습니다. Main·effort 정책은 유지합니다. 공개 폴더의 실제 GUI/provider 기동과 비용·의미 품질·장기 안정성은 미검증입니다. 아래는 이전 공개판의 이력입니다.
-
-
-2026-10-10 공개판은 Codex CLI **0.162.0-alpha.17.2**, 등록 Desktop **26.1007.2314.0**에 맞췄습니다. 앞서 로컬에서 적용했던 수정도 완전한 누적 패치에 함께 담았습니다. 이번 문서 정리에서 실행 코드나 판단 정책을 추가로 바꾸지는 않았습니다.
-
-| 대응한 증상·요구 | 적용 내용 | 확인한 범위와 한계 |
+| 대응한 문제·요구 | 변경 | 근거와 한계 |
 |---|---|---|
-| 공개본과 업데이트된 Codex backend의 버전 차이 | 공식 0.162 base로 기존 수정을 이식하고 네 번째 companion인 sandbox service를 빌드·묶음 검사에 포함 | 관련 native 889검사와 빌드 근거 재사용. 순정 base에 패치 1회 적용한 전체 내용·Git mode 일치. 미래 Desktop 버전까지 보장하지 않음 |
-| 자동 목표 진행에서 현재 목표가 빠져 `required_evidence_missing` 발생 | 수락된 현재 목표와 pending 입력을 sampling 전에 평가 문맥으로 전달. 필수 입력 누락은 평가 thread 생성 전에 거절 | 관련 회귀와 현재 실사용 연결 확인. 실제 입력이 없으면 fallback하며 과거 기록으로 목표를 만들어 넣지 않음 |
-| 긴 현재 요청이 고정 28,000토큰 제한에 걸림 | 실제 평가 모델·provider·설정의 유효 문맥 한도와 framing 여유로 계산. 현재 요청 원문은 보존하고 선택적 과거 증거만 제한 | 합성 한도·초과·미확인·회복 검사. 실제 한도와 전송 제한은 유지. 새 장문 유료 품질 시험은 없음 |
-| 중단된 도구 이력의 출력 결손으로 dev build가 sampling 전 panic | 기존 복구 가능한 prompt 사본 정규화를 dev에서도 적용 | 관련 history 검사 재사용. 저장된 원본 이력은 유지. 모든 과거 먹통이나 브라우저·MCP 문제의 해결을 뜻하지 않음 |
-| 시간 조회 취소·큐 대기 과정의 callback 잔존 | 기존 deadline을 큐·등록·응답에 함께 적용하고 취소된 정확한 callback 회수 | 관련 outgoing/clock 검사. 도구 승인 대기는 timeout 처리하지 않음. 모든 멈춤의 공통 원인으로 단정하지 않음 |
-| 패키지 ID 없는 시작, 임시 host 종료 뒤 supervisor 소멸, 종료 receipt 불일치 | MSIX 맥락에서 시작하고 Desktop·supervisor 수명을 분리. 등록 버전을 검사하고 log flush 결과를 최종 종료 코드에 반영 | 시작 계약·자연 종료 fixture·공개 preflight·현재 로컬 실행 확인. 새 공개 폴더에서 실제 Desktop을 켜는 검증은 미실시 |
-| 상세 context 진단이 광범위하게 큰 로그를 생성 | 기본 비활성화하고 시작 시 정확한 대화 UUID 하나만 지정. 기존 Ares 요청·응답·fallback과 AgentMemory 반환 계측 유지 | 관련 native 7검사와 시작 인수·패키지 전달 근거 재사용. 현재 run의 상세 context 이벤트 0. 속도·비용 개선은 미측정 |
+| Desktop/backend가 이전 0.162 기준을 넘어섬 | 누적 native 변경을 0.163으로 이식하고 CLI·companion 네 개를 같은 lock에 연결 | 대응 비공개 실행본 기능 검증이 있음. 이번 공개본의 복원·adapter 검사·Doctor·preflight는 대기 중이며 새 공개 GUI/provider 수용은 NOT_RUN |
+| 수락된 작업 전달과 별칭 압축·재개에서 현재 입력·모델 계약 보존 | native 전달 입력을 평가에 연결하고 압축·재개 경로 유지 | 격리 RPC 전달 입력과 같은 고정 native의 GUI Medium·압축·재개 확인. 일반 GUI에서 전달 입력이 생성되는 과정은 관측하지 않음 |
+| 패키지 실행이 실제 기동 결과 없이 반환될 가능성 | GUID별 완료 receipt와 오류 전파, 실제 Desktop/backend 전체 신원·candidate 실행 연속성 확인 | 별도 시작 수정 근거가 있음. 원래 PowerShell 오류 원인과 당시 launch manifest 바이트 해시는 UNKNOWN |
+| 취소 후 같은 대화에서 정상 작업을 이어가야 함 | 새 native에서 취소·회복 동작 유지 | 비공개 GUI Stop 후 452ms 취소, 취소 턴의 추가 Main 생성 0건. 같은 대화 후속 응답 3,001ms 완료·화면 표식 확인 |
 
-GPT-6 Luna/High app-server 평가, 한 generation lease, 같은 turn의 fresh 판단과 선택한 Main은 유지합니다. 일반 Luna에는 Ares를 붙이지 않습니다. 시험 예산은 제품의 호출 횟수 제한이 아닙니다. 이번 공개 업데이트에 Decisions API·Responses 대체 평가기·Jev 경로를 추가하지 않았습니다.
+GPT-6 Luna/High app-server 평가, 선택한 Main, 한 generation의 판단 유효기간, 일반 Luna 제외와 composer metadata 경계는 유지합니다. 일반 본문의 단어만으로 평가를 제외하지 않습니다. 시험 예산을 제품의 호출 횟수 제한으로 바꾸지 않습니다.
 
-현재 실사용의 완전한 연결 173건에서 강도 불일치는 0건입니다. fallback 응답 49건과 같은 turn 회복 8건도 확인했습니다. 이전 응답 근거가 없는 1건, 취소와 일부 generic 오류 원인은 UNKNOWN입니다. 짧은 연결 확인을 장기 안정성·판단 품질·절감률 검증으로 확대하지 않습니다.
+작은 기능 관측과 이후 3업무 비교는 보편적인 품질 동등성·절감률·장기 안정성을 입증하지 않습니다. 이번 소스 준비에는 새 유료 수용 호출이 포함되지 않습니다. 원래 오류의 원인을 확인한 것과 현재 시작 경로를 보완한 것을 구분합니다.
 
-[검증 결과](validation.md) · [호환 범위](compatibility.md) · [빌드·업데이트 절차](build.md) · [English](../CHANGELOG.md)
+## 빌드·사용
 
-## 2026-10-16 소스 프리뷰
+Windows x64, Node.js 22+/npm, Git, rustup, Visual Studio x64 C++ 도구와 정확히 호환되는 등록 Codex Desktop이 필요합니다. 버전·archive·patch·의존성·소스 identity 정본은 [lock](../patches/codex/upstream.lock.json)입니다.
 
-검증 후보 실행 코드를 유지하고 공개 문서의 실제 수용 범위를 갱신한다. 82검사·9,013파일 복원과 새 출력 native 빌드, 기존 MSIX/Node 환경의 Sol/Luna xhigh 응답·운영 복귀를 기록한다. 새 PC 설치·환경 전달·요약 별칭·평가 입력 누락 등의 제한은 validation.md에 명시한다.
+사용할 소스 revision을 확인한 checkout에서 `npm run setup`으로 빌드합니다. 이후 `.\scripts\doctor.ps1`, `.\scripts\start.ps1 -PreflightOnly`를 확인하고, 기존 작업을 마쳐 Codex를 정상 종료한 뒤 일반 권한 PowerShell에서 `.\scripts\start.ps1`을 실행합니다. Doctor·preflight는 GUI나 모델 응답의 증거가 아닙니다. 완료가 불명확하면 안내된 receipt와 실제 프로세스를 확인한 뒤 재시도를 판단합니다.
+
+업데이트는 새 checkout의 빈 소스에 누적 patch를 한 번 적용합니다. 이전 수용 checkout/bundle은 복구용으로 보존합니다. 설치본 복귀는 정상 종료 후 평소 설치 Codex를 여는 방식입니다. 강제 종료·DB 수정·인증 복사·버전 검사 해제로 우회하지 않습니다. 자세한 [설치·업데이트·복구·제거 절차](build.md#update-recovery-and-removal)를 따릅니다.
+
+## 이전 공개판 근거
+
+2026-10-16 preview.1은 Codex0.162.0-alpha.17.2/Desktop26.1007.9446.0에서 공개 suite82개·9,013파일 복원과 새 출력 CLI·companion 빌드, 기존 MSIX/Node의 Sol/Luna xhigh 응답과 운영 복귀를 확인했습니다. 당시 수치와 소스 identity는 이번 후보의 결과로 옮겨 쓰지 않습니다. 기존 태그·자산도 교체하지 않습니다.
+
+2026-10-10 기록의 완전한 연결 173generation, fallback49응답·같은 turn 회복8건은 당시 실행본의 고정 집계입니다. 사용자 업무 173개 완료나 품질·비용 우위로 해석하지 않습니다. 기존 파일럿과 제거된 Jev 경로의 결과도 역사 자료로 보존합니다.
+
+[상세 검증](validation.md) · [호환성](compatibility.md) · [빌드](build.md) · [English change history](../CHANGELOG.md)

@@ -1,60 +1,30 @@
 # Windows용 Codex Ares
 
-<p align="center">
-  <img src="docs/assets/ares-banner.svg" alt="Codex Ares — Astra와 Sol의 추론 강도를 자동으로 조절" width="1120" />
-</p>
+<p align="center"><img src="docs/assets/ares-banner.svg" alt="Codex Ares — Astra와 Sol의 추론 강도 자동 조절" width="1120" /></p>
 
 **모델은 고르세요. 추론 강도는 Ares가 조절합니다.**
 
-파일을 확인할 때와 복잡한 구현을 판단할 때 필요한 추론 강도는 다릅니다. Ares는 매 생성 단계 직전에 현재 상황을 다시 보고, 선택한 모델이 다음 응답에 사용할 추론 강도를 조절합니다. 작업은 같은 대화에서 계속됩니다.
+Ares는 매 생성 단계 직전에 현재 작업을 확인하고, 선택한 모델의 다음 생성에 사용할 추론 강도를 판단합니다. 작업은 같은 대화에서 계속됩니다.
 
-**2026-10-16 소스 프리뷰:** 수락된 metadata로 내부 composer 추천을 Luna 평가에서 제외하며 일반 사용자 요청은 계속 평가합니다. 동일 소스의 새 출력 native 빌드와 기존 등록 Desktop26.1007.9446.0 환경의 실제 Sol 6.1/Luna xhigh 응답을 확인했습니다. 새 PC 설치·장기 안정성·품질·비용을 보장하지 않으며 알려진 제한이 있습니다. [검증](docs/validation.md)·[호환성](docs/compatibility.md)을 확인하세요.
+[English](README.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md)
 
-<p align="center">
-  <a href="README.md">English</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a>
-</p>
+**0.1.0-preview.2 소스 후보:** 공식 Codex **0.163.0** 위에 기존 Ares 제어를 이식했습니다. 대응하는 비공개 실행본에서 GUI Stop·같은 대화 회복·자동압축과 재개를 확인했습니다. 이번 공개 폴더 그대로의 새 GUI/provider 수용 검증은 미실시이며, 공개 소스 복원 9,193파일/mode와 로컬 검사95개가 통과했습니다. 각 근거의 범위는 [검증 안내](docs/validation.md)를 따릅니다.
 
-<p align="center">
-  <a href="https://github.com/M-T-D-N/codex-ares-windows/actions/workflows/test.yml"><img src="https://github.com/M-T-D-N/codex-ares-windows/actions/workflows/test.yml/badge.svg" alt="Source checks" /></a>
-  <a href="docs/build.md"><img src="https://img.shields.io/badge/status-source_preview-d89a44" alt="Source preview" /></a>
-  <a href="docs/compatibility.md"><img src="https://img.shields.io/badge/platform-Windows_x64-286b85" alt="Windows x64" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT_%2B_Apache--2.0-447a64" alt="MIT adapter + Apache-2.0 native patch" /></a>
-</p>
-
-<p align="center">
-  <a href="#시작하기">시작하기</a> · <a href="#내-모델에-맞는-경로-고르기">경로 선택</a> · <a href="docs/architecture.md">작동 방식</a> · <a href="docs/pilot-results.md">시험 결과</a>
-</p>
-
-> [!NOTE]
-> **소스 공개판:** 고정된 의존성으로 로컬에서 빌드합니다. 시작 전에 [빌드 안내](docs/build.md), [호환 범위](docs/compatibility.md), [개발 검증](docs/validation.md)을 확인하세요.
-
-개발 안내: 이 다운스트림은 AI가 생성하고 사용자가 시험했습니다. [전체
-고지](#ai-개발-고지)를 확인하세요.
-
-[업데이트 변경점·문서 안내](docs/README.md) · [Change history](CHANGELOG.md)
-
-## Codex에 더해지는 기능
-
-- **작업 도중에도 추론 강도를 자동 조절합니다.** 첫 생성부터 다음 단계를 평가해 `medium`, `high`, `xhigh`, `max`를 선택할 수 있습니다. 설정을 바꾸느라 단계마다 작업을 멈추지 않아도 됩니다.
-- **선택한 모델이 계속 작업합니다.** Astra는 Astra로, Sol은 Sol로, Sol 6.1은 Sol 6.1로 유지됩니다. 강도 변경은 같은 턴의 다음 생성에 적용되고, 기존 워커는 각자의 역할을 이어갑니다.
-- **평가가 늦어져도 작업을 이어갑니다.** 평가 시간이 초과되거나 평가기에 연결할 수 없으면 메인 모델은 기준 강도로 계속 진행하고 제어기는 회복을 처리합니다.
-
-일반 Astra·Sol·Sol 6.1·Luna도 그대로 선택할 수 있습니다. 자동 제어는 Ares 경로를 골랐을 때 시작됩니다.
-
-## 내 모델에 맞는 경로 고르기
+## 작동 방식
 
 | Codex에서 선택 | 작업하는 모델 | 강도를 판단하는 모델 |
 |---|---|---|
-| **Astra Ares** | GPT-6 Astra | 독립 GPT-6 Luna / High |
-| **Sol Ares** | GPT-6 Sol | 독립 GPT-6 Luna / High |
-| **Sol 6.1-Ares** | GPT-6.1 Sol | 독립 GPT-6 Luna / High |
+| Astra Ares | GPT-6 Astra | 독립 GPT-6 Luna / High |
+| Sol Ares | GPT-6 Sol | 독립 GPT-6 Luna / High |
+| Sol 6.1-Ares | GPT-6.1 Sol | 독립 GPT-6 Luna / High |
 
-**Luna가 평가하고, 메인 모델이 작업합니다.** Luna 경로는 기존 Codex 로그인을 사용합니다. 별도 평가자가 도구·MCP 없이 현재 판단에 필요한 문맥을 읽고 추론 강도를 권고합니다.
+Luna는 다음 생성에 필요한 강도로 `medium`, `high`, `xhigh`, `max`를 권고할 수 있습니다. 선택한 메인 모델은 유지됩니다. 판단은 해당 생성 한 번에만 속하며, 이전 판단을 새 판단으로 재사용하지 않습니다. 평가 지연·실패 시 메인은 기준 강도로 계속할 수 있고 제어기는 회복을 처리합니다.
 
+일반 모델은 계속 선택할 수 있습니다. 일반 Luna와 subagent에는 Ares 제어를 붙이지 않습니다. 내부 composer 추천은 수락된 metadata로 평가에서 제외하며, 사용자 본문에 같은 단어가 있다는 이유로 제외하지 않습니다. 별도 평가자는 기존 Codex 로그인을 사용하고 도구·MCP에는 접근하지 않습니다.
 
 ## 시작하기
 
-**Windows x64**, Node.js 22+/npm, Git, rustup, Visual Studio x64 C++ 빌드 도구와 호환되는 Codex Desktop 설치본이 필요합니다. 현재 native 소스는 **Codex 0.162.0-alpha.17.2**을 기준으로 합니다. 기존 로컬 Ares 실행본의 실제 Desktop 기동과 Luna 판단→메인 응답을 확인했습니다. [호환 범위](docs/compatibility.md)에서 검증 범위를 확인하세요.
+이 프리뷰는 **PC에서 직접 빌드하는 소스**입니다. Windows x64, Node.js 22+/npm, Git, rustup, Visual Studio x64 C++ 빌드 도구와 호환되는 등록 Codex Desktop이 필요합니다. 관측한 Desktop은 **26.1013.4894.0**이며 시작 시 [소스 lock](patches/codex/upstream.lock.json)의 정확한 버전을 검사합니다.
 
 ```powershell
 git clone https://github.com/M-T-D-N/codex-ares-windows.git
@@ -62,63 +32,39 @@ Set-Location codex-ares-windows
 npm run setup
 ```
 
-설치 명령은 고정된 소스와 의존성을 받고 native patch를 적용한 뒤 Ares를 PC에서 빌드합니다. V8 다운로드를 검증하고, 재사용할 빌드 캐시는 프로젝트에 보관합니다. 설치된 Codex와 인증정보, 기본 Rust toolchain은 유지합니다.
+사용할 소스 revision 또는 archive를 확인하고 체크섬을 보관하세요. Setup은 고정된 Codex 원본을 복원하고 누적 patch를 한 번 적용한 뒤 의존성과 CLI·companion 네 개를 빌드합니다. 설치 Desktop·인증·기본 Rust toolchain은 유지합니다. 설치·업데이트 전 [빌드 안내](docs/build.md)를 읽으세요. 새 PC 설치와 프로젝트 내부 Rust 설치 분기는 수용 검증하지 않았습니다.
 
-> [!WARNING]
-> **시작 경로의 제한:** 아래 기본 실행의 unpackaged→MSIX 전환에서 Node와 환경이 전달되는 경로는 독립적으로 검증하지 않았습니다. 수용 검증은 기존 등록 Desktop 26.1007.9446.0과 기존 Node를 사용한 명시적 MSIX 패키지 실행으로 수행했습니다. [검증 범위](docs/validation.md#known-issues-and-unverified-behavior)를 확인하세요.
-
-빌드가 끝나면 진행 중인 로컬 작업을 마치고 앱 메뉴에서 Codex를 정상 종료하세요. 일반 권한 PowerShell에서 Ares를 시작합니다.
+빌드 후 진행 중인 작업을 마치고 앱 메뉴에서 Codex를 정상 종료합니다. 일반 권한 PowerShell에서 실행합니다.
 
 ```powershell
+.\scripts\doctor.ps1
+.\scripts\start.ps1 -PreflightOnly
 .\scripts\start.ps1
 ```
 
-모델 선택에서 **Astra Ares**, **Sol Ares** 또는 **Sol 6.1-Ares**를 고르면 Luna 평가를 사용합니다.
+Preflight는 Desktop이나 모델을 시작하지 않고 입력을 검사합니다. 시작 스크립트는 MSIX 전환 전에 Node를 해석하고 완료 receipt와 실제 Desktop/backend 신원을 확인합니다. 완료가 없거나 불명확하면 기동 성공으로 보지 말고 안내된 receipt를 확인한 뒤 재시도를 판단하세요. 이 구조 자체가 공개 폴더의 GUI 수용 검증을 대신하지는 않습니다.
 
-| 하고 싶은 일 | 방법 |
+모델 선택에서 Ares 경로를 고릅니다. `.\scripts\status.ps1`로 backend·제어 상태를 조회할 수 있습니다. `current`는 프로세스 신원과 최근 상태 시각이 일치해야 하며, 과거 receipt만으로 현재 제어가 실행 중이라고 판단하지 않습니다.
+
+| 목적 | 방법 |
 |---|---|
-| 실행 중인 backend와 제어 상태 확인 | `.\scripts\status.ps1` 실행 |
-| 고정 강도로 돌아가기 | 턴이 끝난 뒤 일반 모델 선택 |
-| 현재 작업 멈추기 | Codex의 기본 Stop 사용 |
-| 설치본으로 돌아가기 | 앱을 정상 종료한 뒤 평소처럼 Codex 실행 |
+| 고정 강도로 돌아가기 | 턴 경계에서 일반 모델 선택 |
+| 현재 작업 멈추기 | Codex 기본 Stop 사용 |
+| 설치본으로 돌아가기 | 앱 정상 종료 후 설치 Codex 실행 |
+| 업데이트·복구·제거 | [수명주기 안내](docs/build.md#update-recovery-and-removal) 확인 |
 
-[자세한 빌드 안내와 실패 후 재개 방법](docs/build.md)
+## 확인한 범위와 한계
 
-## 실제 Codex 작업에서 확인했습니다
+대응하는 비공개 0.163 실행본에서 GUI Stop 후 452ms에 요청이 취소됐고 취소 턴의 추가 Main 생성은 0건이었습니다. 같은 대화의 후속 요청은 3,001ms에 완료되고 기대한 표식을 화면에서 확인했습니다. 같은 고정 native 소스의 앞선 GUI Medium·자동압축·재개 검사도 통과했습니다. 제한된 기능 관측이며 장기 안정성 보장은 아닙니다.
 
-기존 시험에서는 네 경로, 같은 턴 안의 강도 변경, 여러 대화의 동시 진행, 평가 지연 이후 회복을 확인했습니다. [공개한 시험 결과](docs/pilot-results.md)에서 업무 12조건의 전체 비교와 Jev 판단 51건 분석을 볼 수 있습니다.
+수락된 작업 전달 입력은 격리 RPC에서 확인했습니다. 일반 GUI에서 그 전달 경로가 생성되는 과정은 관측하지 않았습니다. 원래 PowerShell 오류의 원인과 당시 launch manifest의 바이트 해시는 UNKNOWN입니다. GUID 완료·오류 전파와 backend 신원 연속성 수정은 별도 근거이며 과거 오류의 원인을 입증하지 않습니다.
 
-<details>
-<summary><strong>시험 결과와 현재 추천</strong></summary>
+[과거 파일럿](docs/pilot-results.md)은 소규모 업무 비교·실패와 제거된 Jev 경로의 측정을 보존합니다. 과거 파일럿과 이후의 작은 품질 표본은 보편적 품질 동등성·비용 절감·장기 안정성을 입증하지 않습니다. 이번 공개 준비에는 새 유료 시험이 포함되지 않습니다.
 
-- **Astra:** 평가 대기시간을 받아들일 수 있으면 Luna 판단 경로를 선택할 수 있습니다. 지연이 중요하면 일반 Astra/xhigh가 간단합니다.
-- **Sol:** 측정한 업무에서는 일반 Sol/High를 기본으로 권합니다.
-- **과거 Jev 시험:** 판단 51건이 모두 메인으로 이관됐습니다. Jev 경로는 제거했으며 당시 측정은 파일럿 보고서에 보존합니다.
+[변경점](docs/changes.ko.md) · [호환성](docs/compatibility.md) · [빌드](docs/build.md) · [검증](docs/validation.md) · [구조](docs/architecture.md) · [개인정보](docs/privacy.md)
 
-이 소규모 비교는 제어 동작을 확인한 근거이며, 보편적인 비용 절감이나 품질 우위를 입증한 결과는 아닙니다. 실패·미관측과 자연 승격·강제 제어시험의 차이도 결과에 포함했습니다.
+## AI 개발 고지·출처
 
-</details>
+다운스트림 변경 대부분은 사용자 요구와 수용 피드백에 따라 OpenAI Codex가 작성·수정했습니다. 저장소 소유자는 소스를 직접 수동 검토하지 않았습니다. 검증은 소유자의 Windows/Codex 환경에서 수행한 자동 검사와 기능 시험을 근거로 하며, 독립적인 제3자 코드·보안 감사를 주장하지 않습니다.
 
-현재 배포 형태는 **PC에서 빌드하는 소스**입니다. 최근 수정은 실행기가 끝난 뒤에도 평가 연결을 유지하고, 현재 요구사항을 보존하며 긴 평가 입력을 줄이고, 개발 빌드의 중단된 도구 기록을 복구합니다. 실제 Sol 6.1-Ares 턴에서 Luna/High의 Medium 권고가 적용되어 응답을 마쳤습니다. [개발 검증](docs/validation.md)은 이 로컬 실행 근거와 공개용 경로 검사를 구분하며 지연·실패도 기록합니다.
-
-## 더 알아보기
-
-[작동 구조](docs/architecture.md) · [빌드와 의존성](docs/build.md) · [호환 범위](docs/compatibility.md) · [개인정보 안내](docs/privacy.md) · [시험 결과](docs/pilot-results.md)
-
-README는 영어·한국어·일본어·중국어 간체로 제공합니다. 상세 기술 문서는 현재 영어입니다.
-
-## AI 개발 고지
-
-다운스트림 변경 대부분은 사용자가 제공한 요구사항과 반복적인 수용 요청에 따라
-OpenAI Codex가 작성·수정했습니다. 저장소 소유자는 소스 코드를 직접 읽거나
-검토하지 않았습니다. 검증은 소유자의 Windows/Codex 환경에서 수행한 자동화
-테스트와 실제 기능 시험을 근거로 합니다. 독립적인 제3자 코드 검토나 보안 감사는
-수행되지 않았습니다.
-
-**요약:** AI가 생성하고 사용자가 시험했으며, 수동 코드 리뷰를 거치지 않았습니다.
-
-## Upstream 표기와 라이선스
-
-[Astra-Ares](https://github.com/miuuyy/Astra-Ares)의 파생 어댑터이며 [OpenAI Codex](https://github.com/openai/codex)를 수정합니다. 정확한 원본 정보는 [lock](patches/codex/upstream.lock.json)에 있습니다. OpenAI 공식 제품이나 upstream의 지원 약속이 아닙니다.
-
-[라이선스](LICENSE)는 bridge·신규 어댑터의 MIT와 native 변경의 Apache-2.0을 유지합니다. [제3자 고지](THIRD_PARTY_NOTICES.md)에 원본 조건을 보존했습니다. 설치 Desktop과 실행파일 의존성은 이 소스 묶음으로 재배포하지 않습니다.
+[Astra-Ares](https://github.com/miuuyy/Astra-Ares)의 파생 어댑터이며 [OpenAI Codex](https://github.com/openai/codex)를 수정합니다. OpenAI 공식 제품이 아닙니다. [LICENSE](LICENSE)는 어댑터의 MIT와 native 변경의 Apache-2.0을 보존합니다. [제3자 고지](THIRD_PARTY_NOTICES.md)를 확인하세요. 소스 배포물에는 native 실행파일·설치 Desktop·toolchain·의존성 트리·비공개 실행 근거를 넣지 않습니다.
