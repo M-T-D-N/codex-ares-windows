@@ -149,7 +149,7 @@ if(-not $PreflightOnly -and -not $PackagedLaunch) {
   if($ContextTraceThreadId){$packagedArgs+=' -ContextTraceThreadId '+$ContextTraceThreadId}
   Invoke-CommandInDesktopPackage -PackageFamilyName $package.PackageFamilyName -AppId App `
     -Command (Join-Path ([Environment]::SystemDirectory) 'WindowsPowerShell\v1.0\powershell.exe') -Args $packagedArgs -PreventBreakaway
-  $timeout=if($WaitForDesktopPid){240}else{60}
+  $timeout=if($WaitForDesktopPid){270}else{90}
   $result=Wait-AresLaunchCompletion $completionPath $InvocationId $notBefore $timeout
   Confirm-AresLaunchIdentity $result $repoRoot $candidateManifest.native.path $desktopPath
   Write-Output $result.message

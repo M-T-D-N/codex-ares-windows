@@ -8,7 +8,7 @@ Ares checks the current task before each generation and selects the reasoning ef
 
 [English](README.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md)
 
-**0.1.0-preview.2 source candidate:** the native base is official Codex **0.163.0**, with the existing Ares controls carried forward. Matching private-runtime checks covered GUI Stop, recovery in the same conversation, and compaction/resume. The exact public layout has not had a fresh GUI/provider acceptance run. Restoration (9,193 files/modes), 95 tests and bundle/Doctor/preflight passed with reused native bytes. See [validation](docs/validation.md) for what each observation establishes.
+**0.1.0-preview.2 source preview:** the native base is official Codex **0.163.0**, with the existing Ares controls carried forward. Matching private-runtime checks covered GUI Stop, recovery in the same conversation, and compaction/resume. The exact public layout has not had a fresh GUI/provider acceptance run. Restoration (9,193 files/modes), 95 tests and bundle/Doctor/preflight passed with reused native bytes. See [validation](docs/validation.md) for what each observation establishes.
 
 ## What it does
 
@@ -55,7 +55,7 @@ Choose an Ares route in the model picker. `.\scripts\status.ps1` checks backend/
 
 ## Evidence and limits
 
-In the matching private 0.163 runtime, GUI Stop cancelled the request in 452 ms, with no extra Main generation in that cancelled turn. A subsequent request in the same conversation completed in 3,001 ms with the expected visible marker. Earlier GUI Medium and compaction/resume checks passed on the same fixed native source. These are bounded functional observations.
+In the matching private 0.163 runtime, GUI Stop cancelled the request (request-log elapsed 452 ms; not measured click latency), with no extra Main generation in that cancelled turn. A subsequent request in the same conversation completed in 3,001 ms with the expected visible marker. Earlier GUI Medium and compaction/resume checks passed on the same fixed native source. These are bounded functional observations.
 
 Isolated RPC checks covered accepted task delivery; ordinary GUI generation of that delivery path was not observed. The original PowerShell failure cause and the historical launch-manifest byte hash remain UNKNOWN. GUID completion/error propagation and backend identity continuity are separate fixes, not proof of that historical cause.
 

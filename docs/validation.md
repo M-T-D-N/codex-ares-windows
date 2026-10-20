@@ -8,7 +8,7 @@ The native base is official Codex **0.163.0**, commit `83086188ae0614bd882818ff1
 
 | Existing observation | Result | Boundary |
 |---|---|---|
-| Private-runtime GUI Stop on fixed 0.163 native | Request cancelled in 452 ms; extra Main generations in the cancelled turn: 0 | Observed cancellation, not proof about every provider/tool interruption |
+| Private-runtime GUI Stop on fixed 0.163 native | Cancelled request-log elapsed 452 ms; not measured click latency; extra Main generations in the cancelled turn: 0 | Observed cancellation, not proof about every provider/tool interruption |
 | Same-conversation recovery | Subsequent response completed in 3,001 ms; expected visible marker observed | One bounded recovery sequence, not a latency guarantee |
 | Earlier GUI Medium and compaction/resume | Passed on the same fixed native source | Distinct from a fresh public-layout run |
 | Accepted native task delivery | Supported by isolated RPC checks | Ordinary GUI generation of this delivery path was not observed |
@@ -51,3 +51,7 @@ The immutable `v0.1.0-preview.1` tag/assets retain their original identity. Late
 [runtime-validation.json](runtime-validation.json) retains the fixed-cutoff 0.162/Desktop26.1007.2314.0 aggregate: 173 fully linked Luna→capture→send→completed-response→cleanup generations, zero effort mismatches among those chains, 49 completed baseline fallback responses and eight turns with later successful judgments. One inherited-effort case lacked prior-response evidence and remains UNKNOWN. These are generation/turn observations, not 173 completed user tasks.
 
 Request effort follows the last transmitted configuration update, otherwise the previous response chain; baseline is initial only without a prior response. In-flight, cancelled, stale and incomplete chains are excluded from linked success. Historical zero context-phase events are not a measured speedup. [Pilot results](pilot-results.md) preserve the earlier task comparisons and negative Jev results; none establish a general cost/quality advantage.
+
+## Default-command follow-up
+
+On the same allowed Windows host/isolated layout, unmodified `npm test` passed 95/95 on 8f853a6 and again after the review fixes, without concurrency overrides. The earlier sandbox 80 PASS/15 FAIL and serial host 95 PASS remain distinct. No serial policy is adopted; package/CI/docs retain `npm test`. Public-source launch fixtures passed 84 checks in each Windows PowerShell and PowerShell 7 host; these are function/contract tests, not an actual Desktop launch. The cancelled request elapsed starts at native attempt preparation, not the UI click.

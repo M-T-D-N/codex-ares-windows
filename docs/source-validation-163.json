@@ -33,14 +33,31 @@
     "freshNativeBuild": "NOT_RUN",
     "freshPcSetup": "NOT_RUN",
     "rustInstallerBranch": "NOT_RUN",
-    "newRemoteCI": "NOT_RUN_UNTIL_REVIEWED_PUSH"
+    "newRemoteCI": "NOT_RUN_UNTIL_REVIEWED_PUSH",
+    "defaultNpmTest": {
+      "status": "PASS",
+      "passed": 95,
+      "failed": 0,
+      "skipped": 0,
+      "arguments": "npm test; no concurrency override",
+      "environment": "same allowed Windows host and isolated public layout",
+      "priorCandidate": "8f853a6 same environment also 95/95",
+      "serialPolicy": "not adopted"
+    },
+    "publicLaunchFixtures": {
+      "status": "PASS",
+      "windowsPowerShellChecks": 84,
+      "powerShell7Checks": 84,
+      "desktopLaunched": false
+    }
   },
   "privateMatchingRuntime": {
-    "guiStopCancelledMs": 452,
     "extraMainInCancelledTurn": 0,
     "sameConversationRecoveryCompletedMs": 3001,
     "mediumCompactResume": "PASS",
-    "ordinaryGuiNativeTaskDelivery": "NOT_OBSERVED"
+    "ordinaryGuiNativeTaskDelivery": "NOT_OBSERVED",
+    "cancelledRequestElapsedMs": 452,
+    "clickToCancelLatency": "NOT_MEASURED"
   },
   "historicalUnknowns": [
     "original PowerShell error cause",

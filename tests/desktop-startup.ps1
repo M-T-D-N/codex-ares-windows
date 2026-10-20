@@ -26,6 +26,10 @@ foreach($name in @('Resolve-AresNodePath','Get-AresCompletionPath','Write-AresLa
   Invoke-Expression $fn.Extent.Text
 }
 $script:completionWait=(Get-Command Wait-AresLaunchCompletion).ScriptBlock
+Check ($startAst.Extent.Text.Contains('$observedBackendIdentity=$null')) 'public launcher starts backend continuity observation empty'
+Check ($startAst.Extent.Text.Contains('Test-AresProcessIdentity $observedBackendIdentity $backend[0]')) 'public launcher compares complete backend identity on repeated observation'
+Check ($startAst.Extent.Text -match '(?s)\$observedBackendIdentity=\$backend\[0\]\s+continue') 'first or replaced backend is observed again before success'
+
 $statements=$mainTry.Body.Statements
 $versionSelection=$statements | Where-Object {$_ -is [Management.Automation.Language.AssignmentStatementAst] -and $_.Left.Extent.Text -eq '$validatedPackageVersion'} | Select-Object -First 1
 $versionCheck=$statements | Where-Object {$_ -is [Management.Automation.Language.IfStatementAst] -and $_.Clauses[0].Item1.Extent.Text -match 'package.Version.ToString'} | Select-Object -First 1
@@ -117,10 +121,10 @@ try {
   Check ($captured.args.Contains('-File "'+(Join-Path $script:fixtureRoot 'script with spaces/start.ps1')+'"')) 'launcher script path with spaces is quoted across package activation'
   Check ($captured.args.Contains('-NodePath "'+$script:fixtureNode+'"')) 'exact Node path with spaces is quoted across package activation'
   Check ($captured.args -match '-WindowStyle Hidden' -and $captured.args -match '-PackagedLaunch' -and $captured.args -notmatch 'WaitForDesktopPid') 'hidden launch arguments'
-  Check ($script:capturedTimeout -eq 60) 'ordinary parent wait is bounded at 60 seconds'
+  Check ($script:capturedTimeout -eq 90) 'ordinary parent wait is bounded at 90 seconds'
   $output=Capture-Route $false $false 987
   Check ($captured.args -match '-WaitForDesktopPid 987$') 'preserve exact normal-exit wait target'
-  Check ($script:capturedTimeout -ge 240) 'normal-exit parent deadline covers 180-second exit and 40-second backend waits'
+  Check ($script:capturedTimeout -eq 270) 'normal-exit parent deadline covers 180-second exit and 40-second backend waits'
   $script:omitIdentity=$true
   $rejected=$false;try{Capture-Route $false $false 0}catch{$rejected=$_.Exception.Message -match 'UNKNOWN.*expected Desktop'}
   $script:omitIdentity=$false

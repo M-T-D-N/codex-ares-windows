@@ -28,13 +28,15 @@ To restore only, optionally supplying an already downloaded archive:
 
 `-Archive` must identify bytes matching the lock. Do not apply this patch over previously patched source. Preserve CRLF bytes in Windows SQL migrations so embedded checksums remain compatible; do not fix patch whitespace by normalizing them. Rust source remains LF.
 
-After successful restoration, resume a failed build from that source:
+After restoration, resume from that source (bundle must be absent):
 
 ```powershell
 .\scripts\build-native.ps1 -SourceDir .\build\source -TargetDir .\build\target -IncludeCompanions
 .\scripts\doctor.ps1
 .\scripts\start.ps1 -PreflightOnly
 ```
+
+By default build-native also runs `node scripts/bundle.mjs --target build/target`; `-SkipBundle` omits it. After a skipped bundle, run that command separately. Existing bundles are never overwritten: keep the previous checkout intact and use a separate checkout with no bundle. Doctor without a bundle is not build/bundle completion.
 
 Use an x64 developer shell or `-VcVarsPath`. The four companions must share the locked source: code-mode host, command runner, sandbox setup and sandbox service. Existing `bundle` is never overwritten. Reuse compatible target caches without concurrent writers; no routine `cargo clean` is required.
 
