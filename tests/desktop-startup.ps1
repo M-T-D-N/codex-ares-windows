@@ -93,6 +93,16 @@ $runReceipt=[ordered]@{manifestPath=(Join-Path $script:fixtureRoot 'bundle/candi
 $runReceipt|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $script:fixtureRun 'run.json') -Encoding utf8
 try {
   $realNode=Resolve-AresNodePath '' $false
+  $savedMultiplePath=$env:PATH
+  $secondNode=Join-Path $script:fixtureRoot 'second node/node.exe'
+  New-Item -ItemType Directory -Path (Split-Path -Parent $secondNode) -Force | Out-Null
+  Set-Content -LiteralPath $secondNode -Value 'second synthetic executable path fixture' -Encoding ascii
+  try {
+    $env:PATH=(Split-Path -Parent $script:fixtureNode)+';'+(Split-Path -Parent $secondNode)+';'+$savedMultiplePath
+    Check (@(Get-Command node -CommandType Application).Count -ge 2) 'fixture exposes multiple Node applications on PATH'
+    Check ((Resolve-AresNodePath '' $false) -ceq $script:fixtureNode) 'first Node application is selected without joining paths'
+  } finally {$env:PATH=$savedMultiplePath}
+
   $originalPath=$env:PATH
   try {
     $env:PATH=''

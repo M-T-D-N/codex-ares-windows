@@ -7,7 +7,7 @@ $repoRoot=Split-Path -Parent $PSScriptRoot
 function Resolve-AresNodePath([string]$NodePath,[bool]$PackagedLaunch) {
   if(-not $NodePath) {
     if($PackagedLaunch){throw 'Packaged launch requires the absolute NodePath selected by its caller.'}
-    $NodePath=(Get-Command node -CommandType Application -ErrorAction Stop).Source
+    $NodePath=(Get-Command node -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
   }
   if(-not [IO.Path]::IsPathRooted($NodePath) -or ([IO.Path]::GetPathRoot($NodePath)).Length -lt 3) {
     throw 'NodePath must be an absolute executable path.'

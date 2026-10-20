@@ -36,7 +36,15 @@
     "newRemoteCI": {
       "statusAtSnapshot": "NOT_RUN",
       "scope": "prepublication local validation snapshot only; not the current status after publication",
-      "publishedCommitCI": "actual exact-commit CI run link and result must be included in Release before publication"
+      "publishedCommitCI": "actual exact-commit CI run link and result must be included in Release before publication",
+      "submittedPreviousCandidate": {
+        "commit": "090221c6b48b77708a5bbc5d5614b1e884e46628",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/M-T-D-N/codex-ares-windows/actions/runs/39348719107",
+        "release": "HELD",
+        "cause": "multiple Node application paths coerced into one path; local correction awaits review and remote CI"
+      }
     },
     "defaultNpmTest": {
       "status": "PASS",
@@ -50,8 +58,8 @@
     },
     "publicLaunchFixtures": {
       "status": "PASS",
-      "windowsPowerShellChecks": 84,
-      "powerShell7Checks": 84,
+      "windowsPowerShellChecks": 86,
+      "powerShell7Checks": 86,
       "desktopLaunched": false
     }
   },

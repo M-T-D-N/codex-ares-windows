@@ -55,3 +55,7 @@ Request effort follows the last transmitted configuration update, otherwise the 
 ## Default-command follow-up
 
 On the same allowed Windows host/isolated layout, unmodified `npm test` passed 95/95 on 8f853a6 and again after the review fixes, without concurrency overrides. The earlier sandbox 80 PASS/15 FAIL and serial host 95 PASS remain distinct. No serial policy is adopted; package/CI/docs retain `npm test`. Public-source launch fixtures passed 84 checks in each Windows PowerShell and PowerShell 7 host; these are function/contract tests, not an actual Desktop launch. The cancelled request elapsed starts at native attempt preparation, not the UI click.
+
+## Exact-commit CI failure and local correction
+
+The submitted 090221c6b48b77708a5bbc5d5614b1e884e46628 failed [CI run 39348719107](https://github.com/M-T-D-N/codex-ares-windows/actions/runs/39348719107): npm ci passed, but both startup fixtures failed because multiple Node application paths were coerced into one string. No tag/Release was created. The launcher now selects the first application; a two-Node PATH fixture reproduces the old failure and passes after the fix. Local default npm test: 95 PASS; both PowerShell hosts: 86 checks PASS. This new correction awaits review and exact-commit remote CI; these local results do not replace it.
