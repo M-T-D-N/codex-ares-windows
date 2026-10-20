@@ -4,7 +4,7 @@
 
 The native base is official Codex **0.163.0**, commit `83086188ae0614bd882818ff1aa23f3194962012`; the observed registered Desktop is **26.1013.4894.0**. The [source lock](../patches/codex/upstream.lock.json) owns the exact patch, archive, dependency and source identities.
 
-**Exact-public restoration: 9,193 files/modes; adapter tests: 95 PASS. Isolated npm ci, bundle/Doctor and 1,557 preflight checks PASS using the five hash-matched existing binaries; no native rebuild. Fresh exact-public GUI/provider acceptance is NOT_RUN.** Private-runtime evidence is separate. New remote CI has not run; preparation adds no paid calls.
+**Exact-public restoration: 9,193 files/modes; adapter tests: 95 PASS. Isolated npm ci, bundle/Doctor and 1,557 preflight checks PASS using the five hash-matched existing binaries; no native rebuild. Fresh exact-public GUI/provider acceptance is NOT_RUN.** Private-runtime evidence is separate. This is a prepublication local validation snapshot: remote CI was not run at this snapshot. The Release links the exact published commit CI result; this snapshot does not describe later CI status. Preparation adds no paid calls.
 
 | Existing observation | Result | Boundary |
 |---|---|---|

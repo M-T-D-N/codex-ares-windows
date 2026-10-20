@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "version": "0.1.0-preview.2",
-  "scope": "source-only public preparation; no additional model calls",
+  "scope": "prepublication local validation snapshot; no additional model calls; later published-commit CI is linked from Release",
   "nativeSourceContentSha256": "185ee6348a857e4b6d2a967f0e9a38afda89091c0e127c36f6632cfb9f6513d2",
   "checks": {
     "restore": {
@@ -33,7 +33,11 @@
     "freshNativeBuild": "NOT_RUN",
     "freshPcSetup": "NOT_RUN",
     "rustInstallerBranch": "NOT_RUN",
-    "newRemoteCI": "NOT_RUN_UNTIL_REVIEWED_PUSH",
+    "newRemoteCI": {
+      "statusAtSnapshot": "NOT_RUN",
+      "scope": "prepublication local validation snapshot only; not the current status after publication",
+      "publishedCommitCI": "actual exact-commit CI run link and result must be included in Release before publication"
+    },
     "defaultNpmTest": {
       "status": "PASS",
       "passed": 95,

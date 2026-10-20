@@ -4,7 +4,7 @@
 
 | 대응한 문제·요구 | 변경 | 근거와 한계 |
 |---|---|---|
-| Desktop/backend가 이전 0.162 기준을 넘어섬 | 누적 native 변경을 0.163으로 이식하고 CLI·companion 네 개를 같은 lock에 연결 | 대응 비공개 실행본 기능 검증이 있음. 이번 공개본의 복원·adapter 검사·Doctor·preflight는 대기 중이며 새 공개 GUI/provider 수용은 NOT_RUN |
+| Desktop/backend가 이전 0.162 기준을 넘어섬 | 누적 native 변경을 0.163으로 이식하고 CLI·companion 네 개를 같은 lock에 연결 | 대응 비공개 실행본 기능 검증이 있음. 공개 소스 9,193파일/mode 복원, 기본 npm test 95개, bundle/Doctor/preflight 1,557개 통과. 기존 native를 재사용했으며 새 공개 GUI/provider 수용은 NOT_RUN |
 | 수락된 작업 전달과 별칭 압축·재개에서 현재 입력·모델 계약 보존 | native 전달 입력을 평가에 연결하고 압축·재개 경로 유지 | 격리 RPC 전달 입력과 같은 고정 native의 GUI Medium·압축·재개 확인. 일반 GUI에서 전달 입력이 생성되는 과정은 관측하지 않음 |
 | 패키지 실행이 실제 기동 결과 없이 반환될 가능성 | GUID별 완료 receipt와 오류 전파, 실제 Desktop/backend 전체 신원·candidate 실행 연속성 확인 | 별도 시작 수정 근거가 있음. 원래 PowerShell 오류 원인과 당시 launch manifest 바이트 해시는 UNKNOWN |
 | 취소 후 같은 대화에서 정상 작업을 이어가야 함 | 새 native에서 취소·회복 동작 유지 | 비공개 GUI Stop 취소 확인(요청 로그 elapsed 452ms, 클릭 반응시간 측정 아님), 취소 턴의 추가 Main 생성 0건. 같은 대화 후속 응답 3,001ms 완료·화면 표식 확인 |
