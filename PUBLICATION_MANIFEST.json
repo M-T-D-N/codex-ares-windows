@@ -9,8 +9,8 @@
   "nativeSourceContentSha256": "5b4b0fe9d853991b8c96470369cae7adaa674b1257471cf76ef720484c75c937",
   "runtimeDependencies": "pinned gpt-tokenizer installed by setup; no dependency tree distributed",
   "binaryDistribution": false,
-  "qualification": "Source-only Technical Preview candidate; reviewed code 02d549c CI success; later release commit requires exact CI; compact6/GUI/provider/fresh-PC/native full independent review remain open",
-  "sourceSnapshotSha256": "b387cffebd2fc8c88d0129ceaf7b34e9d489546a716fea04c0f4d12c98bcc2c4",
+  "qualification": "Source-only Technical Preview publication is accepted subject to successful exact-commit CI and asset verification; this is not stable or live-use acceptance. Compact 6, GUI/provider/fresh-PC acceptance and full cumulative native independent review remain incomplete.",
+  "sourceSnapshotSha256": "fce0cbb578b1e69b0144105e73865d6d724b3bbc87f12c9c4dc7e1341523b5da",
   "sourceSnapshotMethod": "sha256(sorted POSIX path + NUL + file sha256 + LF), excludes publication manifest",
   "files": [
     {
@@ -55,13 +55,13 @@
     },
     {
       "path": "README.ko.md",
-      "bytes": 4972,
-      "sha256": "f3cf5452a1cfb49b377494d33be493dbf1f4caf3246cd64b9da9012105f6a09a"
+      "bytes": 5126,
+      "sha256": "9112ebd9c773db67da600bf1fe9e1a01ff94379cdf7d576a793791e3fb71d8c8"
     },
     {
       "path": "README.md",
-      "bytes": 5690,
-      "sha256": "1ecd4b44ef98de552fc2ce6d09eec738147de2f5435487781ab0b33737b5df8e"
+      "bytes": 5734,
+      "sha256": "7687e85d9678c41813729b5eaca2930caec130e59b611f9d20b20689dc7a2ae1"
     },
     {
       "path": "README.zh-CN.md",
@@ -80,8 +80,8 @@
     },
     {
       "path": "docs/architecture.md",
-      "bytes": 5735,
-      "sha256": "ca64546f0b387cf4492ed67f74d649d1b9b3a5c59f054c48d69027542eaa3d94"
+      "bytes": 5779,
+      "sha256": "76e78c649312ed369c3ae8a14b0b85f0d271a7988637ad916b6fe46683cd641a"
     },
     {
       "path": "docs/assets/ares-banner.svg",
@@ -100,8 +100,8 @@
     },
     {
       "path": "docs/compatibility.md",
-      "bytes": 5252,
-      "sha256": "7c1a64faeaffeabd98e15636e795d3c921cc048374e513dbe21c49e6d781f46f"
+      "bytes": 5296,
+      "sha256": "d4d4694c0f7916e03e05b266566f486bbe3f398ecacefb57927cf91b5d452435"
     },
     {
       "path": "docs/desktop-261016-candidate.md",
@@ -145,8 +145,8 @@
     },
     {
       "path": "docs/source-validation-164.json",
-      "bytes": 2520,
-      "sha256": "a712960b7380630f0307eefe3f6ee475cb4d052c2e154332caa8aaf7cb0d53c4"
+      "bytes": 2857,
+      "sha256": "ace1bdd70c60fdac0cca11d282bc02f9164169364dd8a359b087a90e1c2839af"
     },
     {
       "path": "docs/startup-policy-qualification.json",
@@ -155,8 +155,8 @@
     },
     {
       "path": "docs/validation.md",
-      "bytes": 18630,
-      "sha256": "bdb3b790b1f0f01f909247b728775a1b004e0be2c1d9e3f09c37d32fea83618e"
+      "bytes": 18943,
+      "sha256": "35a77a4c2d3b0356ded9bdbb722d1448d3b9afc207b93fe75839e65af273dd21"
     },
     {
       "path": "licenses/Apache-2.0.txt",

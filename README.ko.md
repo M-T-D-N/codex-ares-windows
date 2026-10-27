@@ -1,8 +1,8 @@
 # Windows용 Codex Ares
 
-**0.164 Terra 소스 전용 Technical Preview:** 검토된 코드가 [draft PR #1](https://github.com/M-T-D-N/codex-ares-windows/pull/1)에 제출됐습니다. 코드 커밋 [`02d549c`](https://github.com/M-T-D-N/codex-ares-windows/commit/02d549c952bb01cc025c7729185863d6b60309db)의 [CI](https://github.com/M-T-D-N/codex-ares-windows/actions/runs/40515045146)에서 npm ci·시험 196개·소스 전용 Doctor가 통과했습니다. 이는 해당 코드의 날짜·커밋 고정 근거이며 후속 문서·릴리스 커밋의 CI를 미리 주장하지 않습니다. 같은 소스의 로컬 native 90개, 새 정적 계약 320/458과 proof·preflight 1,560개는 통과했습니다. compact/재개 6건은 플랫폼 제한으로 NOT_RUN이며 새 앱 실행·모델 호출은 없었습니다.
+**0.164 Terra 소스 전용 Technical Preview:** 범위를 한정한 변경 검토를 거쳐 [PR #1](https://github.com/M-T-D-N/codex-ares-windows/pull/1)을 통해 제출됐습니다. 코드 커밋 [`02d549c`](https://github.com/M-T-D-N/codex-ares-windows/commit/02d549c952bb01cc025c7729185863d6b60309db)의 [CI](https://github.com/M-T-D-N/codex-ares-windows/actions/runs/40515045146)에서 npm ci·시험 196개·소스 전용 Doctor가 통과했습니다. 이는 해당 코드의 날짜·커밋 고정 근거이며 후속 문서·릴리스 커밋의 CI를 미리 주장하지 않습니다. 같은 소스의 로컬 native 90개, 새 정적 계약 320/458과 proof·preflight 1,560개는 통과했습니다. compact/재개 6건은 플랫폼 제한으로 NOT_RUN이며 새 앱 실행·모델 호출은 없었습니다.
 
-**안정판 또는 실사용 수용 판정이 아닙니다.** 보존된 0.163 공개본과 별개이며 [현재 검증과 남은 판단](docs/validation.md)을 확인하세요. 실제 Release는 공개 커밋과 CI를 지정하고 운영 채택은 별도로 판단합니다.
+**소스 전용 Technical Preview 공개가 수용됐으며 정확한 최종 커밋 CI 성공과 자산 검증이 조건입니다. 안정판 또는 실사용 수용 판정은 아닙니다.** 보존된 0.163 공개본과 별개이며 [현재 검증과 남은 판단](docs/validation.md)을 확인하세요. 실제 Release는 공개 커밋과 CI를 지정하고 운영 채택은 별도로 판단합니다.
 
 [English](README.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md)
 

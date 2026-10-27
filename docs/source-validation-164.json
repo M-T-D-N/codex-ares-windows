@@ -59,5 +59,6 @@
     "Original PowerShell failure and historical launch-manifest hash remain UNKNOWN; latest Get-FileHash host error is separate"
   ],
   "preSubmissionRemoteCI": "NOT_RUN_FOR_THIS_UNPUBLISHED_CANDIDATE",
-  "publicationDecision": "OPEN: see docs/validation.md; no full deployment acceptance"
+  "publicationDecision": "Source-only Technical Preview publication is accepted subject to successful exact-commit CI and asset verification; this is not stable or live-use acceptance. Compact 6, GUI/provider/fresh-PC acceptance and full cumulative native independent review remain incomplete.",
+  "targetedReview": "selected guards, Luna/stale/capture, loopback authentication/length, terminal recording; not all70 paths"
 }
