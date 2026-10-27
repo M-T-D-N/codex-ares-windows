@@ -87,3 +87,26 @@ for(const kind of ['valid','corrupt-archive','corrupt-manifest','wrong-source-pi
     }finally{rmSync(f.dir,{recursive:true,force:true});}
   });
 }
+
+
+test('bundle metadata retains all four Main models and refuses overwriting a bundle',()=>{
+  const root=fileURLToPath(new URL('../../',import.meta.url));
+  assert.ok(process.env.ARES_TEST_TEMP,'task-owned fixture temp required');
+  mkdirSync(process.env.ARES_TEST_TEMP,{recursive:true});
+  const dir=mkdtempSync(join(process.env.ARES_TEST_TEMP,'bundle-models-'));
+  try{
+    for(const sub of ['scripts','src','patches/codex','node_modules/gpt-tokenizer','target/debug'])mkdirSync(join(dir,sub),{recursive:true});
+    copyFileSync(join(root,'scripts/bundle.mjs'),join(dir,'scripts/bundle.mjs'));
+    const companions=['codex-code-mode-host.exe','codex-command-runner.exe','codex-windows-sandbox-setup.exe','codex-windows-sandbox-service.exe'];
+    const lock={nativeVersion:'codex-cli fixture',commit:'fixture',patch:{sha256:'fixture'},sourcePreparation:{sourceContentSha256:'fixture'},companions:companions.map(name=>({name}))};
+    writeFileSync(join(dir,'patches/codex/upstream.lock.json'),JSON.stringify(lock));
+    for(const name of ['codex.exe',...companions])writeFileSync(join(dir,'target/debug',name),'synthetic bytes; never executed');
+    for(const name of ['start.ps1','status.ps1','verify-desktop-protocol.mjs','check-desktop-protocol.mjs','verify-native-source.mjs'])writeFileSync(join(dir,'scripts',name),'fixture');
+    writeFileSync(join(dir,'package-lock.json'),'{}');writeFileSync(join(dir,'src/fixture.mjs'),'//fixture');writeFileSync(join(dir,'node_modules/gpt-tokenizer/package.json'),'{}');
+    const run=()=>spawnSync(process.execPath,[join(dir,'scripts/bundle.mjs'),'--target',join(dir,'target')],{encoding:'utf8',windowsHide:true});
+    const built=run();assert.equal(built.status,0,built.stderr);
+    const manifest=readFileSync(join(dir,'bundle/candidate.json'),'utf8');
+    assert.deepEqual(JSON.parse(manifest).supportedMainModels,['gpt-6-astra','gpt-6-sol','gpt-6.1-sol','gpt-6.1-terra']);
+    assert.notEqual(run().status,0);assert.equal(readFileSync(join(dir,'bundle/candidate.json'),'utf8'),manifest);
+  }finally{rmSync(dir,{recursive:true,force:true});}
+});

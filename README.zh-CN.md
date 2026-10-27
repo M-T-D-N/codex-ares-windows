@@ -1,7 +1,3 @@
-# Codex Ares for Windows — 简体中文
+# Codex Ares for Windows
 
-当前0.163预览版本的完整说明请阅读英文版或韩文版。
-
-[English](README.md) · [한국어](README.ko.md)
-
-0.1.0-preview.2 is a source-only preview. Exact versions, installation, update/recovery/removal and validation limits are maintained in those two complete documents. No new translated installation instructions are claimed here.
+0.164 Terra为仅源码Technical Preview。代码提交与CI见[PR #1](https://github.com/M-T-D-N/codex-ares-windows/pull/1)。此页不是完整翻译，最新要求与限制请参阅[English](README.md)或[한국어](README.ko.md)。新的GUI/provider/fresh-PC验收尚未执行，不代表稳定版或生产切换批准。

@@ -3,6 +3,33 @@ $ErrorActionPreference='Stop'
 # Use this host's bundled utilities even with an inherited PowerShell 7 module path.
 Import-Module (Join-Path $PSHOME 'Modules\Microsoft.PowerShell.Utility\Microsoft.PowerShell.Utility.psd1') -ErrorAction Stop
 $repoRoot=Split-Path -Parent $PSScriptRoot
+function Assert-AresDesktopProtocolIdentity($Root,$Package,$Compat,[string]$CandidateNativePath,[string]$NodePath) {
+  if(Test-Path -LiteralPath (Join-Path $Root 'bundle/protocol-binding.json')) {
+    $verifier=Join-Path $Root 'scripts/verify-desktop-protocol.mjs'
+    if(-not $NodePath){throw 'Exact Node executable is required for local contract evidence.'}
+    & $NodePath $verifier --verify --desktop-native (Join-Path $Package.InstallLocation 'app/resources/codex.exe') --package-version $Package.Version.ToString() | Out-Null
+    if($LASTEXITCODE -ne 0){throw 'Local Desktop protocol evidence is invalid. No Desktop was started.'}
+    return
+  }
+  $entry=$Compat.desktop.protocolEvidence
+  if(-not $entry -or $entry.path -cne 'patches/codex/desktop-2610213705.protocol.json' -or $entry.sha256 -cnotmatch '^[a-f0-9]{64}$') {
+    throw 'Exact Desktop protocol evidence is required; no version-only override is supported.'
+  }
+  $path=Join-Path $Root $entry.path
+  if((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -cne $entry.sha256){throw 'Desktop protocol evidence changed.'}
+  $proof=Get-Content -Raw -LiteralPath $path | ConvertFrom-Json
+  if($proof.schema -ne 1 -or $proof.status -cne 'static_text_contract_checked' -or $proof.guiAcceptance -cne 'NOT_RUN' -or
+     $proof.packageVersion -cne $Package.Version.ToString() -or $proof.packageVersion -cne $Compat.desktop.observedPackageVersion -or
+     $proof.candidateNative.sourceIdentity -cne $Compat.sourcePreparation.sourceContentSha256) {
+    throw 'Desktop protocol evidence does not identify this candidate and registered package.'
+  }
+  $desktopNative=Join-Path $Package.InstallLocation 'app/resources/codex.exe'
+  foreach($pair in @(@($desktopNative,$proof.desktopNative.sha256),@($CandidateNativePath,$proof.candidateNative.sha256))) {
+    if($pair[1] -cnotmatch '^[a-f0-9]{64}$' -or (Get-FileHash -LiteralPath $pair[0] -Algorithm SHA256).Hash.ToLowerInvariant() -cne $pair[1]) {
+      throw 'Desktop/candidate native fingerprint differs from the static protocol comparison. No Desktop was started.'
+    }
+  }
+}
 # Resolve Node before MSIX activation; that child does not inherit the caller's PATH.
 function Resolve-AresNodePath([string]$NodePath,[bool]$PackagedLaunch) {
   if(-not $NodePath) {
@@ -137,6 +164,7 @@ $manifestPath=Join-Path $repoRoot 'bundle\candidate.json'
 $candidateManifest=Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 $candidateManifest.native.path=[IO.Path]::GetFullPath((Join-Path $repoRoot $candidateManifest.native.path))
 $node=Resolve-AresNodePath $NodePath ([bool]$PackagedLaunch)
+Assert-AresDesktopProtocolIdentity $repoRoot $package $compat $candidateManifest.native.path $node
 # The registered MSIX Desktop needs package identity. Direct EXE launch loses it.
 # Keep this context within the Ares process tree; do not change installation or user settings.
 if(-not $PreflightOnly -and -not $PackagedLaunch) {

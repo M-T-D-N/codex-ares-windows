@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "scope": "local 0.164 Terra source/build/static contracts; not GUI/provider, fresh-PC or publication acceptance",
+  "sourceIdentity": "5b4b0fe9d853991b8c96470369cae7adaa674b1257471cf76ef720484c75c937",
+  "patchSha256": "49c51dfb9de267c3b38c24fb754f56099cb1b471acca22a0ed52bb69db578528",
+  "upstream": "6905ecede7816e91373e9eabda3f6b0368fc747b",
+  "nativeVersion": "codex-cli 0.164.0-alpha.11.1",
+  "nativeTests": {
+    "models": 63,
+    "controller": 22,
+    "dispatch": 5,
+    "compact6": "NOT_RUN_PLATFORM_SKIP"
+  },
+  "nodeFullFinal": {
+    "command": "node --test tests/unit/*.test.mjs",
+    "tests": 196,
+    "pass": 196,
+    "fail": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "npmWrapper": "NOT_RUN_EXECUTABLE_UNAVAILABLE",
+    "firstFullRun": {
+      "pass": 194,
+      "fail": 2,
+      "cause": "obsolete startup fixture expected historical static metadata; fixture corrected without weakening runtime guards"
+    }
+  },
+  "freshContract": {
+    "stable": 320,
+    "experimental": 458,
+    "proofSha256": "f86186ccc11d6ffc6ea6e1ab44ef5a5f270f3495ce38938e8528da4776c2a5b6",
+    "historicalReference": {
+      "sha256": "40989f5a9468d7f86a0e158eaef7f73356935a2159eb084df714db72595fb2f3",
+      "sourceIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca"
+    },
+    "newBinarySha256": "16ad63b6f21520cfea54574644c2309279e9eca270c86138cb828732084ad74f"
+  },
+  "doctor": "PASS",
+  "preflight": {
+    "exitCode": 0,
+    "artifactsChecked": 1560,
+    "desktopStarted": false
+  },
+  "remoteCI": {
+    "scope": "submitted code checkpoint only; documentation/release successors require their own exact-head CI",
+    "commit": "02d549c952bb01cc025c7729185863d6b60309db",
+    "pushRun": 40515045146,
+    "prRun": 40515120783,
+    "conclusion": "success",
+    "tests": 196,
+    "doctorBundle": "not_built",
+    "url": "https://github.com/M-T-D-N/codex-ares-windows/actions/runs/40515045146"
+  },
+  "limitations": [
+    "Old native full independent review incomplete",
+    "Compact bodies skipped by platform restriction; no bypass",
+    "No new public GUI/provider/fresh-PC acceptance",
+    "No general quality/cost claims",
+    "Original PowerShell failure and historical launch-manifest hash remain UNKNOWN; latest Get-FileHash host error is separate"
+  ],
+  "preSubmissionRemoteCI": "NOT_RUN_FOR_THIS_UNPUBLISHED_CANDIDATE",
+  "publicationDecision": "Source-only Technical Preview publication is accepted subject to successful exact-commit CI and asset verification; this is not stable or live-use acceptance. Compact 6, GUI/provider/fresh-PC acceptance and full cumulative native independent review remain incomplete.",
+  "targetedReview": "selected guards, Luna/stale/capture, loopback authentication/length, terminal recording; not all70 paths"
+}

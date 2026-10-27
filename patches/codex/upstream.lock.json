@@ -1,42 +1,42 @@
 {
   "schema": 1,
   "repository": "https://github.com/openai/codex",
-  "commit": "83086188ae0614bd882818ff1aa23f3194962012",
+  "commit": "6905ecede7816e91373e9eabda3f6b0368fc747b",
   "archive": {
-    "url": "https://codeload.github.com/openai/codex/tar.gz/83086188ae0614bd882818ff1aa23f3194962012",
-    "sha256": "e57f1d4f914c71c3532a12d5c14f740909fca4e7e041fa1b3db71618c88e5567"
+    "url": "https://codeload.github.com/openai/codex/tar.gz/6905ecede7816e91373e9eabda3f6b0368fc747b",
+    "sha256": "366033f4963226f6498d8eb2f381ead59a8582afbdd60d84314521e47c191395"
   },
   "ares": {
-    "repository": "https://github.com/miuuyy/Astra-Ares",
-    "commit": "b2011446d88202329dcdc5163500ca818aba9dbb",
-    "upstreamCodexPinIsDifferent": true
+    "sourceKind": "official upstream plus exact cumulative patch",
+    "nativeSourceCommit": null,
+    "reviewedParentIdentity": "f672db807c7f15f05fcdba0df2a8986ffdf18c6e2407f1351fc97bbd19450f07"
   },
   "build": {
-    "rustcVersion": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
-    "cargoVersion": "cargo 1.98.0 (797e8a9bc 2026-08-05)",
+    "rustcVersion": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "cargoVersion": "cargo 1.99.1 (5f94df478 2026-08-27)",
     "target": "x86_64-pc-windows-msvc",
     "targetSelection": "default host; no --target flag",
     "profile": "dev",
     "scryptOptLevel": 3,
     "jobs": 2,
-    "cargoLockSha256": "cae541406f7ec43a418e126be2bcd5de00b243e7bbf6382570028727d99c1069",
+    "cargoLockSha256": "ea5058a65bfeb007a830b945bdeb93e14d5b0f5c4e16b6b5421832c1f11515c9",
     "nodeMinimum": "22",
     "nodeDependency": "gpt-tokenizer@4.0.0",
     "nodeLockFile": "package-lock.json",
     "nodeLockSha256": "4804ddfcf08ef238e74c961441151d41859c469418fadad353a06c8437264167",
     "externalNativeDependency": {
       "name": "rusty_v8",
-      "version": "150.4.0",
-      "requiredArchiveUrl": "https://github.com/openai/codex/releases/download/rusty-v8-v150.4.0/rusty_v8_ptrcomp_sandbox_release_x86_64-pc-windows-msvc.lib.gz",
-      "archiveSha256": "732ec5da4243aa166799780c8519a5eea6f32f6e47657a323342794dc3c239d6",
-      "bindingSha256": "dabf78ba1faac127660db9862b1d0354175c71b8db2d4fcb5bacbd9c93576b16",
-      "checksumManifestSha256": "a4d6221dddb4b5724b23411eaac47caf6095489fbf9d126f65b33cef96a0a8ef",
+      "version": "152.2.0",
+      "requiredArchiveUrl": "https://github.com/openai/codex/releases/download/rusty-v8-v152.2.0/rusty_v8_ptrcomp_sandbox_release_x86_64-pc-windows-msvc.lib.gz",
+      "archiveSha256": "cd829415695b30ad61b306b23a381e11276f14bb0b46815ac5ed8b96711d002d",
+      "bindingSha256": "572ed16ff09bb7944f4b35c659ff62dcd3faf43a0351e3f94f011e01b2f92a62",
+      "checksumManifestSha256": "e16bf2d7bc4b64a96a89e87048d61b9c466040e4c82ae64cfe9f7f2052ef3179",
       "source": "Codex-built V8 release pair; same sandbox features as the locked source",
       "fromSourceBuild": "NOT_REQUIRED_FOR_V8"
     },
     "cargoIncremental": "0"
   },
-  "nativeVersion": "codex-cli 0.163.0",
+  "nativeVersion": "codex-cli 0.164.0-alpha.11.1",
   "bridgeProtocol": 4,
   "policy": {
     "lease": 1,
@@ -78,7 +78,7 @@
   "capabilities": [
     "eligible root only",
     "selected base model retained",
-    "Astra/Sol/Sol 6.1 reasoning levels preserved from server catalog",
+    "Astra/Sol/Sol 6.1/Terra 6.1 reasoning levels preserved from server catalog",
     "responses-lite configuration updates",
     "ordinary Luna opted out",
     "Jev/Main retired; saved aliases resolve to plain original Main without evaluation"
@@ -87,32 +87,46 @@
     "Portable relative imports and project-owned TEMP; default log redaction; app-server evaluator only"
   ],
   "sourcePreparation": {
-    "sourceContentSha256": "185ee6348a857e4b6d2a967f0e9a38afda89091c0e127c36f6632cfb9f6513d2",
-    "sourceIdentityMethod": "SHA256 of UTF-8 compact JSON array of sorted relative path/sha256 objects",
-    "nativeFileCount": 9193,
-    "gitModes": "Windows materialized source modes; complete contents/index tree verified by setup-native.mjs"
+    "sourceContentSha256": "5b4b0fe9d853991b8c96470369cae7adaa674b1257471cf76ef720484c75c937",
+    "method": "SHA256(UTF8(sorted path + NUL + file SHA256 lowercase + LF)); regular files only; failed upstream LICENSE symlink remains excluded and recorded",
+    "nativeFileCount": 9455,
+    "sourcePreparation": "Rev4 plus Terra source preparation; native compile/test/new proof NOT_RUN pending dot review",
+    "symlink": "Windows portable checkout uses link-text materialization and exact Git index mode120000. Physical symlink creation previously failed WinError1314; no claim of POSIX checkout.",
+    "reviewedPredecessorIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca",
+    "gitModes": "All archive modes and restored Git tree verified by setup-native."
   },
   "patch": {
-    "file": "native.patch",
-    "sha256": "e3dae6dec0cb3af5ae48f194700ec3f9bf6afd602c6b1951b1288a6644ef187d",
-    "changedFiles": 186,
-    "applyCount": 1,
-    "restoration": "Complete content and Git modes; checked by scripts/setup-native.mjs",
-    "command": "git -c core.autocrlf=false apply --binary native.patch",
-    "modifiedFiles": 169,
-    "newFiles": 17
+    "sha256": "49c51dfb9de267c3b38c24fb754f56099cb1b471acca22a0ed52bb69db578528",
+    "changedFiles": 70,
+    "modifiedFiles": 57,
+    "newFiles": 13
   },
-  "baseTree": "e91f335e7a03e1d14fa1e5fc7fc7620cdfc60842",
-  "restoredTree": "f7aad6f71d433421f5750016d1a12d2fffe7c958",
+  "baseTree": "6aa9c980d120e4e0420504e7a73302c67cd83fcb",
+  "restoredTree": "09647db7eba26b23d401d8558e6697a1f9db10f8",
   "desktop": {
-    "observedVersion": "26.1013.4894.0",
-    "observedPackageVersion": "26.1013.4894.0",
-    "freshPublicBundleGui": "NOT_RUN",
-    "redistribute": false,
-    "verifiedLocalRuntime": {
-      "nativeVersion": "codex-cli 0.163.0",
-      "nativeSha256": "eea9fb698fe3c680de5f7ff9d650fc4525c22d88e8f74f6295212acfb8a6e723",
-      "scope": "Same native source; private operating GUI Stop/recovery and compact/resume; exact portable public GUI not repeated"
+    "observedPackageVersion": "26.1021.3705.0",
+    "observedVersion": "26.1021.31345",
+    "protocolEvidence": {
+      "path": "patches/codex/desktop-2610213705.protocol.json",
+      "sha256": "40989f5a9468d7f86a0e158eaef7f73356935a2159eb084df714db72595fb2f3"
+    },
+    "candidateAcceptance": {
+      "status": "FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START",
+      "scope": "Historical contract is reference only; require current full source, binary, package and exact exports"
+    },
+    "protocolSourceReview": {
+      "schema": 1,
+      "upstream": "6905ecede7816e91373e9eabda3f6b0368fc747b",
+      "referenceSourceIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca",
+      "sourceIdentity": "5b4b0fe9d853991b8c96470369cae7adaa674b1257471cf76ef720484c75c937",
+      "patchSha256": "49c51dfb9de267c3b38c24fb754f56099cb1b471acca22a0ed52bb69db578528"
     }
+  },
+  "candidateAcceptance": {
+    "status": "FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START",
+    "guiProvider": "NOT_RUN",
+    "compactResume6": "NOT_RUN_PLATFORM_SKIP",
+    "remoteCI": "NOT_RUN_FOR_THIS_CANDIDATE",
+    "modelCalls": 0
   }
 }

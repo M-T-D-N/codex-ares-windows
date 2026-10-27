@@ -4,7 +4,8 @@ param(
   [string]$VcVarsPath,
   [switch]$Offline,
   [switch]$IncludeCompanions,
-  [switch]$SkipBundle
+  [switch]$SkipBundle,
+  [switch]$SkipDesktopProtocol
 )
 $ErrorActionPreference='Stop'
 $repoRoot=Split-Path -Parent $PSScriptRoot
@@ -40,11 +41,17 @@ New-Item -ItemType Directory -Path $env:TEMP -Force | Out-Null
 $arguments=@('build','--locked','-p','codex-cli','--bin','codex','-j','2')
 if($Offline){$arguments+='--offline'}
 # Keep the original dev profile and default host target; do not switch to release.
+& node (Join-Path $PSScriptRoot 'verify-native-source.mjs') $SourceDir
+if($LASTEXITCODE -ne 0){throw 'Prepared native source verification failed; build was not started.'}
 $started=[DateTime]::UtcNow
 $identity=Get-CimInstance Win32_Process -Filter "ProcessId = $PID" | Select-Object ProcessId,ParentProcessId,CreationDate,CommandLine,ExecutablePath
 $record=[ordered]@{status='building';startedAt=$started.ToString('o');persistent=$false;process=$identity;source=$SourceDir;target=$TargetDir;rustc=$rustVersion;arguments=$arguments;profile='dev'}
 $recordPath=Join-Path $TargetDir 'build-result.json'
 $record.stages=@()
+$record.sourceIdentity=$lock.sourcePreparation.sourceContentSha256
+$record.nativeUpstreamCommit=$lock.commit
+$record.nativePatchSha256=$lock.patch.sha256
+$record.postBuild='not_run'
 $record | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $recordPath -Encoding utf8
 $previousV8Archive=$env:RUSTY_V8_ARCHIVE
 $previousV8Binding=$env:RUSTY_V8_SRC_BINDING_PATH
@@ -84,11 +91,29 @@ try {
   $env:RUSTY_V8_SRC_BINDING_PATH=$previousV8Binding
   $env:CARGO_INCREMENTAL=$previousIncremental
 }
+if($code -eq 0){
+  & node (Join-Path $PSScriptRoot 'verify-native-source.mjs') $SourceDir
+  if($LASTEXITCODE -ne 0){$code=1;$record.error='Source changed during build.'}
+}
 $record.status=if($code -eq 0){'built'}else{'build_failed'}
 $record.finishedAt=[DateTime]::UtcNow.ToString('o');$record.exitCode=$code
 $record.elapsedSeconds=([DateTime]::UtcNow-$started).TotalSeconds
 $record | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $recordPath -Encoding utf8
 if($code -ne 0){exit $code}
-if($SkipBundle){exit 0}
-& node (Join-Path $PSScriptRoot 'bundle.mjs') --target $TargetDir
-exit $LASTEXITCODE
+if($SkipBundle){$record.postBuild='bundle_not_run';$record|ConvertTo-Json -Depth 6|Set-Content -LiteralPath $recordPath -Encoding utf8;exit 0}
+try {
+  $record.postBuild='bundle_pending'
+  & node (Join-Path $PSScriptRoot 'bundle.mjs') --target $TargetDir
+  if($LASTEXITCODE -ne 0){throw 'Bundle creation failed; partial outputs were preserved.'}
+  $record.postBuild='bundled_contract_not_run'
+  if($SkipDesktopProtocol){Write-Output 'Local Desktop contract NOT_RUN; start remains guarded.';return}
+  & (Join-Path $PSScriptRoot 'verify-desktop-protocol.ps1') -SourceDir $SourceDir
+  if($LASTEXITCODE -ne 0){throw 'Built candidate has no accepted local contract proof.'}
+  $record.postBuild='bundled_contract_verified'
+} catch {
+  $record.postBuildError=$_.Exception.Message
+  $record.postBuild=if($record.postBuild -eq 'bundle_pending'){'bundle_failed'}else{'contract_failed'}
+  throw
+} finally {
+  $record|ConvertTo-Json -Depth 6|Set-Content -LiteralPath $recordPath -Encoding utf8
+}

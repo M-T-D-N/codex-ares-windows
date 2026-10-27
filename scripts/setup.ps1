@@ -1,16 +1,17 @@
-param([string]$Archive,[string]$SourceDir,[string]$TargetDir,[string]$VcVarsPath,[switch]$Offline,[switch]$RestoreOnly)
+param([string]$Archive,[string]$SourceDir,[string]$TargetDir,[string]$VcVarsPath,[switch]$Offline,[switch]$RestoreOnly,[switch]$BuildOnly)
 $ErrorActionPreference='Stop'
 $repoRoot=Split-Path -Parent $PSScriptRoot
 if(-not $SourceDir){$SourceDir=Join-Path $repoRoot 'build/source'}
 if(-not $TargetDir){$TargetDir=Join-Path $repoRoot 'build/target'}
+# Source restoration also creates child-process temporary files.
+$env:TEMP=Join-Path $repoRoot 'build/temp';$env:TMP=$env:TEMP;$env:TMPDIR=$env:TEMP
+New-Item -ItemType Directory -Path $env:TEMP -Force | Out-Null
 $argsList=@((Join-Path $PSScriptRoot 'setup-native.mjs'),'--source',$SourceDir)
 if($Archive){$argsList+=@('--archive',$Archive)}
 & node @argsList
 if($LASTEXITCODE -ne 0){throw 'Source restoration failed; build was not started.'}
 if($RestoreOnly){return}
 if(-not $env:CARGO_HOME){$env:CARGO_HOME=Join-Path $repoRoot 'build/cache/cargo'}
-$env:TEMP=Join-Path $repoRoot 'build/temp';$env:TMP=$env:TEMP
-New-Item -ItemType Directory -Path $env:TEMP -Force | Out-Null
 # Reuse an exact existing compiler. Otherwise use rustup in project-owned homes;
 # never change the user's default toolchain or shared Cargo/Rust installation.
 $buildLock=Get-Content -LiteralPath (Join-Path $repoRoot 'patches/codex/upstream.lock.json') -Raw | ConvertFrom-Json
@@ -20,9 +21,9 @@ if($observedRust -ne $buildLock.build.rustcVersion){
   $rustup=(Get-Command rustup -ErrorAction Stop).Source
   $env:RUSTUP_HOME=Join-Path $repoRoot 'build/toolchains/rustup'
   $env:CARGO_HOME=Join-Path $repoRoot 'build/cache/cargo'
-  $env:TEMP=Join-Path $repoRoot 'build/temp';$env:TMP=$env:TEMP
+  $env:TEMP=Join-Path $repoRoot 'build/temp';$env:TMP=$env:TEMP;$env:TMPDIR=$env:TEMP
   New-Item -ItemType Directory -Path $env:TEMP -Force | Out-Null
-  $toolchain='1.98.0-x86_64-pc-windows-msvc'
+  $toolchain='1.99.1-x86_64-pc-windows-msvc'
   & $rustup toolchain install $toolchain --profile minimal --no-self-update
   if($LASTEXITCODE -ne 0){throw 'Project-local pinned Rust installation failed.'}
   $env:RUSTUP_TOOLCHAIN=$toolchain
@@ -37,6 +38,7 @@ try {
   & npm ci --ignore-scripts --no-audit --no-fund --cache (Join-Path $repoRoot 'build/cache/npm')
   if($LASTEXITCODE -ne 0){throw 'Locked Node dependency restore failed.'}
 } finally {Pop-Location}
-& (Join-Path $PSScriptRoot 'build-native.ps1') -SourceDir $SourceDir -TargetDir $TargetDir -VcVarsPath $VcVarsPath -Offline:$Offline -IncludeCompanions
+& (Join-Path $PSScriptRoot 'build-native.ps1') -SourceDir $SourceDir -TargetDir $TargetDir -VcVarsPath $VcVarsPath -Offline:$Offline -IncludeCompanions -SkipDesktopProtocol:$BuildOnly
 if($LASTEXITCODE -ne 0){throw 'Native build or bundle failed.'}
 & (Join-Path $PSScriptRoot 'doctor.ps1')
+if($LASTEXITCODE -ne 0){throw 'Doctor failed; setup is incomplete.'}

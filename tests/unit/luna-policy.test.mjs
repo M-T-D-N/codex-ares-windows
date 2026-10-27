@@ -192,6 +192,43 @@ test('effort schema and unsupported effort rejection remain unchanged',()=>{
     e=>e.category==='invalid_judgment');
 });
 
+test('Terra checkpoint reaches Luna and capture using only the advertised policy intersection',async()=>{
+  const p={...checkpoint(),model:'gpt-6.1-terra',supportedEfforts:['low','medium','high','xhigh','ultra']};
+  const events=[];
+  const service=new ContinuousService({record:e=>events.push(e),evaluator:{async evaluate({prepare}){
+    const input=prepare(capacity);
+    assert.deepEqual(input.supported,['medium','high','xhigh']);
+    assert.equal(JSON.parse(input.input).state.model,'gpt-6.1-terra');
+    return {text:JSON.stringify({action:'recommend',effort:'high',reason:'Synthetic Terra fixture.'})};
+  },async close(){}}});
+  const connection=service.controller(p);
+  try{
+    const reply=await connection.handle(p);
+    assert.equal(reply.type,'decision');assert.equal(reply.effort,'high');
+    const recorded=await connection.handle({...p,type:'applied',effort:'high',confirmation:'native_step_context_captured'});
+    assert.equal(recorded.type,'recorded');
+    assert.equal(events.filter(e=>e.type==='decision_captured'&&e.effort==='high').length,1);
+    assert.throws(()=>validateJudgment({action:'recommend',effort:'max',reason:'Unsupported.'},['medium','high','xhigh']));
+  }finally{connection.close();await service.close();}
+});
+
+test('Terra rejects unsupported recommendations without publishing a decision',async()=>{
+  for(const effort of ['low','max','ultra']){
+    const p={...checkpoint(),model:'gpt-6.1-terra',supportedEfforts:['low','high','ultra']};
+    const events=[];
+    const service=new ContinuousService({record:e=>events.push(e),evaluator:{async evaluate({prepare}){
+      assert.deepEqual(prepare(capacity).supported,['high']);
+      return {text:JSON.stringify({action:'recommend',effort,reason:'Synthetic invalid effort.'})};
+    },async close(){}}});
+    const connection=service.controller(p);
+    try{
+      const reply=await connection.handle(p);
+      assert.equal(reply.type,'degraded');assert.equal(reply.reason,'invalid_judgment');
+      assert.equal(events.some(e=>e.type==='decision_captured'),false);
+    }finally{connection.close();await service.close();}
+  }
+});
+
 test('continuous service preserves an independent rejection after parent abort',async()=>{
   const parent=new AbortController();
   const independent=Object.assign(new Error('private transport error'),{category:'evaluator_transport'});

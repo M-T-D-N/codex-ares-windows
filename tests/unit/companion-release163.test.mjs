@@ -44,3 +44,11 @@ test('four-companion allowance does not extend beyond exact 0.163.0',()=>{
     assert.throws(()=>validateCompanionRelease(fixture(release,true)),/release combination/);
   }
 });
+
+test('exact0.164.0-alpha.11.1 requires four same-source companions',()=>{
+  validateCompanionRelease(fixture('0.164.0-alpha.11.1',true));
+  assert.throws(()=>validateCompanionRelease(fixture('0.164.0-alpha.11.1')),/release combination/);
+  for(const release of ['0.164.0-alpha.11.2','0.164.0','0.164.1'])assert.throws(()=>validateCompanionRelease(fixture(release,true)),/release combination/);
+  const mixed=fixture('0.164.0-alpha.11.1',true);mixed.companions[3].sourceRelease='0.163.0';
+  assert.throws(()=>validateCompanionRelease(mixed),/release combination/);
+});

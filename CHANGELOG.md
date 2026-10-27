@@ -1,5 +1,25 @@
 # What changed
 
+## 0.164 Terra source-only Technical Preview
+
+- Add explicit Terra 6.1-Ares while preserving plain Terra bypass and catalog-supported adaptive efforts.
+- Bind a reviewed new source to an immutable historical contract reference; require fresh exact exports and a new local proof. Reject provenance/required-field/method/inventory/tampering drift.
+- Reuse the fixed successful five-binary build; native 90 and local static 320/458, Doctor/preflight 1560 passed. Compact/resume6 remains NOT_RUN due platform skip. See validation for final adapter results and limits.
+- Submitted code commit 02d549c passed remote npm ci, 196 tests and source-only Doctor; subsequent documentation/release commits need their own CI.
+- No operating activation, public GUI/provider acceptance, general quality equivalence or cost saving claim.
+
+## Historical 0.164 local preparation snapshot
+
+Pinned official6905eced source,68-path patch, prepared Cargo.lock, Rust1.99.1 and V8152.2.0 now share one portable input set. Full regular-file identity and Git content/mode restoration are checked separately from physical symlink creation. Two synthetic fixture task IDs are anonymized; three TUI paths repair exact notification routing and baseline preservation after a real compile failure. CLI+four companions and static Desktop contracts require current-run evidence; old0.163 results are historical. No new GUI/provider acceptance, operating change or publication is claimed. [Validation scope](docs/validation.md).
+
+## Historical0.163 preparation below
+
+## Unreleased local review — startup-policy backport (HOLD)
+
+Backport the real one-shot startup policy query and structured failures onto fixed Codex0.163 source d9affe0e. The portable launcher now rejects missing startup flags before activation, preserves relative imports/owned temp/lifetimes, and setup assigns TEMP/TMP/TMPDIR before restore. Full restore9,194, unit112, PowerShell105 each and reused-five-binary bundle/Doctor passed. Actual Desktop3705 preflight intentionally exits1; stable/experimental contract gaps remain. No public GUI, model call, native rebuild or publication is claimed. See [historical validation](docs/validation.md).
+
+The preview.2 section below describes its historical predecessor.
+
 ## 0.1.0-preview.2 — Codex 0.163 source candidate
 
 The native base advances to official Codex **0.163.0**, commit `83086188ae0614bd882818ff1aa23f3194962012`, with the cumulative Ares controls retained. This source-only preview excludes native executables.
