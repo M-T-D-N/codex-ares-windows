@@ -1,5 +1,9 @@
 # Build and lifecycle
 
+## Preview installation boundary
+
+This is a source build for technical inspection, not a one-click binary installer or fresh-PC acceptance. Use the chosen immutable tag/commit checkout in a separate directory; do not overlay an operating checkout or reuse a nonempty source/bundle output. Follow the prerequisites below and preserve the accepted operating installation. Missing exact Desktop registration or protocol proof is a failure/NOT_RUN, not permission to skip guards. See [publication and live-use scope](validation.md#technical-preview-scope-and-remaining-publication-decision).
+
 ## Fixed inputs
 
 The [lock](../patches/codex/upstream.lock.json), patch and file manifests are authoritative. Official upstream:6905ecede7816e91373e9eabda3f6b0368fc747b; native version0.164.0-alpha.11.1. Archive SHA256:366033f4963226f6498d8eb2f381ead59a8582afbdd60d84314521e47c191395. Prepared Cargo.lock SHA256:ea5058a65bfeb007a830b945bdeb93e14d5b0f5c4e16b6b5421832c1f11515c9. The preparation changes workspace versions only; external dependency entries retain the pinned upstream identities.
@@ -52,7 +56,7 @@ Exports and proof are written under a fresh `build/desktop-protocol/<id>` direct
 
 V8152.2.0 uses the Codex ptrcomp_sandbox x86_64 Windows library and binding pair. [Codex V8 release](https://github.com/openai/codex/releases/tag/rusty-v8-v152.2.0) hashes are fixed in the lock. prepare-v8 verifies its checksum manifest against the pinned source, then both files. Do not substitute Deno artifacts or build V8 from source for this candidate.
 
-build-native -Offline requires the verified V8 cache and Cargo dependencies. It does not guarantee the outer setup is offline: archive/npm and the optional Rust installer can require network. This qualification uses already prepared tools/dependencies with offline Cargo; no new install/download is authorized. The fresh-PC installer branch is NOT_RUN. setup reuses exact Rust or otherwise uses project-owned Rust/Cargo homes, preserving the user's default toolchain.
+build-native -Offline requires the verified V8 cache and Cargo dependencies. It does not guarantee the outer setup is offline: archive/npm and the optional Rust installer can require network. This qualification uses already prepared tools/dependencies with offline Cargo; this qualification did not perform a fresh tool installation. A reader following setup must explicitly account for archive, npm, Cargo and optional toolchain downloads; this documentation does not authorize changes to a shared toolchain. The fresh-PC installer branch is NOT_RUN. setup reuses exact Rust or otherwise uses project-owned Rust/Cargo homes, preserving the user's default toolchain.
 
 ## Local checks
 

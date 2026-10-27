@@ -1,6 +1,6 @@
 # How Ares controls reasoning
 
-**Current 0.164 Terra local candidate:** The fixed source was built as CLI plus four companions. Fresh stable 320/experimental 458 exports, local proof, Doctor and 1560-input preflight passed without Desktop activation or model calls. The final direct Node package-script body passed 196/196 tests (npm wrapper unavailable). Native models 63/controller 22/dispatch 5 passed; compact/resume 6 returned through the platform network-skip guard and remain NOT_RUN. Publication/operating activation are HOLD pending final review. Historical results below remain tied to their original sources.
+**0.164 Terra source-only Technical Preview:** The source/code changes are reviewed and submitted in [draft PR #1](https://github.com/M-T-D-N/codex-ares-windows/pull/1). The submitted code commit [`02d549c`](https://github.com/M-T-D-N/codex-ares-windows/commit/02d549c952bb01cc025c7729185863d6b60309db) passed [exact-head CI](https://github.com/M-T-D-N/codex-ares-windows/actions/runs/40515045146) with npm ci, 196 tests and source-only Doctor. This is a dated code-validation result, not CI for a later documentation or release commit. Matching local native tests passed 90 cases; fresh stable 320 / experimental 458 exports, proof and 1,560-input preflight passed without Desktop activation or model calls. Compact/resume 6 remains NOT_RUN under the platform skip guard. See [validation](validation.md) for publication readiness and the separate live-use limits.
 
 ## The active route
 

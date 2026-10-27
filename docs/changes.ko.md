@@ -1,10 +1,10 @@
-# 현재 로컬 검토 — 0.164 격리 소스 후보 (HOLD)
+# 0.164 Terra 소스 전용 Technical Preview
 
 ## 현재 0.164 Terra 후보
 
-Terra 별칭·지원 강도 상속·일반 모델 우회를 추가하고 새 source/patch와 역사적 계약 근거를 분리해 결속했습니다. 고정 5종 빌드와 새 정적 320/458 계약·Doctor/preflight 1560은 통과했으며 native 90검사와 compact 6 본문 미실행을 구분합니다. 운영·보안 설정·인증은 바꾸지 않았습니다. 전체 결과와 한계는 validation.md를 따릅니다.
+Terra 별칭·지원 강도 상속·일반 모델 우회를 추가하고 새 source/patch와 역사적 계약 근거를 분리해 결속했습니다. 고정 5종 빌드와 새 정적 320/458 계약·Doctor/preflight 1560은 통과했으며 native 90검사와 compact 6 본문 미실행을 구분합니다. 운영·보안 설정·인증은 바꾸지 않았습니다. 코드 02d549c의 원격 npm ci·196개 시험·소스 전용 Doctor도 통과했습니다. 후속 문서/릴리스 커밋의 CI는 별도이며 전체 결과와 미완료 품질 판단은 [validation](validation.md)을 따릅니다.
 
-## Local0.164 review candidate — unpublished
+## 역사적 0.164 로컬 준비 기록
 
 Pinned official6905eced source,68-path patch, prepared Cargo.lock, Rust1.99.1 and V8152.2.0 now share one portable input set. Full regular-file identity and Git content/mode restoration are checked separately from physical symlink creation. Two synthetic fixture task IDs are anonymized; three TUI paths repair exact notification routing and baseline preservation after a real compile failure. CLI+four companions and static Desktop contracts require current-run evidence; old0.163 results are historical. No new GUI/provider acceptance, operating change or publication is claimed. [검증 범위](validation.md).
 

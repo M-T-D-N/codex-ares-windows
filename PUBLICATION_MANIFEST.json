@@ -9,8 +9,8 @@
   "nativeSourceContentSha256": "5b4b0fe9d853991b8c96470369cae7adaa674b1257471cf76ef720484c75c937",
   "runtimeDependencies": "pinned gpt-tokenizer installed by setup; no dependency tree distributed",
   "binaryDistribution": false,
-  "qualification": "Local fixed-source CLI/companions, native90, adapter196, fresh static320/458, Doctor/preflight1560 PASS; compact6 NOT_RUN platform skip; GUI/provider/fresh-PC NOT_RUN; unpublished review snapshot",
-  "sourceSnapshotSha256": "a9aae9be0022fc2ec50fddf5bb1ddb011bbd45e4f7fcb54661545d414899d9f5",
+  "qualification": "Source-only Technical Preview candidate; reviewed code 02d549c CI success; later release commit requires exact CI; compact6/GUI/provider/fresh-PC/native full independent review remain open",
+  "sourceSnapshotSha256": "b387cffebd2fc8c88d0129ceaf7b34e9d489546a716fea04c0f4d12c98bcc2c4",
   "sourceSnapshotMethod": "sha256(sorted POSIX path + NUL + file sha256 + LF), excludes publication manifest",
   "files": [
     {
@@ -40,8 +40,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 10318,
-      "sha256": "a63f1a734f440667f9500fc6ca5a699a45098d9b10f9e329ab1f711a2af21a29"
+      "bytes": 10465,
+      "sha256": "b744d616bbce7ec08bd5742a4bb7ebac7c0821b91bf54bef307890dab5f9874c"
     },
     {
       "path": "LICENSE",
@@ -50,23 +50,23 @@
     },
     {
       "path": "README.ja.md",
-      "bytes": 412,
-      "sha256": "4d0a53dd26c5d5f6369b0e12379c2cca69544ad99da42869565ab9841dbec198"
+      "bytes": 469,
+      "sha256": "4bae446fcfb7b4f2668d259d8962cf732ffc13d5032fa48566244c67a88d0ec9"
     },
     {
       "path": "README.ko.md",
-      "bytes": 4764,
-      "sha256": "52ed488de1cd58bd3ca408c2b66a9bcc01a8bba31623308b0f87b073720deb3e"
+      "bytes": 4972,
+      "sha256": "f3cf5452a1cfb49b377494d33be493dbf1f4caf3246cd64b9da9012105f6a09a"
     },
     {
       "path": "README.md",
-      "bytes": 5322,
-      "sha256": "38880f56be137a2db98e64435c112127b0c34040970bfe90c52083e3300bb020"
+      "bytes": 5690,
+      "sha256": "1ecd4b44ef98de552fc2ce6d09eec738147de2f5435487781ab0b33737b5df8e"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 301,
-      "sha256": "9b3de2eb08ea7871d9c824495fa99cd45531c1e09b129556e031b2df1cd1102c"
+      "bytes": 355,
+      "sha256": "ef6db784362eac05c18f3d6ab03b0d515163d767e45a517b15f0780874f0020e"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -80,8 +80,8 @@
     },
     {
       "path": "docs/architecture.md",
-      "bytes": 5459,
-      "sha256": "7553724de234cb430a4e987e9deda9eb69b4b11bc603b70d6c2a822b2eeefec0"
+      "bytes": 5735,
+      "sha256": "ca64546f0b387cf4492ed67f74d649d1b9b3a5c59f054c48d69027542eaa3d94"
     },
     {
       "path": "docs/assets/ares-banner.svg",
@@ -90,18 +90,18 @@
     },
     {
       "path": "docs/build.md",
-      "bytes": 8508,
-      "sha256": "4351f469218eea9deaa33622867dda6f2e24cb170c4fcdd75a9b245479fd81b3"
+      "bytes": 9300,
+      "sha256": "6e0ea857aa9bf82abc7f5d67e8d36f1dfdda06876e7172f3038d7a28ea6ebf5c"
     },
     {
       "path": "docs/changes.ko.md",
-      "bytes": 6513,
-      "sha256": "67af5a52ee35966b9f521391bb6d55ab308dd6e1d18c24d75dbcb964d25873d3"
+      "bytes": 6667,
+      "sha256": "db27bf0c919147f48e600c4a72edf63db3d26027609d7c8f213c3892209b53d4"
     },
     {
       "path": "docs/compatibility.md",
-      "bytes": 4976,
-      "sha256": "0f2ddd40018c6184bf7766154cbeb0ce3ad3a40f30759f4dbd4798f908ccec73"
+      "bytes": 5252,
+      "sha256": "7c1a64faeaffeabd98e15636e795d3c921cc048374e513dbe21c49e6d781f46f"
     },
     {
       "path": "docs/desktop-261016-candidate.md",
@@ -145,8 +145,8 @@
     },
     {
       "path": "docs/source-validation-164.json",
-      "bytes": 1998,
-      "sha256": "d36ff9dafe9330937d1c256e37521bd5a04618df06c1bb08150d9287788f5e4c"
+      "bytes": 2520,
+      "sha256": "a712960b7380630f0307eefe3f6ee475cb4d052c2e154332caa8aaf7cb0d53c4"
     },
     {
       "path": "docs/startup-policy-qualification.json",
@@ -155,8 +155,8 @@
     },
     {
       "path": "docs/validation.md",
-      "bytes": 16865,
-      "sha256": "11404214620a90f46d0311e5a973b4c75cd320118eea3fbf0fbec29e7d345be4"
+      "bytes": 18630,
+      "sha256": "bdb3b790b1f0f01f909247b728775a1b004e0be2c1d9e3f09c37d32fea83618e"
     },
     {
       "path": "licenses/Apache-2.0.txt",

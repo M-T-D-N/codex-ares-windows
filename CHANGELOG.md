@@ -1,13 +1,14 @@
 # What changed
 
-## Unreleased — 0.164 Terra source candidate
+## 0.164 Terra source-only Technical Preview
 
 - Add explicit Terra 6.1-Ares while preserving plain Terra bypass and catalog-supported adaptive efforts.
 - Bind a reviewed new source to an immutable historical contract reference; require fresh exact exports and a new local proof. Reject provenance/required-field/method/inventory/tampering drift.
 - Reuse the fixed successful five-binary build; native 90 and local static 320/458, Doctor/preflight 1560 passed. Compact/resume6 remains NOT_RUN due platform skip. See validation for final adapter results and limits.
+- Submitted code commit 02d549c passed remote npm ci, 196 tests and source-only Doctor; subsequent documentation/release commits need their own CI.
 - No operating activation, public GUI/provider acceptance, general quality equivalence or cost saving claim.
 
-## Local0.164 review candidate — unpublished
+## Historical 0.164 local preparation snapshot
 
 Pinned official6905eced source,68-path patch, prepared Cargo.lock, Rust1.99.1 and V8152.2.0 now share one portable input set. Full regular-file identity and Git content/mode restoration are checked separately from physical symlink creation. Two synthetic fixture task IDs are anonymized; three TUI paths repair exact notification routing and baseline preservation after a real compile failure. CLI+four companions and static Desktop contracts require current-run evidence; old0.163 results are historical. No new GUI/provider acceptance, operating change or publication is claimed. [Validation scope](docs/validation.md).
 
