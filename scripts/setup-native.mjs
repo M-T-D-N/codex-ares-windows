@@ -72,5 +72,9 @@ for(const [rel,meta]of Object.entries(expected)){
   if(sha(readFileSync(join(source,rel)))!==meta.sha256)throw Error('Restored content mismatch: '+rel);
 }
 if(git(['write-tree']).trim()!==lock.restoredTree)throw Error('Restored content/mode tree mismatch');
-const result={status:'restored',baseFiles:files.length,modifiedFiles:lock.patch.modifiedFiles,newFiles:lock.patch.newFiles,patchApplied:1,tree:lock.restoredTree,fullContentAndGitModesMatch:true,modelCalls:0};
+const nativeIdentity=createHash('sha256');
+for(const rel of Object.keys(expected).sort())if(expected[rel].state!=='deleted'&&expected[rel].mode!=='120000')nativeIdentity.update(rel+'\0'+sha(readFileSync(join(source,rel)))+'\n');
+const sourceIdentity=nativeIdentity.digest('hex');
+if(sourceIdentity!==lock.sourcePreparation.sourceContentSha256)throw Error('Native regular-file identity differs');
+const result={sourceIdentity,physicalSymlinks:false,symlinkMode:'Git index120000 plus link text; prior WinError1314 remains a physical symlink limitation',status:'restored',baseFiles:files.length,modifiedFiles:lock.patch.modifiedFiles,newFiles:lock.patch.newFiles,patchApplied:1,tree:lock.restoredTree,fullContentAndGitModesMatch:true,modelCalls:0};
 writeFileSync(join(dirname(source),'restore-result.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));

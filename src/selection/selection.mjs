@@ -4,6 +4,7 @@ const selections = Object.freeze({
   'Sol-Jev': ['gpt-6-sol', 'luna-continuous-1'],
   'Sol 6.1-Ares': ['gpt-6.1-sol', 'luna-continuous-1'],
   'Sol61-Ares': ['gpt-6.1-sol', 'luna-continuous-1'], // Saved selection compatibility.
+  'Terra 6.1-Ares': ['gpt-6.1-terra', 'luna-continuous-1'],
 });
 
 export function resolveSelection(checkpoint) {

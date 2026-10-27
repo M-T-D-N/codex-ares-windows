@@ -1,0 +1,216 @@
+{
+  "schema": 1,
+  "scope": "0.164 isolated local prepublication source/build/contracts; NOT operating or release acceptance",
+  "status": "PASS_SCOPED_LOCAL_HOLD_LIVE_PUBLICATION",
+  "source": {
+    "upstreamCommit": "6905ecede7816e91373e9eabda3f6b0368fc747b",
+    "sourceIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca",
+    "regularFiles": 9455,
+    "symlinkLinkTextEntries": 1,
+    "tree": "2f173a8edf0736e58f0eabc22c9f35b2858e30f9",
+    "patch": {
+      "sha256": "91747bbc720f6bf8a5158bd7141adfa93761569037618d2d79ce43cc190daf60",
+      "changedFiles": 68,
+      "modifiedFiles": 55,
+      "newFiles": 13
+    },
+    "restoredFromPinnedArchive": true,
+    "physicalSymlinks": false
+  },
+  "checks": {
+    "adapter": {
+      "command": "node --test tests/unit/*.test.mjs",
+      "passed": 113,
+      "failed": 0,
+      "skipped": 0,
+      "npmWrapper": "NOT_RUN"
+    },
+    "startupSynthetic": {
+      "windowsPowerShell": 106,
+      "powerShell7": 106,
+      "desktopStarted": false
+    },
+    "nativePrivacy": {
+      "passed": 3,
+      "failed": 0,
+      "sourceIdentity": "ccaf6a541f04756183282a93b1b80ee3ac1e8d71014e155b74e3a6516889f2c3"
+    },
+    "nativeTui": {
+      "passed": 3,
+      "failed": 0,
+      "sourceIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca"
+    },
+    "bundle": {
+      "status": "bundle_created",
+      "artifacts": 1557,
+      "modelCalls": 0
+    },
+    "doctor": {
+      "status": "pass",
+      "bundle": "verified",
+      "version": "codex-cli 0.164.0-alpha.11.1",
+      "modelCalls": 0,
+      "credentialRead": false,
+      "desktopStarted": false,
+      "guiCompatibility": "NOT_RUN_FOR_PUBLIC_BYTES"
+    },
+    "protocol": {
+      "stable": {
+        "checked": 320,
+        "candidateOnly": [
+          "v2/ReasoningEffortUpdatedNotification.json"
+        ],
+        "different": [
+          "ServerNotification.json",
+          "codex_app_server_protocol.schemas.json",
+          "codex_app_server_protocol.v2.schemas.json",
+          "v2/ThreadStartResponse.json"
+        ]
+      },
+      "experimental": {
+        "checked": 458,
+        "candidateOnly": [
+          "v2/ReasoningEffortUpdatedNotification.json"
+        ],
+        "different": [
+          "ServerNotification.json",
+          "codex_app_server_protocol.schemas.json",
+          "codex_app_server_protocol.v2.schemas.json",
+          "v2/ThreadStartResponse.json"
+        ]
+      }
+    },
+    "reusedEarlier": {
+      "core": 149,
+      "rpc": 23,
+      "sdk": 146,
+      "scope": "Prior fixed 0.164 input results, not new runs or additional counts. SDK/RPC relevant file bytes unchanged; TUI repair and privacy fixture separately verified."
+    }
+  },
+  "failurePreserved": {
+    "initialCliExitCode": 101,
+    "cause": "Two non-exhaustive TUI matches for Ares ReasoningEffortUpdated; fixed exact routing and baseline-preserving branch",
+    "finalCliExitCode": 0,
+    "tuiTests": 3
+  },
+  "compiledLineage": [
+    {
+      "captureId": "348e6e67312a43d196bab0f9eb281d63",
+      "targetSource": "codex-rs/cli/src/main.rs",
+      "profile": {
+        "opt_level": "0",
+        "debuginfo": "line-tables-only",
+        "debug_assertions": true,
+        "overflow_checks": true,
+        "test": false
+      },
+      "name": "codex.exe",
+      "sourceIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca",
+      "package": "codex-cli@0.164.0-alpha.11.1",
+      "sha256": "60c2c5a625ec861452c4f6e6ed68e1d3d29526bdcc1ee0ab2bfbca0f5c21ccd0",
+      "manifest": "codex-rs/cli/Cargo.toml",
+      "artifactFresh": false
+    },
+    {
+      "captureId": "77bf75d0132e4bb391cc004508867c9b",
+      "targetSource": "codex-rs/code-mode-host/src/main.rs",
+      "profile": {
+        "opt_level": "0",
+        "debuginfo": "line-tables-only",
+        "debug_assertions": true,
+        "overflow_checks": true,
+        "test": false
+      },
+      "name": "codex-code-mode-host.exe",
+      "sourceIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca",
+      "package": "codex-code-mode-host@0.164.0-alpha.11.1",
+      "sha256": "673b3532dc81e205ad2b4c254396285ebde6177d8bc23b877400c9c2be6fb894",
+      "manifest": "codex-rs/code-mode-host/Cargo.toml",
+      "artifactFresh": false
+    },
+    {
+      "captureId": "77bf75d0132e4bb391cc004508867c9b",
+      "targetSource": "codex-rs/windows-sandbox-rs/src/bin/command_runner/main.rs",
+      "profile": {
+        "opt_level": "0",
+        "debuginfo": "line-tables-only",
+        "debug_assertions": true,
+        "overflow_checks": true,
+        "test": false
+      },
+      "name": "codex-command-runner.exe",
+      "sourceIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca",
+      "package": "codex-windows-sandbox@0.164.0-alpha.11.1",
+      "sha256": "68bbe0f09b38a4ef00e708c14eb626cdc18e80db3a6d4c1cf3f21c4c7175f6d8",
+      "manifest": "codex-rs/windows-sandbox-rs/Cargo.toml",
+      "artifactFresh": false
+    },
+    {
+      "captureId": "77bf75d0132e4bb391cc004508867c9b",
+      "targetSource": "codex-rs/windows-sandbox-rs/src/bin/setup_main/main.rs",
+      "profile": {
+        "opt_level": "0",
+        "debuginfo": "line-tables-only",
+        "debug_assertions": true,
+        "overflow_checks": true,
+        "test": false
+      },
+      "name": "codex-windows-sandbox-setup.exe",
+      "sourceIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca",
+      "package": "codex-windows-sandbox@0.164.0-alpha.11.1",
+      "sha256": "f6f90251c8d7ecb3d50f117413c7f349cee73872f331815231ed461d5736c397",
+      "manifest": "codex-rs/windows-sandbox-rs/Cargo.toml",
+      "artifactFresh": false
+    },
+    {
+      "captureId": "77bf75d0132e4bb391cc004508867c9b",
+      "targetSource": "codex-rs/windows-sandbox-service/src/main.rs",
+      "profile": {
+        "opt_level": "0",
+        "debuginfo": "line-tables-only",
+        "debug_assertions": true,
+        "overflow_checks": true,
+        "test": false
+      },
+      "name": "codex-windows-sandbox-service.exe",
+      "sourceIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca",
+      "package": "codex-windows-sandbox-service@0.164.0-alpha.11.1",
+      "sha256": "7c98ce586b9df6cbd7a8932ca181eb69e8fbec2ce81d88aefc188ab5d13683ad",
+      "manifest": "codex-rs/windows-sandbox-service/Cargo.toml",
+      "artifactFresh": false
+    }
+  ],
+  "notRun": [
+    "Exact candidate remote CI",
+    "Full public setup/build-native wrapper (existing rich Cargo usage collector used for the same fixed build arguments)",
+    "npm wrapper/npm ci (npm unavailable; existing exact tokenizer reused)",
+    "Current-account start.ps1 -PreflightOnly (default sandbox Appx registration query denied; no bypass)",
+    "Fresh-PC installation and optional Rust installer",
+    "Actual Desktop/GUI/provider/paid-model acceptance",
+    "Physical Windows symlink acceptance",
+    "Full independent native patch review",
+    "Historical unported TUI/exec/infrastructure equivalence"
+  ],
+  "modelCalls": 0,
+  "operatingChanged": false,
+  "publication": false,
+  "historicalSourceValidation": "source-validation-163.json",
+  "revision4": {
+    "scope": "local post-build static contract binding; no native change",
+    "tests": {
+      "defaultNode": 158,
+      "newLocalProofCases": 21,
+      "newWrapperCases": 24,
+      "countsOverlap": true
+    },
+    "actualExistingBinarySchemaExports": {
+      "stable": 320,
+      "experimental": 458
+    },
+    "actualCurrentUserRegistration": "NOT_RUN",
+    "actualDesktopPreflight": "NOT_RUN",
+    "guiProvider": "NOT_RUN",
+    "nativeBuilds": 0,
+    "modelCalls": 0
+  }
+}

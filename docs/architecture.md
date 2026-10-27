@@ -1,8 +1,10 @@
 # How Ares controls reasoning
 
+**Current 0.164 Terra local candidate:** The fixed source was built as CLI plus four companions. Fresh stable 320/experimental 458 exports, local proof, Doctor and 1560-input preflight passed without Desktop activation or model calls. The final direct Node package-script body passed 196/196 tests (npm wrapper unavailable). Native models 63/controller 22/dispatch 5 passed; compact/resume 6 returned through the platform network-skip guard and remain NOT_RUN. Publication/operating activation are HOLD pending final review. Historical results below remain tied to their original sources.
+
 ## The active route
 
-Choose Astra Ares, Sol Ares or Sol 6.1-Ares. Native resolves the alias to the matching base model and preserves that model. An authenticated loopback checkpoint identifies the current root conversation, turn, generation and control owner. Ordinary model selections and ordinary Luna do not start Ares evaluation.
+Choose Astra Ares, Sol Ares or Sol 6.1-Ares or Terra 6.1-Ares. Native resolves the alias to the matching base model and preserves that model. An authenticated loopback checkpoint identifies the current root conversation, turn, generation and control owner. Ordinary model selections and ordinary Luna do not start Ares evaluation.
 
 Before each eligible generation, the sidecar sends current decision context to an independent **GPT-6 Luna / High** evaluator through **Codex app-server**. The evaluator has no tools or MCP access. It returns the validated `action/effort/reason` contract; unsupported effort or invalid output is rejected. A recommendation belongs to its exact owner and generation, with lease one. Old decisions are not reused as fresh judgments.
 
@@ -14,7 +16,7 @@ Original and latest current requests stay whole. Accepted current goal input is 
 
 Admission uses the evaluator's own resolved usable context window minus framing reserve; it does not borrow Main's context window or substitute an advertised API maximum. Unknown capacity or irreducible oversize starts no inference. Missing current task evidence is rejected before allocating an evaluator thread.
 
-On timeout, abstention, unavailable evaluation or rejected control, Main uses its baseline. Existing cooldown and fresh-input recovery remain in place. One conversation's decision cannot control another. Trial call counters are outside runtime termination conditions; normal operation is not capped at 10, 40 or 41 evaluations.
+On evaluator failure or abstention, native fallback retains the last confirmed xhigh/max only when it still matches the current effort and supported catalog; otherwise it selects supported High. Manual settings take ownership and stop automatic control. Invalid/fallback catalog metadata or no supported High/retained strong effort disables adaptation; evaluator failures use the existing failure cooldown (30, 60, at most 120 seconds). It does not always restore an arbitrary user baseline. Fresh-input recovery remains in place. A stale/rejected publication does not override the current owner. One conversation's decision cannot control another. Trial call counters are outside runtime termination conditions; normal operation is not capped at 10, 40 or 41 evaluations.
 
 ## Windows process boundary
 
@@ -24,6 +26,12 @@ Detailed context-phase tracing is opt-in for one exact UUID at startup. Normal s
 
 This public route is Luna via app-server. It is not Decisions API or a Sign in with ChatGPT Responses integration. Retired Jev/Main aliases are handled as compatibility metadata, not an active Jev client. [Change history](../CHANGELOG.md) explains why the current boundaries were added.
 
-## 0.163 boundaries
+## Native input and startup boundaries
 
 Native task delivery requires accepted host metadata and matching receiver identity; ordinary tool/XML strings do not grant authority. The general GUI delivery input was not observed; isolated RPC coverage remains separate. Packaged startup uses a GUID completion, two consecutive backend identity observations and parent-side receipt/live identity checks. An uncertain result is not successful activation; it does not establish the cause of a historical PowerShell error.
+
+## Startup policy query
+
+Before normal app-server startup, the newer Desktop calls a one-shot startup policy command. The pinned upstream loads real configuration/requirements and propagates structured failures; it does not fabricate permissive organization settings or reset authentication. Public launcher checks the exact three flags before activation. The static contract result for the exact Desktop/native pair is recorded in validation; this does not establish live acceptance.
+
+The current native patch ports selected core/RPC/SDK hunks, not all historical TUI/exec/infrastructure changes. See [patch scope](../patches/codex/PATCH_MAP.md).

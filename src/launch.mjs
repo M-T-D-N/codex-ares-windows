@@ -83,14 +83,22 @@ export async function finishSupervisor({services, app, reason, code, record,
 }
 export function validateCompanionRelease(manifest) {
   const required = ['codex-code-mode-host.exe', 'codex-command-runner.exe', 'codex-windows-sandbox-setup.exe'];
-  if (/^0\.162\./.test(manifest.native?.sourceRelease ?? '') || manifest.native?.sourceRelease === '0.163.0')
+  if (/^0\.162\./.test(manifest.native?.sourceRelease ?? '') || ['0.163.0','0.164.0-alpha.11.1'].includes(manifest.native?.sourceRelease))
     required.push('codex-windows-sandbox-service.exe');
   if (!Array.isArray(manifest.companions) || manifest.companions.length !== required.length ||
       required.some(name => manifest.companions.filter(a => basename(a.path).toLowerCase() === name).length !== 1) ||
       manifest.companions.some(a => a.sourceRelease !== manifest.native.sourceRelease || dirname(a.path) !== dirname(manifest.native.path)))
     throw new Error('Candidate companion release combination is invalid.');
 }
-export async function launch({trialStatus = null} = {}) {
+// Desktop reads organization policy before starting its normal app-server.
+// A valid version/hash alone does not establish support for this CLI contract.
+export function validateStartupConfigSupport(help) {
+  const options = new Set(String(help).match(/--[a-z][a-z-]*/g) ?? []);
+  const required = ['--print-startup-config', '--startup-client-info', '--startup-sign-out'];
+  if (required.some(option => !options.has(option)))
+    throw new Error('Candidate lacks the Desktop startup policy query contract. No Desktop was started.');
+}
+export async function launch({trialStatus = null, executeNative = execute} = {}) {
   const {values} = parseArgs({options: {
     manifest: {type: 'string'}, 'desktop-binding': {type: 'string'},
     'run-dir': {type: 'string'}, activate: {type: 'boolean', default: false},
@@ -123,11 +131,13 @@ export async function launch({trialStatus = null} = {}) {
   if (binding.packageName !== 'OpenAI.Codex' || !binding.registeredForCurrentUser ||
       await digest(binding.desktop.path) !== binding.desktop.sha256)
     throw new Error('Registered Desktop binding changed. Run scripts/start.ps1 again.');
-  const version = (await execute(manifest.native.path, ['--version'], {windowsHide: true, timeout: 10000})).stdout.trim();
+  const version = (await executeNative(manifest.native.path, ['--version'], {windowsHide: true, timeout: 10000})).stdout.trim();
   if (version !== manifest.native.version) throw new Error('Candidate native version mismatch.');
+  const startupHelp = await executeNative(manifest.native.path, ['app-server', '--help'], {windowsHide: true, timeout: 10000});
+  validateStartupConfigSupport(startupHelp.stdout);
   if (!values.activate) {
     console.log(JSON.stringify({status: 'preflight_only', version, artifactsChecked: artifacts.length,
-      desktopVersion: binding.packageVersion, desktopStarted: false}));
+      desktopVersion: binding.packageVersion, startupConfigSupported: true, desktopStarted: false}));
     return;
   }
   const ps = (await execute('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',

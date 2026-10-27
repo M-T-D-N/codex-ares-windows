@@ -25,11 +25,12 @@ async function collect(dir,allFiles=false){
  }return out;
 }
 const sidecar=await collect(join(root,'src'));
-const runtimeDependencies=[...await Promise.all(['package-lock.json','scripts/start.ps1','scripts/status.ps1'].map(p=>entry(join(root,p)))),...await collect(join(root,'node_modules/gpt-tokenizer'),true)];
+const runtimeDependencies=[...await Promise.all(['package-lock.json','scripts/start.ps1','scripts/status.ps1','scripts/verify-desktop-protocol.mjs','scripts/check-desktop-protocol.mjs','scripts/verify-native-source.mjs'].map(p=>entry(join(root,p)))),...await collect(join(root,'node_modules/gpt-tokenizer'),true)];
 const native={...await entry(join(bundle,'codex.exe')),version:lock.nativeVersion,sourceRelease:lock.nativeVersion.replace(/^codex-cli /,''),profile:'dev'};
 const manifest={schema:1,native,companions,sidecar,runtimeDependencies,evaluatorSources:[],
  sourceIdentitySha256:sha(JSON.stringify({lock,sidecar,runtimeDependencies})),
+ nativeSourceIdentitySha256:lock.sourcePreparation.sourceContentSha256,nativeUpstreamCommit:lock.commit,nativePatchSha256:lock.patch.sha256,
  statusServicePath:'src/selection/services.mjs',nodePath:'node',protocol:4,productionCallLimit:null,
- supportedMainModels:['gpt-6-astra','gpt-6-sol','gpt-6.1-sol'],lease:1,publicBundleGui:'NOT_RUN'};
+ supportedMainModels:['gpt-6-astra','gpt-6-sol','gpt-6.1-sol','gpt-6.1-terra'],lease:1,publicBundleGui:'NOT_RUN'};
 await writeFile(join(bundle,'candidate.json'),JSON.stringify(manifest,null,2)+'\n');
 console.log(JSON.stringify({status:'bundle_created',artifacts:1+companions.length+sidecar.length+runtimeDependencies.length,modelCalls:0}));

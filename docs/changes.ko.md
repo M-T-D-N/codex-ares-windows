@@ -1,3 +1,19 @@
+# 현재 로컬 검토 — 0.164 격리 소스 후보 (HOLD)
+
+## 현재 0.164 Terra 후보
+
+Terra 별칭·지원 강도 상속·일반 모델 우회를 추가하고 새 source/patch와 역사적 계약 근거를 분리해 결속했습니다. 고정 5종 빌드와 새 정적 320/458 계약·Doctor/preflight 1560은 통과했으며 native 90검사와 compact 6 본문 미실행을 구분합니다. 운영·보안 설정·인증은 바꾸지 않았습니다. 전체 결과와 한계는 validation.md를 따릅니다.
+
+## Local0.164 review candidate — unpublished
+
+Pinned official6905eced source,68-path patch, prepared Cargo.lock, Rust1.99.1 and V8152.2.0 now share one portable input set. Full regular-file identity and Git content/mode restoration are checked separately from physical symlink creation. Two synthetic fixture task IDs are anonymized; three TUI paths repair exact notification routing and baseline preservation after a real compile failure. CLI+four companions and static Desktop contracts require current-run evidence; old0.163 results are historical. No new GUI/provider acceptance, operating change or publication is claimed. [검증 범위](validation.md).
+
+## Historical0.163 preparation below
+
+0.163 고정 소스 d9affe0e에 실제 시작 정책 조회·구조화 오류 처리를 이식했습니다. 공개 launcher는 필수 flag가 없으면 시작 전 거부하며 상대 import·소유 temp·수명 관리를 유지합니다. Setup의 TEMP/TMP/TMPDIR 지정은 소스 복원 앞으로 옮겼습니다. 새 복원9,194파일/mode·단위검사112개·양 PowerShell105개씩·기존 바이너리5종 bundle/Doctor가 통과했습니다. Desktop3705 실제 preflight는 미호환 계약을 거부해 exit1이며 성공 기동으로 계산하지 않습니다. 새 빌드·모델 호출·공개 게시·동일 공개물 GUI 수용은 하지 않았습니다. [현재 근거](validation.md)를 따릅니다.
+
+아래 preview.2는 이전 소스의 역사적 검증입니다.
+
 # 0.1.0-preview.2 소스 프리뷰 변경 안내
 
 공식 Codex **0.163.0** commit `83086188ae0614bd882818ff1aa23f3194962012` 위에 기존 Ares 제어를 이식했습니다. 관측 Desktop은 **26.1013.4894.0**입니다. 실행파일을 배포하는 버전이 아니라 고정된 소스에서 사용자가 직접 빌드하는 프리뷰입니다.

@@ -1,6 +1,6 @@
 // Detailed local diagnostics are explicit opt-in. Even then, credentials are not logged.
 const scalar = new Set(['type','threadId','turnId','step','requestId','requestOrdinal','evaluatorCallId','connectionEpoch','ownerId',
-  'route','selectionAlias','model','requestedModel','responseModel','requestedEffort','effort','decisionSource','outcome','status',
+  'route','selectionAlias','model','requestedModel','selectedModel','responseModel','requestedEffort','effort','decisionSource','outcome','status',
   'lastOutcome','recommendedEffort','elapsedMs','latencyMs','waitMs','delayMs','cooldownMs','remainingMs','attempt','attempts',
   'requestBytes','localTokens','inputSha256','policyHash','fallbackOwner','leaseSteps','pid','parentPid','epoch','startedAt',
   'processExitObserved','cleanupConfirmed','stoppingAt','closed','suppressed','permanent','scope','dispatchConfirmed','responseCompleted','jevSkipped']);

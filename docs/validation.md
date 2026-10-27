@@ -1,8 +1,78 @@
 # What was verified
 
-## 0.1.0-preview.2 candidate scope
+**Current 0.164 Terra local candidate:** The fixed source was built as CLI plus four companions. Fresh stable 320/experimental 458 exports, local proof, Doctor and 1560-input preflight passed without Desktop activation or model calls. The final direct Node package-script body passed 196/196 tests (npm wrapper unavailable). Native models 63/controller 22/dispatch 5 passed; compact/resume 6 returned through the platform network-skip guard and remain NOT_RUN. Publication/operating activation are HOLD pending final review. Historical results below remain tied to their original sources.
 
-The native base is official Codex **0.163.0**, commit `83086188ae0614bd882818ff1aa23f3194962012`; the observed registered Desktop is **26.1013.4894.0**. The [source lock](../patches/codex/upstream.lock.json) owns the exact patch, archive, dependency and source identities.
+The lock's `sourcePreparation.sourcePreparation` text records the initial preparation checkpoint; it is preserved provenance, not the current execution result. Current machine-readable results are in [source-validation-164.json](source-validation-164.json). The first full adapter run had 194 PASS/2 FAIL from an obsolete startup fixture assertion. Its correction accepts the explicit new preparation status only with GUI NOT_RUN and exact reviewed-source binding; production guards were not relaxed. The final 196/196 run supersedes that fixture result without deleting its failure logs.
+
+## Revision 4: local build contract binding — 2026-10-26
+
+The native source and five compiled binaries are unchanged from revision 3. The public build path now validates full prepared source before/after compilation and runs the exact local contract verifier after bundling. Its historical proof is preserved. See [the supported procedure](build.md#bind-a-locally-built-candidate-to-its-actual-contract).
+
+- Final default package-script body: **158 PASS, 0 FAIL/skip**, including 21 local-proof regressions and 24 real setup/build-wrapper cases with synthetic tools (12 per PowerShell host). The existing startup fixture remains 106 checks per host. These counts overlap; do not sum them as separate full suites.
+- The local-proof fixtures cover a different binary SHA of the same synthetic source, rejection before validation, wrong source/upstream/version/Desktop identity, required-field/method changes, incomplete exports, export errors, candidate mutation, evidence conflict/tampering and the actual start function's rejection in both PowerShell hosts.
+- Actual existing CLI and installed Desktop CLI directly exported stable **320** / experimental **458** schemas and passed complete inventory plus allowed-extension comparison; no native rebuild or model call. A fresh local binding is tied to the exact candidate/bundle/lock/proof hashes. This does not test a second independently compiled real binary.
+- Setup/build/installer invocation ordering and failure propagation were exercised through the real scripts with synthetic Rust/Cargo/npm/Node/Appx/V8 commands. The first 24-case fixture run failed because the harness inherited the wrong utility module and used nested script scope; those harness failures were corrected and preserved separately. A preparation helper's UTF-8 read error was also preserved. No actual tool installation, full native build wrapper or current-user registration acceptance is claimed.
+- Actual bundle/Doctor verification uses the existing five hash-matched binaries and existing tokenizer. The current user's registration query, actual preflight, GUI/provider, fresh-PC and remote CI remain NOT_RUN in this revision. The direct file-level comparison is not their substitute.
+
+Fallback prose now describes the existing native behavior: retain matching supported last xhigh/max, else supported High, yield to manual ownership, and disable adaptation for invalid catalog/no valid fallback. No native behavior changed.
+
+## Preserved revision 3 local review — 2026-10-26
+
+**Local source/build/static-contract scope passed; operating activation and publication remain HOLD.** This candidate is official 0.164 commit `6905ecede7816e91373e9eabda3f6b0368fc747b` plus the selected 68-path patch, not the historical 0.163 startup backport. Native source `1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca` contains 9,455 regular files; the archive symlink is verified separately as link text/Git mode120000.
+
+| Actual revision 3 check | Result / boundary |
+|---|---|
+| Public `setup.ps1 -RestoreOnly` from the pinned archive into an empty path | PASS: all 9,455 regular-file hashes, one link-text entry, Git modes/tree; patch applied once |
+| Direct package-script body `node --test tests/unit/*.test.mjs` | 113 PASS, 0 FAIL/skip, Node24.19.0. npm executable unavailable; wrapper/npm ci NOT_RUN |
+| Public startup fixtures | Windows PowerShell106 and PowerShell7 106 checks PASS; synthetic, no app launch |
+| Anonymized delivery fixtures | 3 actual native tests PASS on the ccaf predecessor; two private test IDs replaced with a synthetic UUID |
+| TUI repair | 3 actual native regressions PASS on the final source: thread routing/invalid ID and unchanged selected effort/no outbound settings |
+| Offline final CLI + four companions | All five newly built from the same final source; Rust1.99.1, V8152.2.0, dev, jobs2, incremental0; no download/install |
+| Public bundle + Doctor | 1557 artifacts verified; actual CLI version `codex-cli 0.164.0-alpha.11.1`; no Desktop/model/credential query |
+| Exact installed Desktop CLI contract | Stable320 / experimental458 schema files PASS with one additional Ares notification schema each. Four raw schema files differ; they match after the existing optional Ares projection. Comparator rules unchanged |
+
+The first CLI build failed with two non-exhaustive TUI notification matches (exit101). Its stderr/source inputs remain separate. The final repair routes the exact thread and does not persist a generation-local lease as the user's baseline. No full legacy TUI indicator support is claimed. Final build success does not erase the original failure.
+
+Earlier core149/RPC23/SDK146 checks are reused within their unchanged source scope; they were not rerun or counted as new final-binary checks. The selected native patch and installed-file schema comparison are not universal behavioral compatibility. See [patch scope](../patches/codex/PATCH_MAP.md).
+
+The exact installed Desktop CLI file is version0.164.0-alpha.11.1, SHA `1103e9e09c71fa2cd0afd6d8f3b9a2d63174fe8efd7cb5bd09f1cb14ef58a098`, under package26.1021.3705.0. Current-user package registration could not be re-read in the default sandbox (access denied). No fresh actual start.ps1 preflight or GUI activation is claimed. A missing/mismatched lock/proof/binary still fails closed.
+
+The existing fixed Cargo collector was used instead of executing the full public build-native wrapper, so its rich cache record was not overwritten. The wrapper's equivalent arguments/source connection were reviewed; a full fresh setup is NOT_RUN. The verified existing tokenizer and V8 pair were reused. Original SDK CRLF patch warnings and Windows WinError1314 physical-symlink limitation remain visible.
+
+Exact-candidate CI, fresh-PC install, live GUI/provider acceptance, full independent native patch review and unported historical behavior remain NOT_RUN/REVIEW_PENDING. No push/tag/Release, operating replacement, DB/auth/ACL change or model request occurred. [Machine-readable scope](startup-policy-qualification.json) and [compatibility](compatibility.md) separate these boundaries.
+
+The historical d9 startup-backport candidate remains preserved: its stable319/320 and experimental453/458 comparison FAILED and its actual guard rejected Desktop3705. Those are not failures or passes of this new source. The original earlier PowerShell failure cause and historical launch-manifest byte hash remain UNKNOWN.
+
+## Local source checks on 2026-10-22
+
+Source `08fe5b09021c717e28b516e4f3c993d976413e2d` completed all 96 unit tests
+with zero failures or skips, and Node syntax checks for all 27 tracked `.mjs`
+files. Existing Node 24.19.0 ran the exact `node --test tests/unit/*.test.mjs`
+package-script body with the documented isolated test temp/Python settings.
+The npm executable was unavailable, so the npm wrapper and `npm ci` were not
+run; existing locked gpt-tokenizer 4.0.0 was used and no tool was installed.
+
+`node scripts/doctor.mjs` passed with `bundle: not_built`, no native version
+execution, no credential read, no Desktop start and no model calls. This verifies
+the source lock checks performed by Doctor, not a newly built bundle or GUI.
+The subsequent publication-manifest/document-only commit retains the tested
+code bytes. Its sorted source inventory excludes the manifest itself and keeps
+native/GUI preparation statuses unchanged. Exact-commit remote CI and final
+artifact acceptance remain separate; nothing was pushed or published.
+
+## Desktop 26.1016.6573.0 integration observation
+
+The [2026-10-22 record](integration-20261022.md) describes one real GUI user turn
+in an existing synthetic Codex conversation on source `92d57592`. It includes
+Luna evaluation, native medium effort application, Main completion, matching
+native/canonical user and assistant digests, exact search IDs and automatic
+local Qwen graph provenance. It is separate from the historical preparation
+and release snapshots below. It does not qualify later source revisions or
+new-draft Ares selection, and it is not a general quality or latency claim.
+
+## Historical 0.1.0-preview.2 preparation snapshot
+
+The native base is official Codex **0.163.0**, commit `83086188ae0614bd882818ff1aa23f3194962012`; the observed registered Desktop is **26.1013.4894.0**. The original release source lock owns that historical identity; the current lock describes the separate 0.164 candidate.
 
 **Exact-public restoration: 9,193 files/modes; adapter tests: 95 PASS. Isolated npm ci, bundle/Doctor and 1,557 preflight checks PASS using the five hash-matched existing binaries; no native rebuild. Fresh exact-public GUI/provider acceptance is NOT_RUN.** Private-runtime evidence is separate. This is a prepublication local validation snapshot: remote CI was not run at this snapshot. The Release links the exact published commit CI result; this snapshot does not describe later CI status. Preparation adds no paid calls.
 
@@ -52,10 +122,10 @@ The immutable `v0.1.0-preview.1` tag/assets retain their original identity. Late
 
 Request effort follows the last transmitted configuration update, otherwise the previous response chain; baseline is initial only without a prior response. In-flight, cancelled, stale and incomplete chains are excluded from linked success. Historical zero context-phase events are not a measured speedup. [Pilot results](pilot-results.md) preserve the earlier task comparisons and negative Jev results; none establish a general cost/quality advantage.
 
-## Default-command follow-up
+## Historical default-command follow-up
 
 On the same allowed Windows host/isolated layout, unmodified `npm test` passed 95/95 on 8f853a6 and again after the review fixes, without concurrency overrides. The earlier sandbox 80 PASS/15 FAIL and serial host 95 PASS remain distinct. No serial policy is adopted; package/CI/docs retain `npm test`. Public-source launch fixtures passed 84 checks in each Windows PowerShell and PowerShell 7 host; these are function/contract tests, not an actual Desktop launch. The cancelled request elapsed starts at native attempt preparation, not the UI click.
 
-## Exact-commit CI failure and local correction
+## Historical exact-commit CI failure and local correction
 
-The submitted 090221c6b48b77708a5bbc5d5614b1e884e46628 failed [CI run 39348719107](https://github.com/M-T-D-N/codex-ares-windows/actions/runs/39348719107): npm ci passed, but both startup fixtures failed because multiple Node application paths were coerced into one string. No tag/Release was created. The launcher now selects the first application; a two-Node PATH fixture reproduces the old failure and passes after the fix. Local default npm test: 95 PASS; both PowerShell hosts: 86 checks PASS. This new correction awaits review and exact-commit remote CI; these local results do not replace it.
+The submitted 090221c6b48b77708a5bbc5d5614b1e884e46628 failed [CI run 39348719107](https://github.com/M-T-D-N/codex-ares-windows/actions/runs/39348719107): npm ci passed, but both startup fixtures failed because multiple Node application paths were coerced into one string. No tag/Release was created. The launcher now selects the first application; a two-Node PATH fixture reproduces the old failure and passes after the fix. Local default npm test: 95 PASS; both PowerShell hosts: 86 checks PASS. At that historical snapshot, the correction awaited review and exact-commit remote CI; this is not the current remote status.

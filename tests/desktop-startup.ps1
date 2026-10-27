@@ -3,6 +3,7 @@ param(
   [string]$StatusFile=(Join-Path $PSScriptRoot '../scripts/status.ps1')
 )
 $ErrorActionPreference='Stop'
+Import-Module (Join-Path $PSHOME 'Modules\Microsoft.PowerShell.Utility\Microsoft.PowerShell.Utility.psd1') -ErrorAction Stop
 $script:checks=0
 function Check($ok,$label){if(-not $ok){throw $label};$script:checks++}
 function Parse-Source($path){
@@ -20,7 +21,7 @@ foreach($name in @('Get-RecordedStartMilliseconds','Test-RecordedIdentity','Get-
 $startAst=Parse-Source $StartFile
 $mainTry=$startAst.EndBlock.Statements | Where-Object {$_ -is [Management.Automation.Language.TryStatementAst]} | Select-Object -First 1
 Check ($null -ne $mainTry) 'startup failures must reach the packaged completion handler'
-foreach($name in @('Resolve-AresNodePath','Get-AresCompletionPath','Write-AresLaunchCompletion','Wait-AresLaunchCompletion','Get-AresProcessStartMilliseconds','Test-AresProcessIdentity','Confirm-AresLaunchIdentity')) {
+foreach($name in @('Assert-AresDesktopProtocolIdentity','Resolve-AresNodePath','Get-AresCompletionPath','Write-AresLaunchCompletion','Wait-AresLaunchCompletion','Get-AresProcessStartMilliseconds','Test-AresProcessIdentity','Confirm-AresLaunchIdentity')) {
   $fn=$startAst.Find({param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq $name},$true)
   Check ($null -ne $fn) ('missing function '+$name)
   Invoke-Expression $fn.Extent.Text
@@ -44,6 +45,23 @@ Validate-PackageVersion '1.2.3.4' ([pscustomobject]@{observedVersion='1.2.3.4'})
 Check $true 'legacy package version field remains supported'
 $rejected=$false;try{Validate-PackageVersion '1.2.3.5' ([pscustomobject]@{observedPackageVersion='1.2.3.4';observedVersion='1.2.3.5'})}catch{$rejected=$true}
 Check $rejected 'unvalidated registered MSIX version is rejected'
+
+# The exact current candidate is a version gate fixture, not GUI/protocol acceptance.
+$candidateLock=Get-Content -LiteralPath (Join-Path (Split-Path -Parent (Split-Path -Parent $StartFile)) 'patches/codex/upstream.lock.json') -Raw | ConvertFrom-Json
+Check ($candidateLock.desktop.observedPackageVersion -ceq '26.1021.3705.0') 'current candidate pins one exact registered Desktop version'
+Check ($candidateLock.desktop.candidateAcceptance.status -in @('STATIC_CONTRACT_PASS_LIVE_ACCEPTANCE_NOT_RUN','FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START')) 'only historical static evidence or a fresh-proof requirement is accepted, never GUI acceptance'
+if($candidateLock.desktop.candidateAcceptance.status -ceq 'FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START'){
+  Check ($candidateLock.candidateAcceptance.guiProvider -ceq 'NOT_RUN') 'fresh-proof requirement preserves explicit GUI non-acceptance'
+  Check ($candidateLock.desktop.protocolSourceReview.sourceIdentity -ceq $candidateLock.sourcePreparation.sourceContentSha256) 'fresh proof review is bound to the current source'
+}
+Validate-PackageVersion '26.1021.3705.0' $candidateLock.desktop
+Check $true 'exact candidate version passes only the existing version branch'
+Check ($startAst.Extent.Text.Contains('Assert-AresDesktopProtocolIdentity $repoRoot $package $compat $candidateManifest.native.path')) 'native fingerprint validation precedes activation'
+foreach($other in @('26.1013.4894.0','26.1016.6573.0','26.1016.61520','26.1016.8120.0','26.1016.62342','26.1016.8622.1','26.1017.1.0','26.1016.8622.0','26.1021.3705.1')) {
+  $rejected=$false;try{Validate-PackageVersion $other $candidateLock.desktop}catch{$rejected=$true}
+  Check $rejected 'previous, adjacent and future Desktop versions remain rejected'
+}
+
 $route=$statements | Where-Object {$_ -is [Management.Automation.Language.IfStatementAst] -and $_.Clauses[0].Item1.Extent.Text -match 'not.*PreflightOnly.*not.*PackagedLaunch'} | Select-Object -First 1
 Check ($null -ne $route) 'package routing branch missing'
 function Invoke-CommandInDesktopPackage {
@@ -201,6 +219,28 @@ try {
   }
   $rejected=$false;try{Get-AresCompletionPath $script:fixtureRoot '../escape'}catch{$rejected=$true}
   Check $rejected 'receipt identifier cannot escape the owner directory'
+  # Exercise actual hash checks with inert files; no fixture executable is run.
+  $guardRoot=Join-Path $script:fixtureRoot 'protocol';$installed=Join-Path $guardRoot 'installed'
+  New-Item -ItemType Directory -Path (Join-Path $guardRoot 'patches/codex'),(Join-Path $installed 'app/resources') -Force|Out-Null
+  $official=Join-Path $installed 'app/resources/codex.exe';$native=Join-Path $guardRoot 'candidate.exe'
+  [IO.File]::WriteAllText($official,'official-fixture');[IO.File]::WriteAllText($native,'candidate-fixture')
+  $proofPath=Join-Path $guardRoot 'patches/codex/desktop-2610213705.protocol.json'
+  $proof=@{schema=1;status='static_text_contract_checked';guiAcceptance='NOT_RUN';packageVersion='1.2.3.4';candidateNative=@{sourceIdentity='fixture-source';sha256=(Get-FileHash $native -Algorithm SHA256).Hash.ToLowerInvariant()};desktopNative=@{sha256=(Get-FileHash $official -Algorithm SHA256).Hash.ToLowerInvariant()}}
+  $proof|ConvertTo-Json -Depth 5|Set-Content -LiteralPath $proofPath
+  $meta=[pscustomobject]@{desktop=[pscustomobject]@{observedPackageVersion='1.2.3.4';protocolEvidence=[pscustomobject]@{path='patches/codex/desktop-2610213705.protocol.json';sha256=(Get-FileHash $proofPath -Algorithm SHA256).Hash.ToLowerInvariant()}};sourcePreparation=[pscustomobject]@{sourceContentSha256='fixture-source'}}
+  $pkg=[pscustomobject]@{Version=[version]'1.2.3.4';InstallLocation=$installed}
+  Assert-AresDesktopProtocolIdentity $guardRoot $pkg $meta $native
+  Check $true 'exact protocol evidence and both binary fingerprints pass'
+  foreach($target in @($official,$native,$proofPath)) {
+    $saved=[IO.File]::ReadAllBytes($target);[IO.File]::WriteAllText($target,'changed-fixture')
+    $rejected=$false;try{Assert-AresDesktopProtocolIdentity $guardRoot $pkg $meta $native}catch{$rejected=$true}
+    Check $rejected 'changed official native, candidate native or evidence is rejected'
+    [IO.File]::WriteAllBytes($target,$saved)
+  }
+  $pkg.Version=[version]'1.2.3.5';$rejected=$false;try{Assert-AresDesktopProtocolIdentity $guardRoot $pkg $meta $native}catch{$rejected=$true}
+  Check $rejected 'same evidence cannot qualify a different package version'
+  $pkg.Version=[version]'1.2.3.4';$meta.desktop.protocolEvidence=$null;$rejected=$false;try{Assert-AresDesktopProtocolIdentity $guardRoot $pkg $meta $native}catch{$rejected=$true}
+  Check $rejected 'version pin alone cannot replace missing protocol evidence'
   # Execute the real catch handler around actual early validation failures.
   $catch=$mainTry.CatchClauses[0].Extent.Text
   foreach($early in @('node','version','backend-timeout')) {
