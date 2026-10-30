@@ -4,7 +4,7 @@
 
 [English](README.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [简体中文](README.zh-CN.md)
 
-선택한 Astra/Sol/Terra 메인 모델을 유지하면서 독립 GPT-6 Luna/High가 다음 generation의 추론강도를 평가합니다. medium/high/xhigh/max 중 catalog가 지원하는 값을 권고하며 현재 소유자·대화·turn·generation에만 유효합니다. 일반 Luna와 subagent에는 Ares 제어를 붙이지 않습니다. 수동 설정이 소유권을 가져가면 늦게 도착한 자동 판단은 이를 덮어쓰지 못합니다. 전용 Ares 자식 환경에서만 step switching 기본값을 제공하며 명시적 설정·managed opt-out은 보존합니다. Launcher는 Desktop 시작 전에 실제 전제조건을 조회합니다.
+선택한 Astra/Sol/Terra 메인 모델을 유지하면서 독립 GPT-6 Luna/High가 다음 generation의 추론강도를 평가합니다. medium/high/xhigh/max 중 catalog가 지원하는 값을 권고하며 현재 소유자·대화·turn·generation에만 유효합니다. 일반 Luna와 subagent에는 Ares 제어를 붙이지 않습니다. native 현재 턴 API(`turn/settings/update`)가 수동 effort 변경을 수락하면 수동 설정이 소유권을 가지며, 늦게 도착한 자동 판단은 이를 덮어쓰지 못합니다. 확인한 Desktop 26.1027.3384.0의 기존 대화 composer는 다음 턴 설정을 변경하며 현재 턴 effort 변경을 보내지 않습니다. 전용 Ares 자식 환경에서만 step switching 기본값을 제공하며 명시적 설정·managed opt-out은 보존합니다. Launcher는 Desktop 시작 전에 실제 전제조건을 조회합니다.
 
 평가 실패·abstain 시 마지막 확정 xhigh/max가 현재 값·지원 목록에 맞으면 유지하고, 아니면 지원되는 High를 선택합니다. catalog가 부적합하거나 유효한 fallback이 없으면 자동 변경을 하지 않습니다. 평가기 실패에는 기존 cooldown(30·60·최대120초)을 적용합니다. 사용자의 임의 baseline을 항상 복원하는 동작은 아닙니다. 요청 effort나 응답 완료는 공급자 내부 연산량·답변 품질의 증거가 아닙니다.
 

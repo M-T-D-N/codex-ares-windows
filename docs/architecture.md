@@ -14,7 +14,9 @@ The upstream effort-update mechanism introduced in the0.165 predecessor is retai
 
 Native capture, the emitted effort-update notification, local request transmission and a completed Main response are separate observations. On a continued Responses WebSocket chain, top-level `reasoning.effort` can remain the pinned baseline while accepted `configuration_update` items change effective effort. Evaluate the update history and `previous_response_id` chain; an empty delta or unchanged baseline field is not evidence of a reset. Current mock integration checks High→XHigh→High, preserved baseline and matching capture/notification state. Provider-internal computation is not observed.
 
-Manual settings take ownership. Decisions received after that change are rejected rather than reapplying automation. Unsupported routes/catalog values disable adaptation instead of inventing support. The ephemeral evaluator thread closes independently of Main completion.
+Manual effort accepted through the native current-turn API (`turn/settings/update`) takes ownership of the active task and advances its settings revision. Late automatic decisions are rejected. Existing backend/RPC tests verify this path; they do not establish GUI active-turn effort control.
+
+In the inspected existing/resumed-conversation composer in Desktop 26.1027.3384.0, model/effort changes call `updateThreadSettingsForNextTurn` and then `thread/settings/update`, without an active turn ID. The inspected settings manager's explicit `turn/settings/update` branch sends `approvalsReviewer`, not effort. This composer path therefore cannot establish current-turn manual effort precedence. The finding is limited to the inspected version and path, not every hidden or future UI feature. Unsupported routes/catalog values disable adaptation instead of inventing support. The ephemeral evaluator thread closes independently of Main completion.
 
 ## Inputs and fallback
 

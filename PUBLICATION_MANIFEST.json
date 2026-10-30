@@ -10,7 +10,7 @@
   "runtimeDependencies": "Pinned gpt-tokenizer installed by setup; no dependency tree distributed",
   "binaryDistribution": false,
   "qualification": "Source-only Technical Preview, not stable or live-use acceptance. Scoped local evidence and unverified limits are in docs/validation.md. The Release identifies exact published-commit CI and asset checksums. Dedicated current-candidate GUI/provider, fresh-PC and full native-patch independent review remain incomplete.",
-  "sourceSnapshotSha256": "a19487ef1a149626d4a9ac2e38cc088fd6878a458976975b22e35816f343a417",
+  "sourceSnapshotSha256": "d30be1eec2ba4482464bacfb18d9e02d2fa06279478e483a5b8f2345c2ecc1fe",
   "sourceSnapshotMethod": "sha256(sorted POSIX path + NUL + file sha256 + LF), excludes publication manifest",
   "files": [
     {
@@ -55,13 +55,13 @@
     },
     {
       "path": "README.ko.md",
-      "bytes": 6211,
-      "sha256": "5e1be19d9d060a89d764de8ca7c5071268dbb5f5237463c0e738fcddf8dc7922"
+      "bytes": 6443,
+      "sha256": "d4359f95d098a92d3d561c2e426a891ac12ee46ca9a975980803baee19217e83"
     },
     {
       "path": "README.md",
-      "bytes": 6159,
-      "sha256": "5c4d0e1e224e74aac9ae3daebd95863161aa2d8d1ea6d632d65f0d83eb3b6cc4"
+      "bytes": 6395,
+      "sha256": "26d37f3b4913837ce9e6801858d60bd3c03622f43c5278ccd8e1735360f2dea0"
     },
     {
       "path": "README.zh-CN.md",
@@ -80,8 +80,8 @@
     },
     {
       "path": "docs/architecture.md",
-      "bytes": 7320,
-      "sha256": "c5a086a6669b7cb34ccb726735566098030444de1c842148d6e1ddd2d5a1f85c"
+      "bytes": 7997,
+      "sha256": "c2b9b346e862c273e52b834c062dccc034f0d602652e168637ee51643241e5c1"
     },
     {
       "path": "docs/assets/ares-banner.svg",
