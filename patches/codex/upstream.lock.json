@@ -1,15 +1,15 @@
 {
   "schema": 1,
   "repository": "https://github.com/openai/codex",
-  "commit": "6905ecede7816e91373e9eabda3f6b0368fc747b",
+  "commit": "f79b26ccbb3116b052544666a181012fb45dc49b",
   "archive": {
-    "url": "https://codeload.github.com/openai/codex/tar.gz/6905ecede7816e91373e9eabda3f6b0368fc747b",
-    "sha256": "366033f4963226f6498d8eb2f381ead59a8582afbdd60d84314521e47c191395"
+    "url": "https://codeload.github.com/openai/codex/tar.gz/f79b26ccbb3116b052544666a181012fb45dc49b",
+    "sha256": "8891296adbe3c02474eb9dd9fcff23c99becd171cad75e76cff88c32a8cdb209"
   },
   "ares": {
     "sourceKind": "official upstream plus exact cumulative patch",
     "nativeSourceCommit": null,
-    "reviewedParentIdentity": "f672db807c7f15f05fcdba0df2a8986ffdf18c6e2407f1351fc97bbd19450f07"
+    "reviewedParentIdentity": "4cbf74d39c9072f013b0b0eb844b1ee7253e1eaefa222010ccc382b4d12596ff"
   },
   "build": {
     "rustcVersion": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
@@ -17,13 +17,12 @@
     "target": "x86_64-pc-windows-msvc",
     "targetSelection": "default host; no --target flag",
     "profile": "dev",
-    "scryptOptLevel": 3,
     "jobs": 2,
-    "cargoLockSha256": "ea5058a65bfeb007a830b945bdeb93e14d5b0f5c4e16b6b5421832c1f11515c9",
+    "cargoLockSha256": "cb021edc3d34a73a7e69a5ba95dbe641f224589888e3fac02bb3a1ceb34cbc93",
     "nodeMinimum": "22",
     "nodeDependency": "gpt-tokenizer@4.0.0",
     "nodeLockFile": "package-lock.json",
-    "nodeLockSha256": "4804ddfcf08ef238e74c961441151d41859c469418fadad353a06c8437264167",
+    "nodeLockSha256": "87d4cbea74331593d10415eee20bd3d4dd385fad046fd0d282ed496bb415f49d",
     "externalNativeDependency": {
       "name": "rusty_v8",
       "version": "152.2.0",
@@ -34,9 +33,10 @@
       "source": "Codex-built V8 release pair; same sandbox features as the locked source",
       "fromSourceBuild": "NOT_REQUIRED_FOR_V8"
     },
-    "cargoIncremental": "0"
+    "cargoIncremental": "0",
+    "debug": "line-tables-only"
   },
-  "nativeVersion": "codex-cli 0.164.0-alpha.11.1",
+  "nativeVersion": "codex-cli 0.166.0-alpha.5.1",
   "bridgeProtocol": 4,
   "policy": {
     "lease": 1,
@@ -87,45 +87,87 @@
     "Portable relative imports and project-owned TEMP; default log redaction; app-server evaluator only"
   ],
   "sourcePreparation": {
-    "sourceContentSha256": "5b4b0fe9d853991b8c96470369cae7adaa674b1257471cf76ef720484c75c937",
-    "method": "SHA256(UTF8(sorted path + NUL + file SHA256 lowercase + LF)); regular files only; failed upstream LICENSE symlink remains excluded and recorded",
-    "nativeFileCount": 9455,
-    "sourcePreparation": "Rev4 plus Terra source preparation; native compile/test/new proof NOT_RUN pending dot review",
+    "sourceContentSha256": "f602eec364f061f64d513b1cb77208fcaaa707ecc1bf1c61d3d20bb1f48052ac",
+    "method": "SHA256(UTF8(sorted path + NUL + lowercase file SHA256 + LF)); regular Git files only, materialized symlink index120000 excluded",
+    "nativeFileCount": 9711,
+    "sourcePreparation": "Official 0.166.0-alpha.5.1 plus exact cumulative Ares patch; source/generated-contract regression passed; binary and GUI acceptance recorded separately",
     "symlink": "Windows portable checkout uses link-text materialization and exact Git index mode120000. Physical symlink creation previously failed WinError1314; no claim of POSIX checkout.",
-    "reviewedPredecessorIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca",
-    "gitModes": "All archive modes and restored Git tree verified by setup-native."
+    "gitModes": "All archive modes and restored Git tree verified by setup-native.",
+    "reviewedPredecessorIdentity": "4cbf74d39c9072f013b0b0eb844b1ee7253e1eaefa222010ccc382b4d12596ff"
   },
   "patch": {
-    "sha256": "49c51dfb9de267c3b38c24fb754f56099cb1b471acca22a0ed52bb69db578528",
-    "changedFiles": 70,
-    "modifiedFiles": 57,
-    "newFiles": 13
+    "sha256": "05016f6a951ed208895373ac1a0f82dd763026c4ff630b3f156e34224b904d49",
+    "changedFiles": 180,
+    "modifiedFiles": 163,
+    "newFiles": 17,
+    "deletedFiles": 0
   },
-  "baseTree": "6aa9c980d120e4e0420504e7a73302c67cd83fcb",
-  "restoredTree": "09647db7eba26b23d401d8558e6697a1f9db10f8",
+  "baseTree": "f5c5a9edbf28fe1ccdb260322f5f172f6e731765",
+  "restoredTree": "acf7459e72cef50d8daadb8dfa9b640ed73e6878",
   "desktop": {
-    "observedPackageVersion": "26.1021.3705.0",
-    "observedVersion": "26.1021.31345",
+    "observedPackageVersion": "26.1027.3384.0",
+    "observedVersion": "26.1027.30824",
     "protocolEvidence": {
-      "path": "patches/codex/desktop-2610213705.protocol.json",
-      "sha256": "40989f5a9468d7f86a0e158eaef7f73356935a2159eb084df714db72595fb2f3"
+      "path": "patches/codex/desktop-26.1027.3384.0.protocol.json",
+      "sha256": "eeb5dd81a5967f7f777e15253eb94676f6e300f220b70e1b8df57f8e3a35395b"
     },
     "candidateAcceptance": {
       "status": "FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START",
-      "scope": "Historical contract is reference only; require current full source, binary, package and exact exports"
+      "scope": "Exact current binary/schema/source reference; GUI/provider remains NOT_RUN."
     },
-    "protocolSourceReview": {
-      "schema": 1,
-      "upstream": "6905ecede7816e91373e9eabda3f6b0368fc747b",
-      "referenceSourceIdentity": "1cd0679d81f0e4d34fc9212ed5f3089fc072b4591a9f460cbfdff4aacd55d7ca",
-      "sourceIdentity": "5b4b0fe9d853991b8c96470369cae7adaa674b1257471cf76ef720484c75c937",
-      "patchSha256": "49c51dfb9de267c3b38c24fb754f56099cb1b471acca22a0ed52bb69db578528"
-    }
+    "historicalDesktopBindings": [
+      {
+        "observedPackageVersion": "26.1023.6123.0",
+        "observedVersion": null,
+        "protocolEvidence": {
+          "path": "patches/codex/desktop-26.1023.6123.0.protocol.json",
+          "sha256": "33db7dbaf67f2cd09640191df8f78a4c100b7e9a9dd58731b5440e000ea5eaa2"
+        },
+        "candidateAcceptance": {
+          "status": "FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START",
+          "scope": "Historical contract is reference only; require current full source, binary, package and exact exports"
+        },
+        "protocolSourceReview": {
+          "schema": 1,
+          "upstream": "360319d8dee62d87e2d59fc0c21805d79519cfed",
+          "referenceSourceIdentity": "88886d7b8e97cca63813a984dcf7fc13bcbd7d3f22e88bda34e3a2e1a969b2a8",
+          "sourceIdentity": "4cbf74d39c9072f013b0b0eb844b1ee7253e1eaefa222010ccc382b4d12596ff",
+          "patchSha256": "36d2595f5ed124146c023abb3ba05fe64c35bfed45010640d6967c4614754345"
+        },
+        "historicalProtocolSourceReviews": [
+          {
+            "schema": 1,
+            "upstream": "360319d8dee62d87e2d59fc0c21805d79519cfed",
+            "referenceSourceIdentity": "88886d7b8e97cca63813a984dcf7fc13bcbd7d3f22e88bda34e3a2e1a969b2a8",
+            "sourceIdentity": "341dfcf3b3facb2fa99cc009b9b69f67c67f3fb99a9c090b357c979beaf248a7",
+            "patchSha256": "6401f12a013dbeda4f48d29ddbd70f324ed602fb1e6f99a29200802107621910"
+          },
+          {
+            "schema": 1,
+            "upstream": "360319d8dee62d87e2d59fc0c21805d79519cfed",
+            "referenceSourceIdentity": "88886d7b8e97cca63813a984dcf7fc13bcbd7d3f22e88bda34e3a2e1a969b2a8",
+            "sourceIdentity": "13b4eaf72b6eb9f38dba97f008ac88aefef9153013e7af448edb99005a4022f6",
+            "patchSha256": "43faa160cd5c833176c54f5ef887d1ac52f8816c6ac4c81c6d6e713528a70fd6"
+          }
+        ]
+      },
+      {
+        "observedPackageVersion": "26.1023.6621.0",
+        "observedVersion": null,
+        "protocolEvidence": {
+          "path": "patches/codex/desktop-26.1023.6621.0.protocol.json",
+          "sha256": "6b16ca912ec085b79b8413f3fc432ff8441e4a9b41b009b8c0e155e38a5e6f02"
+        },
+        "candidateAcceptance": {
+          "status": "FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START",
+          "scope": "Historical contract is reference only; require current full source, binary, package and exact exports"
+        }
+      }
+    ]
   },
   "candidateAcceptance": {
     "status": "FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START",
     "guiProvider": "NOT_RUN",
-    "compactResume6": "NOT_RUN_PLATFORM_SKIP",
     "remoteCI": "NOT_RUN_FOR_THIS_CANDIDATE",
     "modelCalls": 0
   }

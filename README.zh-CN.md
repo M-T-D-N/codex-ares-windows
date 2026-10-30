@@ -1,3 +1,3 @@
 # Codex Ares for Windows
 
-0.164 Terra为仅源码Technical Preview。代码提交与CI见[PR #1](https://github.com/M-T-D-N/codex-ares-windows/pull/1)。此页不是完整翻译，最新要求与限制请参阅[English](README.md)或[한국어](README.ko.md)。新的GUI/provider/fresh-PC验收尚未执行，不代表稳定版或生产切换批准。
+当前为基于 Codex 0.166.0-alpha.5.1 的源码预览，不分发可执行文件。当前说明和验证范围请参阅 [English](README.md)、[한국어](README.ko.md) 和 [Validation](docs/validation.md)。此页不是完整翻译。历史候选的测试结果与当前候选的验收结果分开记录。

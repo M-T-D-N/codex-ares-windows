@@ -1,6 +1,4 @@
-> Historical candidate record. Current0.164 qualification is in [validation](validation.md). Its source/proof/GUI observations do not qualify current bytes.
-
-> Historical candidate record. Current0.164 qualification is in [validation](validation.md). Its source/proof/GUI observations do not qualify current bytes.
+> Historical candidate record. Current scope is in [validation](validation.md). These source/proof/GUI observations do not qualify current bytes.
 
 # Desktop 26.1016.8622.0 preparation
 

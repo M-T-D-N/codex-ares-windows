@@ -1,3 +1,5 @@
+> Historical candidate record. Current scope is in [validation](validation.md). These observations do not qualify current bytes.
+
 # Desktop 26.1016.8120.0 preparation
 
 The registered MSIX package version is 26.1016.8120.0; the root package.json in

@@ -1,9 +1,9 @@
-> Historical candidate record. Current0.164 qualification is in [validation](validation.md). Its source/proof/GUI observations do not qualify current bytes.
+> Historical candidate record. Current scope is in [validation](validation.md). These source/proof/GUI observations do not qualify current bytes.
 
 
 # Historical Desktop 26.1016.6573.0 compatibility candidate
 
-The current preparation targets [26.1016.8120.0](desktop-2610168120-candidate.md).
+The subsequent historical preparation targeted [26.1016.8120.0](desktop-2610168120-candidate.md).
 The observations below retain their original version/source boundary.
 
 This isolated branch pins exactly the then-observed registered MSIX package

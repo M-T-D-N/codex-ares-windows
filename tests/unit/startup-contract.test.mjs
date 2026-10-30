@@ -115,7 +115,7 @@ for (const outcome of ['supported', 'missing-flag', 'help-failure', 'version-fai
 test('startup support validation precedes activation and service/Desktop start', async () => {
   const source = await readFile(launcher, 'utf8');
   const validation = source.indexOf('validateStartupConfigSupport(startupHelp.stdout)');
-  for (const boundary of ['if (!values.activate)', 'await startServices({', 'const app = spawnDesktop(']) {
+  for (const boundary of ['if (!values.activate)', 'await startServices({', 'const app = await spawnAresDesktop(']) {
     assert.ok(validation > 0 && validation < source.indexOf(boundary), boundary);
   }
 });

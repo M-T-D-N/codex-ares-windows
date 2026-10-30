@@ -24,8 +24,8 @@ async function fixture(t){
   profiles[profile]={};for(const who of ['desktop','candidate']){const dir=join(root,'reference',profile,who);await emit(who,dir);const s=await schemaFiles(dir);profiles[profile][who]={sha256:s.sha256,files:s.inventory};}
  }
  const reference={schema:1,status:'static_text_contract_checked',guiAcceptance:'NOT_RUN',packageVersion:'1.2.3.4',candidateNative:{sourceIdentity:identity,sha256:sha('previous build'),version:'codex-cli fixture'},desktopNative:{sha256:sha('desktop'),version:'codex-cli fixture'},profiles};
- const ref=join(root,'patches/codex/desktop-2610213705.protocol.json');await save(ref,reference);
- const lock={commit:'fixture-upstream',nativeVersion:'codex-cli fixture',patch:{sha256:sha('patch')},sourcePreparation:{sourceContentSha256:identity,nativeFileCount:1},desktop:{observedPackageVersion:'1.2.3.4',protocolEvidence:{path:'patches/codex/desktop-2610213705.protocol.json',sha256:sha(await readFile(ref))}}};
+ const ref=join(root,'patches/codex/desktop-1.2.3.4.protocol.json');await save(ref,reference);
+ const lock={commit:'fixture-upstream',nativeVersion:'codex-cli fixture',patch:{sha256:sha('patch')},sourcePreparation:{sourceContentSha256:identity,nativeFileCount:1},desktop:{observedPackageVersion:'1.2.3.4',protocolEvidence:{path:'patches/codex/desktop-1.2.3.4.protocol.json',sha256:sha(await readFile(ref))}}};
  await save(join(root,'patches/codex/upstream.lock.json'),lock);
  const manifest={native:{path:'bundle/codex.exe',sha256:sha(await readFile(candidate)),version:lock.nativeVersion},nativeSourceIdentitySha256:identity,nativeUpstreamCommit:lock.commit,nativePatchSha256:lock.patch.sha256};await save(join(root,'bundle/candidate.json'),manifest);
  const calls=[];
@@ -55,7 +55,7 @@ async function alterBoundProof(f,mutate){
 }
 
 test('an exact reviewed successor validates its full source and four fresh exports without rewriting history',async t=>{
- const f=await reviewedSource(await fixture(t)),historical=join(f.root,'patches/codex/desktop-2610213705.protocol.json'),before=await readFile(historical);
+ const f=await reviewedSource(await fixture(t)),historical=join(f.root,'patches/codex/desktop-1.2.3.4.protocol.json'),before=await readFile(historical);
  await assert.rejects(verifyLocalProtocol(f));
  const result=await validateLocalProtocol(f);assert.equal(result.status,'static_text_contract_checked');assert.equal(f.calls.length,6);
  assert.equal(f.calls.filter(c=>c.args.includes('--experimental')).length,2);
@@ -86,7 +86,7 @@ test('a new binary hash is refused before comparison and bound only after four c
  const f=await fixture(t);await assert.rejects(verifyLocalProtocol(f));
  const r=await validateLocalProtocol(f);assert.equal(r.status,'static_text_contract_checked');assert.notEqual(r.candidateSha256,f.reference.candidateNative.sha256);assert.equal(f.calls.length,6);assert.equal((await verifyLocalProtocol(f)).modelCalls,0);
  const {proof}=await proofFor(f);assert.equal(proof.protocolSourceReview,null);assert.equal(proof.sourceIdentity,proof.historicalReference.sourceIdentity);
- const history=await readFile(join(f.root,'patches/codex/desktop-2610213705.protocol.json'));await assert.rejects(validateLocalProtocol(f),/Existing local/);assert.deepEqual(await readFile(join(f.root,'patches/codex/desktop-2610213705.protocol.json')),history);
+ const history=await readFile(join(f.root,'patches/codex/desktop-1.2.3.4.protocol.json'));await assert.rejects(validateLocalProtocol(f),/Existing local/);assert.deepEqual(await readFile(join(f.root,'patches/codex/desktop-1.2.3.4.protocol.json')),history);
 });
 for(const reviewed of [false,true])for(const [name,change]of [
  ['source content',async f=>writeFile(join(f.source,'native.txt'),'wrong')],
@@ -97,7 +97,7 @@ for(const reviewed of [false,true])for(const [name,change]of [
  ['Desktop hash',async f=>writeFile(f.desktopNative,'wrong')],
  ['Desktop package',async f=>{f.packageVersion='1.2.3.5';}],
  ['runtime version',async f=>{f.run=()=> 'wrong';}],
- ['historical evidence',async f=>writeFile(join(f.root,'patches/codex/desktop-2610213705.protocol.json'),'{}')]
+ ['historical evidence',async f=>writeFile(join(f.root,'patches/codex/desktop-1.2.3.4.protocol.json'),'{}')]
 ])test('rejects '+name+' mismatch without binding'+(reviewed?' for reviewed source':''),async t=>{const f=await fixture(t);if(reviewed)await reviewedSource(f);await change(f);await assert.rejects(validateLocalProtocol(f));await assert.rejects(readFile(join(f.root,'bundle/protocol-binding.json')));});
 for(const reviewed of [false,true])for(const [name,mutate]of [
  ['required field',s=>s['v2/ThreadStartResponse.json'].required.push('modelContextWindow')],
@@ -128,4 +128,13 @@ for(const [name,change]of [
  ['proof review extra field',async f=>alterBoundProof(f,p=>{p.protocolSourceReview.extra=true;})]
 ])test('reviewed successor start verification rejects '+name+' tampering after binding',async t=>{
  const f=await reviewedSource(await fixture(t));await validateLocalProtocol(f);await change(f);await assert.rejects(verifyLocalProtocol(f));
+});
+
+for(const [name,change]of [
+ ['old unrelated proof filename',f=>{f.lock.desktop.protocolEvidence.path='patches/codex/desktop-2610213705.protocol.json';}],
+ ['noncanonical package version',f=>{f.lock.desktop.observedPackageVersion='../1.2.3.4';}]
+])test('rejects '+name+' before native execution',async t=>{
+ const f=await fixture(t);change(f);await f.saveLock();
+ await assert.rejects(validateLocalProtocol(f),/package version|proof path/i);assert.equal(f.calls.length,0);
+ await assert.rejects(readFile(join(f.root,'bundle/protocol-binding.json')));
 });

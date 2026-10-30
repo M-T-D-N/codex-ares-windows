@@ -19,7 +19,8 @@ async function within(root,rel){
 async function fixedInputs(root,desktopNative,packageVersion){
  const lockPath=join(root,'patches/codex/upstream.lock.json'),lock=await readJson(lockPath);
  const entry=lock.desktop.protocolEvidence;
- assert.equal(entry.path,'patches/codex/desktop-2610213705.protocol.json','Historical proof path mismatch');
+ assert.match(lock.desktop.observedPackageVersion,/^\d+\.\d+\.\d+\.\d+$/,'Invalid Desktop package version');
+ assert.equal(entry.path,`patches/codex/desktop-${lock.desktop.observedPackageVersion}.protocol.json`,'Historical proof path mismatch');
  const historical=await within(root,entry.path),bytes=await readFile(historical);
  assert.equal(sha(bytes),entry.sha256,'Historical proof hash mismatch');
  const reference=JSON.parse(bytes),manifestPath=join(root,'bundle/candidate.json'),manifest=await readJson(manifestPath);

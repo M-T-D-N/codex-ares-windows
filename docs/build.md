@@ -1,14 +1,10 @@
 # Build and lifecycle
 
-## Preview installation boundary
-
-This is a source build for technical inspection, not a one-click binary installer or fresh-PC acceptance. Use the chosen immutable tag/commit checkout in a separate directory; do not overlay an operating checkout or reuse a nonempty source/bundle output. Follow the prerequisites below and preserve the accepted operating installation. Missing exact Desktop registration or protocol proof is a failure/NOT_RUN, not permission to skip guards. See [publication and live-use scope](validation.md#technical-preview-scope-and-remaining-publication-decision).
-
 ## Fixed inputs
 
-The [lock](../patches/codex/upstream.lock.json), patch and file manifests are authoritative. Official upstream:6905ecede7816e91373e9eabda3f6b0368fc747b; native version0.164.0-alpha.11.1. Archive SHA256:366033f4963226f6498d8eb2f381ead59a8582afbdd60d84314521e47c191395. Prepared Cargo.lock SHA256:ea5058a65bfeb007a830b945bdeb93e14d5b0f5c4e16b6b5421832c1f11515c9. The preparation changes workspace versions only; external dependency entries retain the pinned upstream identities.
+The [lock](../patches/codex/upstream.lock.json), [patch](../patches/codex/native.patch) and file manifests are authoritative. This candidate uses official Codex 0.166.0-alpha.5.1, commit `f79b26ccbb3116b052544666a181012fb45dc49b`. Archive SHA-256: `8891296adbe3c02474eb9dd9fcff23c99becd171cad75e76cff88c32a8cdb209`. Prepared Cargo.lock SHA-256: `cb021edc3d34a73a7e69a5ba95dbe641f224589888e3fac02bb3a1ceb34cbc93`.
 
-Windows x64, Git, Node22+/npm, Visual Studio x64 C++ tools and exact `rustc 1.99.1 (58cf8f9c3 2026-10-13)` / `cargo 1.99.1 (5f94df478 2026-08-27)` are required. Python is needed for lifecycle test fixtures. Build: default x86_64-pc-windows-msvc host (no --target), dev profile, jobs2, scrypt opt-level3 and CARGO_INCREMENTAL=0. Preserve the profile; reuse compatible target cache without concurrent writers. Never copy another target's internal files or perform routine cargo clean.
+Windows x64, Git, Node 22+/npm, Visual Studio x64 C++ tools and exact `rustc 1.99.1 (58cf8f9c3 2026-10-13)` / `cargo 1.99.1 (5f94df478 2026-08-27)` are required. Python is needed for lifecycle test fixtures. Build uses the default `x86_64-pc-windows-msvc` host with no `--target`, dev profile, `debug = 'line-tables-only'`, jobs 2 and `CARGO_INCREMENTAL=0`. There is no downstream scrypt profile override. Preserve these inputs and avoid concurrent writers to a reused target cache. Do not copy another target's internal files or routinely run `cargo clean`.
 
 ## Restore and build
 
@@ -16,29 +12,51 @@ Windows x64, Git, Node22+/npm, Visual Studio x64 C++ tools and exact `rustc 1.99
 npm run setup
 ```
 
-Setup verifies the pinned archive, restores an empty source directory, applies the cumulative patch once and verifies every file, Git mode, restored tree and regular-file identity. It then restores npm dependencies, builds CLI and four companions, bundles, validates the exact local candidate against the pinned Desktop schemas, then runs Doctor. It does not authorize operating activation.
+Setup verifies the pinned archive, restores an empty source directory, applies the cumulative patch once and verifies full file contents, Git modes, restored tree and regular-file identity. It restores locked npm dependencies, builds CLI and four companions, bundles them, validates the exact local candidate against the pinned Desktop contract and runs Doctor. This does not authorize replacing an operating installation.
+
+For restoration alone:
 
 ```powershell
 .\scripts\setup.ps1 -RestoreOnly -Archive .\build\codex-base.tar.gz -SourceDir .\build\source
 ```
 
-The archive must match the fixed SHA. An existing nonempty source directory is rejected. On Windows the portable restore represents bubblewrap/LICENSE as link text and preserves mode120000 in the Git index; physical symlink creation previously failed WinError1314. This is not a POSIX symlink checkout. No ACL, developer-mode or privilege changes are required or attempted. Preserve upstream SQL bytes; do not reapply the historical0.163 CRLF conversion. Existing SDK CRLF bytes cause patch whitespace warnings and are not silently normalized.
+The archive must match the lock. A nonempty source directory is rejected. The exact restoration applies 180 delta paths (163 modified, 17 new), yielding 9,711 regular files and one materialized symlink. Base tree: `f5c5a9edbf28fe1ccdb260322f5f172f6e731765`; restored content/mode tree: `acf7459e72cef50d8daadb8dfa9b640ed73e6878`. The regular-file identity is `f602eec364f061f64d513b1cb77208fcaaa707ecc1bf1c61d3d20bb1f48052ac`.
 
-After restoration, resume the build with an absent bundle:
+On Windows, the portable restore materializes bubblewrap/LICENSE as its link text while preserving Git index mode 120000. Physical symlink creation previously failed with WinError1314; this is not a POSIX symlink checkout. Do not change privileges, ACLs or developer mode to turn that limitation into a pass.
+
+The patch intentionally carries **78 SQL migration files with the deployed CRLF bytes**. Their SQL content matches upstream LF content, but their exact bytes and migration checksums differ. Apply the locked patch once and preserve its bytes; do not normalize migrations to LF or add comments. This is not a schema rewrite and is not a claim of “no SQL patch.”
+
+Resume a restored source with an absent bundle. `-RestoreOnly` returns before installing Node dependencies, so complete the locked npm restore before the build/bundle path:
 
 ```powershell
+npm ci --ignore-scripts --no-audit --no-fund
 .\scripts\build-native.ps1 -SourceDir .\build\source -TargetDir .\build\target -IncludeCompanions
 .\scripts\doctor.ps1
 .\scripts\start.ps1 -PreflightOnly
 ```
 
-Use an x64 developer shell or -VcVarsPath. By default build-native invokes `node scripts/bundle.mjs --target build/target`; -SkipBundle omits it. After a skipped bundle, run that bundle command and `.\scripts\verify-desktop-protocol.ps1 -SourceDir .\build\source` separately. Existing bundles are never overwritten. Doctor without bundle reports not_built and is not build completion. All four companions must come from the same final source as CLI; never copy installed companions.
+Use an x64 developer shell or `-VcVarsPath`. CLI and all four companions must be built from this same final source; installed companions are not build inputs. `build-native.ps1` checks prepared source before and after Cargo and records successful stages, source/lock/Cargo.lock/toolchain/profile identity and actual output hashes in `target/ares-native-build.json`. It preserves a collector's separate `target/build-result.json`.
+
+Bundling consumes that successful record. The complete source lock SHA must match the build record. Prior build records and Desktop-only refresh proofs remain historical; do not edit them to make a new bundle pass. A new bundle from the current lock requires the existing build wrapper to finish successfully with the same verified source and reusable cache/target, followed by bundle creation and fresh local protocol verification. Cache reuse is allowed; provenance rebinding is not a substitute for that execution. Missing/stale/failed evidence, omitted companion stages or hashes, changed source and changed output bytes are rejected before a bundle directory is created. Copies are checked immediately and again before `candidate.json` is written. Private source/target paths, process identity and arguments are not projected into the portable manifest. These are local consistency checks; signed provenance and byte-identical rebuilds are not claimed. Existing bundles are never overwritten.
+
+`-SkipBundle` stops before bundling. To complete that path, both bundle and local protocol verification are required before start:
+
+```powershell
+node scripts/bundle.mjs --target .\build\target
+.\scripts\verify-desktop-protocol.ps1 -SourceDir .\build\source
+.\scripts\doctor.ps1
+.\scripts\start.ps1 -PreflightOnly
+```
+
+Doctor without a bundle reports `not_built`; that is not build completion. Partial outputs and failure records remain diagnostic evidence, not usable candidates.
+
+The dedicated Ares child environment supplies the step-switching default only when its exact mode and both bridge settings are present. Explicit/managed opt-outs remain effective. At actual Desktop-start time, the launcher probes the real native feature values and refuses false/missing/query errors while closing its owned services. PreflightOnly is separate from activation; current effective-config probes and mock startup checks do not establish a live GUI/provider run.
 
 ## Bind a locally built candidate to its actual contract
 
-The tracked Desktop proof is a historical fixed comparison, not a promise of byte-identical builds. A reviewed successor source must carry an exact protocolSourceReview mapping (schema, upstream, historical source, current source, current patch) and the matching reviewed predecessor. This is not proof reuse: complete current source validation and four fresh schema exports are still required. The new local proof separately binds the unchanged historical reference hash/source and the actual current binary/source. A new build may have a different executable SHA. `build-native.ps1` checks all prepared source bytes before and after Cargo, creates the bundle, then calls `verify-desktop-protocol.ps1`. The latter requires exactly one current-user Desktop registration and the pinned package/native hash. It never launches Desktop or requests a model.
+The tracked protocol comparison is a fixed reference, not proof that every build has the reference executable's SHA. `verify-desktop-protocol.ps1` requires exactly one current-user Desktop registration and the locked package/native identity. It verifies the complete prepared source, candidate/bundle identity and both native binaries, then directly exports their stable and experimental schemas. Full inventories and the reviewed optional-field/notification projection must match. Required-field/method drift, partial exports or changed source/binary/evidence prevent binding. It does not launch Desktop or request a model.
 
-For an existing newly built bundle whose local verification was not run:
+For a bundled candidate whose verification was not run:
 
 ```powershell
 .\scripts\verify-desktop-protocol.ps1 -SourceDir .\build\source
@@ -46,19 +64,19 @@ For an existing newly built bundle whose local verification was not run:
 .\scripts\start.ps1 -PreflightOnly
 ```
 
-The verifier checks the locked upstream, patch, full prepared source identity, bundle metadata, exact candidate bytes/version and fixed Desktop bytes/version. It directly exports stable and experimental schemas from both exact executables. Both complete inventories must match the reviewed source/Desktop contracts; their comparison retains only the reviewed optional Ares projection. Required-field/method drift, partial export, changed source/binary or failure refuses binding. Binary reproducibility and signed build provenance are not claimed.
+Fresh exports and proof are stored in a new `build/desktop-protocol/<id>` directory. A successful check creates `bundle/protocol-binding.json` with the exact proof path/hash. Start rechecks the proof, binaries, lock/bundle identity and schema inventories. Existing bindings/evidence are not overwritten; inspect conflicts rather than retrying over them. A reviewed successor source requires the existing exact source-review mapping and a fresh proof, not silent reuse of predecessor acceptance.
 
-Exports and proof are written under a fresh `build/desktop-protocol/<id>` directory. Only after all checks does it create `bundle/protocol-binding.json`, containing the exact proof path/hash. Start verifies that binding, both binary hashes, lock/bundle identities and all raw schema inventories again. Existing local binding/evidence is never overwritten; a conflict requires inspection and a separate checkout, not a retry over old evidence. Historical and operating proofs remain unchanged. Partial build/export output and failure details are preserved for diagnosis; they do not authorize starting.
-
-`setup.ps1 -BuildOnly` or `build-native.ps1 -SkipDesktopProtocol` supports a build-only host without Desktop. This explicitly leaves local contract verification NOT_RUN. Doctor only verifies bundle integrity; it does not create protocol proof. A binary without matching historical proof or successful local validation remains rejected by start. Missing current-user registration access is a verification limitation: do not weaken guards, install Desktop, or change permissions to bypass it.
+`setup.ps1 -BuildOnly` or `build-native.ps1 -SkipDesktopProtocol` supports a host without Desktop verification. Local contract verification then remains NOT_RUN. Doctor does not create proof, and missing/mismatched proof remains a startup rejection. Registration access failure is a verification limit; do not weaken guards or change security settings to bypass it.
 
 ## V8, dependencies and offline limits
 
-V8152.2.0 uses the Codex ptrcomp_sandbox x86_64 Windows library and binding pair. [Codex V8 release](https://github.com/openai/codex/releases/tag/rusty-v8-v152.2.0) hashes are fixed in the lock. prepare-v8 verifies its checksum manifest against the pinned source, then both files. Do not substitute Deno artifacts or build V8 from source for this candidate.
+V8 152.2.0 uses the official [Codex-built release pair](https://github.com/openai/codex/releases/tag/rusty-v8-v152.2.0), with the `ptrcomp_sandbox` Windows library and matching binding. The lock pins their hashes and checksum manifest; `prepare-v8.ps1` verifies that manifest against the pinned source and then both files. Do not substitute Deno artifacts or build V8 from source for this candidate.
 
-build-native -Offline requires the verified V8 cache and Cargo dependencies. It does not guarantee the outer setup is offline: archive/npm and the optional Rust installer can require network. This qualification uses already prepared tools/dependencies with offline Cargo; this qualification did not perform a fresh tool installation. A reader following setup must explicitly account for archive, npm, Cargo and optional toolchain downloads; this documentation does not authorize changes to a shared toolchain. The fresh-PC installer branch is NOT_RUN. setup reuses exact Rust or otherwise uses project-owned Rust/Cargo homes, preserving the user's default toolchain.
+`build-native.ps1 -Offline` needs existing verified V8 and Cargo caches. The outer setup may still download the pinned archive, npm dependency or project-local Rust toolchain. Fresh-PC setup and the installer branch remain NOT_RUN. Setup reuses the exact compiler when available; otherwise its Rust/Cargo homes are project-owned and do not change the user's default toolchain.
 
 ## Local checks
+
+Run from the source-preview root with task-owned temporary paths:
 
 ```powershell
 npm ci --ignore-scripts --no-audit --no-fund
@@ -71,12 +89,14 @@ $env:TMPDIR = $env:ARES_TEST_TEMP
 npm test
 ```
 
-CI uses Node24 and those fixture settings; native CI is manual and uses `setup.ps1 -BuildOnly`; no installed Desktop contract, live Desktop or models are claimed. The current run/results are in [validation](validation.md). Static contract comparison is not GUI/provider acceptance. Preserve startup rejection when exact proof is missing or mismatched.
+Keep the default `npm test` concurrency. Mock fixtures and local static checks do not establish Desktop/provider acceptance. [Validation](validation.md) records the current results and exclusions.
 
 ## Update, recovery and removal
 
-Retain the accepted checkout/bundle and DB recovery point. Restore each new revision separately with an empty source path and absent bundle. Perform relevant checks, Doctor and preflight. Operating activation requires its separate acceptance decision; this candidate's qualification does not launch Desktop.
+Retain the accepted checkout/bundle and a private DB recovery point. Restore a new revision separately into an empty source path with no existing bundle, then complete relevant checks, bundle, local protocol verification, Doctor and preflight. Operating activation remains a separate acceptance decision.
 
-For an accepted revision, finish work and quit Codex normally before starting its launcher in ordinary non-administrator PowerShell. An uncertain completion requires inspection of the receipt and actual backend before retrying. -WaitForDesktopPid waits for normal exit and does not force shutdown. -ContextTraceThreadId opts in to diagnostics for one exact thread; status.ps1 checks identity/freshness.
+The recorded current-candidate manual startup does not qualify the separate private automatic-restart workflow, which failed and whose helper is not shipped. Before an operating transition, finish other active work and verify the exact candidate and private recovery scope. The commands below describe the supported procedure, not evidence of GUI/provider acceptance or a completed public release.
 
-Recover through the retained accepted launcher or installed Codex after normal exit. Do not rewrite DB/authentication, weaken guards or force other tasks closed. To remove Ares, use the installed app and remove only unused Ares-owned shortcuts/checkout/build/bundle through the Recycle Bin; preserve needed private diagnostics. Codex home, conversations, authentication, shared runtimes and installed Desktop remain intact. The source distribution contains no executables, dependencies or private evidence.
+Finish work and quit Codex normally before using an accepted launcher in ordinary non-administrator PowerShell. After that review and acceptance, run `.\scripts\start.ps1`. `-WaitForDesktopPid` waits for normal exit and does not force termination. Inspect an uncertain completion receipt and actual backend identity before deciding to retry. `-ContextTraceThreadId` opts in to diagnostics for one exact thread; `status.ps1` checks identity/freshness.
+
+Recover through the retained accepted launcher or installed Codex after normal exit. Do not rewrite DB/authentication, weaken guards or force other tasks closed. To remove Ares, return to the installed app and remove only unused Ares-owned shortcuts/checkout/build/bundle through the Recycle Bin, preserving needed private diagnostics. Codex home, conversations, authentication, shared runtimes and installed Desktop remain intact. The source distribution contains no executables, dependencies or private recovery data.

@@ -52,3 +52,36 @@ test('exact0.164.0-alpha.11.1 requires four same-source companions',()=>{
   const mixed=fixture('0.164.0-alpha.11.1',true);mixed.companions[3].sourceRelease='0.163.0';
   assert.throws(()=>validateCompanionRelease(mixed),/release combination/);
 });
+
+
+test('exact 0.165.0 requires four matching companions and keeps adjacent versions guarded',()=>{
+  validateCompanionRelease(fixture('0.165.0',true));
+  assert.throws(()=>validateCompanionRelease(fixture('0.165.0')),/release combination/);
+  for(const release of ['0.165.0-alpha.1','0.165.1','0.166.0'])
+    assert.throws(()=>validateCompanionRelease(fixture(release,true)),/release combination/);
+  for(const mode of ['mixed-release','different-directory','duplicate','wrong-name','extra']) {
+    const manifest=fixture('0.165.0',true);
+    if(mode==='mixed-release')manifest.companions[3].sourceRelease='0.164.0-alpha.11.1';
+    if(mode==='different-directory')manifest.companions[3].path='D:/example/other/codex-windows-sandbox-service.exe';
+    if(mode==='duplicate')manifest.companions[3].path=manifest.companions[0].path;
+    if(mode==='wrong-name')manifest.companions[3].path='D:/example/candidate/unknown.exe';
+    if(mode==='extra')manifest.companions.push({...manifest.companions[3],path:'D:/example/candidate/unknown.exe'});
+    assert.throws(()=>validateCompanionRelease(manifest),/release combination/,mode);
+  }
+});
+
+test('exact 0.166.0-alpha.5.1 requires four matching companions and keeps adjacent versions guarded',()=>{
+  validateCompanionRelease(fixture('0.166.0-alpha.5.1',true));
+  assert.throws(()=>validateCompanionRelease(fixture('0.166.0-alpha.5.1')),/release combination/);
+  for(const release of ['0.166.0-alpha.5','0.166.0-alpha.5.2','0.166.0','0.166.1'])
+    assert.throws(()=>validateCompanionRelease(fixture(release,true)),/release combination/);
+  for(const mode of ['mixed-release','different-directory','duplicate','wrong-name','extra']) {
+    const manifest=fixture('0.166.0-alpha.5.1',true);
+    if(mode==='mixed-release')manifest.companions[3].sourceRelease='0.165.0';
+    if(mode==='different-directory')manifest.companions[3].path='D:/example/other/codex-windows-sandbox-service.exe';
+    if(mode==='duplicate')manifest.companions[3].path=manifest.companions[0].path;
+    if(mode==='wrong-name')manifest.companions[3].path='D:/example/candidate/unknown.exe';
+    if(mode==='extra')manifest.companions.push({...manifest.companions[3],path:'D:/example/candidate/unknown.exe'});
+    assert.throws(()=>validateCompanionRelease(manifest),/release combination/,mode);
+  }
+});

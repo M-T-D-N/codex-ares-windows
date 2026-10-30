@@ -9,7 +9,9 @@ param(
 )
 $ErrorActionPreference='Stop'
 $repoRoot=Split-Path -Parent $PSScriptRoot
-$lock=Get-Content -LiteralPath (Join-Path $repoRoot 'patches/codex/upstream.lock.json') -Raw | ConvertFrom-Json
+$lockPath=Join-Path $repoRoot 'patches/codex/upstream.lock.json'
+$lock=Get-Content -LiteralPath $lockPath -Raw | ConvertFrom-Json
+$lockSha256=(Get-FileHash -LiteralPath $lockPath -Algorithm SHA256).Hash.ToLowerInvariant()
 if(-not $TargetDir){$TargetDir=Join-Path $repoRoot 'build/target'}
 $SourceDir=[IO.Path]::GetFullPath($SourceDir)
 $TargetDir=[IO.Path]::GetFullPath($TargetDir)
@@ -22,7 +24,8 @@ if($LASTEXITCODE -ne 0 -or $cargoVersion -ne $lock.build.cargoVersion){throw 'Ca
 $hostInfo=& $rust -vV
 if($hostInfo -notcontains ('host: '+$lock.build.target)){throw 'This preview is verified only for the locked Windows target.'}
 $cargoLock=Join-Path $SourceDir 'codex-rs/Cargo.lock'
-if((Get-FileHash -LiteralPath $cargoLock -Algorithm SHA256).Hash.ToLowerInvariant() -ne $lock.build.cargoLockSha256){throw 'Cargo.lock differs from the source lock.'}
+$cargoLockSha256=(Get-FileHash -LiteralPath $cargoLock -Algorithm SHA256).Hash.ToLowerInvariant()
+if($cargoLockSha256 -ne $lock.build.cargoLockSha256){throw 'Cargo.lock differs from the source lock.'}
 if(-not $env:VSCMD_ARG_TGT_ARCH){
   if(-not $VcVarsPath){
     $vswhere=Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
@@ -45,8 +48,9 @@ if($Offline){$arguments+='--offline'}
 if($LASTEXITCODE -ne 0){throw 'Prepared native source verification failed; build was not started.'}
 $started=[DateTime]::UtcNow
 $identity=Get-CimInstance Win32_Process -Filter "ProcessId = $PID" | Select-Object ProcessId,ParentProcessId,CreationDate,CommandLine,ExecutablePath
-$record=[ordered]@{status='building';startedAt=$started.ToString('o');persistent=$false;process=$identity;source=$SourceDir;target=$TargetDir;rustc=$rustVersion;arguments=$arguments;profile='dev'}
-$recordPath=Join-Path $TargetDir 'build-result.json'
+$record=[ordered]@{schema=1;status='building';startedAt=$started.ToString('o');persistent=$false;process=$identity;source=$SourceDir;target=$TargetDir;rustc=$rustVersion;cargo=$cargoVersion;targetTriple=$lock.build.target;arguments=$arguments;profile='dev';jobs=2;lockSha256=$lockSha256;cargoLockSha256=$cargoLockSha256;sourceVerifiedAfterBuild=$false;binaries=@()}
+# Cargo collectors may already own target/build-result.json; keep their evidence intact.
+$recordPath=Join-Path $TargetDir 'ares-native-build.json'
 $record.stages=@()
 $record.sourceIdentity=$lock.sourcePreparation.sourceContentSha256
 $record.nativeUpstreamCommit=$lock.commit
@@ -92,8 +96,21 @@ try {
   $env:CARGO_INCREMENTAL=$previousIncremental
 }
 if($code -eq 0){
-  & node (Join-Path $PSScriptRoot 'verify-native-source.mjs') $SourceDir
-  if($LASTEXITCODE -ne 0){$code=1;$record.error='Source changed during build.'}
+  try {
+    & node (Join-Path $PSScriptRoot 'verify-native-source.mjs') $SourceDir
+    if($LASTEXITCODE -ne 0){throw 'Source changed during build.'}
+    if((Get-FileHash -LiteralPath $lockPath -Algorithm SHA256).Hash.ToLowerInvariant() -cne $lockSha256){throw 'Source lock changed during build.'}
+    if((Get-FileHash -LiteralPath $cargoLock -Algorithm SHA256).Hash.ToLowerInvariant() -cne $cargoLockSha256){throw 'Cargo.lock changed during build.'}
+    $record.sourceVerifiedAfterBuild=$true
+    # These names are the outputs requested by the Cargo commands above.
+    $binaryNames=@('codex.exe')
+    if($IncludeCompanions){$binaryNames+=@('codex-code-mode-host.exe','codex-command-runner.exe','codex-windows-sandbox-setup.exe','codex-windows-sandbox-service.exe')}
+    $record.binaries=@(foreach($name in $binaryNames){
+      [ordered]@{name=$name;sha256=(Get-FileHash -LiteralPath (Join-Path $TargetDir ('debug/'+$name)) -Algorithm SHA256).Hash.ToLowerInvariant()}
+    })
+  } catch {
+    $code=1;$record.error=$_.Exception.Message
+  }
 }
 $record.status=if($code -eq 0){'built'}else{'build_failed'}
 $record.finishedAt=[DateTime]::UtcNow.ToString('o');$record.exitCode=$code

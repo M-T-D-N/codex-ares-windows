@@ -1,0 +1,342 @@
+{
+  "schema": 1,
+  "snapshot": "2026-10-29 corrected candidate pre-restart local review",
+  "packageVersion": "0.1.0-preview.4",
+  "scope": "Corrected source executions separated from reused unchanged-area regressions and the failed predecessor GUI diagnostic; no restart/release acceptance",
+  "upstream": "360319d8dee62d87e2d59fc0c21805d79519cfed",
+  "sourceIdentity": "341dfcf3b3facb2fa99cc009b9b69f67c67f3fb99a9c090b357c979beaf248a7",
+  "restoredTree": "46506a2e270b9ee75bdbabc38ed195f18f3142ee",
+  "patchSha256": "6401f12a013dbeda4f48d29ddbd70f324ed602fb1e6f99a29200802107621910",
+  "cargoLockSha256": "a646d4b01a0e8c62f6af9b74fb965c1bd6d3cf27a547984de09730d50e0e64da",
+  "restoration": {
+    "baseEntries": 9507,
+    "patchPaths": 176,
+    "modified": 160,
+    "new": 16,
+    "regularFiles": 9522,
+    "materializedLinks": 1,
+    "bytesAndModes": "PASS",
+    "physicalSymlink": "NOT_ESTABLISHED"
+  },
+  "correction": {
+    "scope": "Dedicated Ares mode plus configured TCP/token supplies StepModelSwitching default before ManagedFeatures",
+    "ordinaryUpstreamDefaultChanged": false,
+    "explicitOptOutPreserved": true,
+    "managedFalsePreserved": true,
+    "reasoningEffortOverrideFalseOverridden": false,
+    "launcher": "Queries both actual effective features before Desktop; false/missing/query failures close owned services and fail closed"
+  },
+  "adapter": {
+    "command": "npm test",
+    "pass": 236,
+    "fail": 0,
+    "skip": 0,
+    "node": "24.19.0",
+    "npm": "12.2.1 task-local",
+    "dependencyRestore": "offline locked npm ci PASS",
+    "exitCode": 0
+  },
+  "correctedSourceChecks": {
+    "configDefault": 17,
+    "defaultPathMockEffortIntegration": 7,
+    "launcherStartup": 18,
+    "actualEffectiveConfig": 4,
+    "countsMayOverlap": true
+  },
+  "sdk": {
+    "sameCorrectedBundledCliRuntimePass": 46,
+    "fail": 0,
+    "seconds": 156.41,
+    "exitCode": 0,
+    "nativeSha256": "82b99555e35124b98d7e9e4d9c4e34e5bbe8cb5f6cb785a032125564f08e03bf",
+    "transport": "localhost mocks",
+    "modelCalls": 0
+  },
+  "fiveFileBuild": {
+    "status": "PASS_FIXED_CORRECTED_SOURCE",
+    "sourceVerifiedAfterBuild": true,
+    "stages": [
+      {
+        "exitCode": 0,
+        "name": "cli"
+      },
+      {
+        "exitCode": 0,
+        "name": "companions"
+      }
+    ],
+    "binaries": [
+      {
+        "name": "codex.exe",
+        "sha256": "82b99555e35124b98d7e9e4d9c4e34e5bbe8cb5f6cb785a032125564f08e03bf"
+      },
+      {
+        "name": "codex-code-mode-host.exe",
+        "sha256": "e1e1302f714a2c2ed668c89709221785f60e56b3e7ca898303e622a688e10018"
+      },
+      {
+        "name": "codex-command-runner.exe",
+        "sha256": "43f0b928b58593a472aaf3dda76bd8a946576c0ffdbb60f3c5dec8c3eff5046e"
+      },
+      {
+        "name": "codex-windows-sandbox-setup.exe",
+        "sha256": "19c94ae653bf80e9422f62feed3a78a1db231ede55dc7b5a10cd89f3c4fa4845"
+      },
+      {
+        "name": "codex-windows-sandbox-service.exe",
+        "sha256": "9482166d0772accf5056c8c9918c3688268327727212205c70e84ea72eaa7f59"
+      }
+    ],
+    "profile": "dev",
+    "debug": "line-tables-only",
+    "jobs": 2,
+    "cargoIncremental": "0",
+    "postBuild": "bundle_not_run",
+    "sequence": "Bundle/protocol/Doctor/preflight ran separately after successful build"
+  },
+  "correctedBundle": {
+    "status": "PASS_STATIC",
+    "artifacts": 1560,
+    "doctor": "PASS_VERIFIED",
+    "preflightInputs": 1560,
+    "localProof": {
+      "stable": 320,
+      "experimental": 460
+    },
+    "nativeSha256": "82b99555e35124b98d7e9e4d9c4e34e5bbe8cb5f6cb785a032125564f08e03bf",
+    "desktopPackage": "26.1023.6123.0",
+    "desktopNative": "0.165.0-alpha.1.2",
+    "modelCalls": 0
+  },
+  "reusedPriorScopes": {
+    "sourceIdentity": "88886d7b8e97cca63813a984dcf7fc13bcbd7d3f22e88bda34e3a2e1a969b2a8",
+    "status": "REUSED_BY_UNCHANGED_AREA_NOT_RERUN_ON_CORRECTED_SOURCE",
+    "nativeSelectedScopes": {
+      "controller": 22,
+      "activation": 40,
+      "trace": 12,
+      "executorMockHttp": 9,
+      "modelsManagerFiltered": 54,
+      "protocolModelsFiltered": 33,
+      "dispatch": 3,
+      "history": 95,
+      "hooks": 22,
+      "clock": 8,
+      "storage": 255,
+      "compression": 26,
+      "recorder": 1,
+      "coldV8": 1,
+      "grpcCodeMode": 24,
+      "websocket": 7,
+      "compact": 2,
+      "startupLocal": 4,
+      "startupCloudFunctions": 2
+    },
+    "sdkNonLivePass": 272,
+    "sdkNestedMcpPass": 239,
+    "platformCasesUnexecuted": 3,
+    "db": {
+      "privateFilesPublished": false,
+      "databases": 6,
+      "quickCheck": "ok",
+      "matchingMigrations": 78,
+      "additionalMigrations": 0
+    }
+  },
+  "preservedPredecessorDiagnostic": {
+    "sourceIdentity": "88886d7b8e97cca63813a984dcf7fc13bcbd7d3f22e88bda34e3a2e1a969b2a8",
+    "guiBackendStarted": true,
+    "requestsAttempted": 1,
+    "stepModelSwitching": false,
+    "nativeAresTraceObserved": false,
+    "lunaEvidenceObserved": false,
+    "userStopTurnInterrupted": true,
+    "nativeCancellationTerminalProof": "NOT_ESTABLISHED",
+    "acceptance": "FAILED_ARES_DIAGNOSTIC_NOT_CORRECTED_CANDIDATE_ACCEPTANCE"
+  },
+  "restartReview": {
+    "status": "PENDING_BEFORE_NEXT_LOCAL_RESTART",
+    "owner": "dot",
+    "requiredScope": "exact candidate, diff, raw checks, apply and rollback",
+    "requiredSequence": "review requested, reply received, findings resolved before restart",
+    "requestCompleted": "NOT_CLAIMED",
+    "replyReceived": "NOT_CLAIMED"
+  },
+  "GUIProvider": "NOT_RUN_FOR_CORRECTED_CANDIDATE",
+  "freshPC": "NOT_RUN",
+  "exactCandidateRemoteCI": "NOT_RUN_AT_THIS_LOCAL_SNAPSHOT",
+  "publicPosting": false,
+  "preservedPreDiagnosticSnapshot": {
+    "scope": "Original predecessor snapshot before the later failed GUI diagnostic; NOT_RUN there is time-bound historical wording",
+    "snapshot": {
+      "schema": 1,
+      "snapshot": "2026-10-28 prepublication local validation",
+      "packageVersion": "0.1.0-preview.4",
+      "scope": "fixed .165 native source, actual build, mock regressions and static Desktop contracts; not live GUI/provider/fresh-PC or remote CI acceptance",
+      "upstream": "360319d8dee62d87e2d59fc0c21805d79519cfed",
+      "sourceIdentity": "88886d7b8e97cca63813a984dcf7fc13bcbd7d3f22e88bda34e3a2e1a969b2a8",
+      "restoredTree": "91a42bb07cd813f6d1ce2e10fdfe4dfdd8c156cd",
+      "patchSha256": "106dbcff9a1831a94635555bb6874c25748f19ce566b7a03584ad6bcc312d677",
+      "cargoLockSha256": "a646d4b01a0e8c62f6af9b74fb965c1bd6d3cf27a547984de09730d50e0e64da",
+      "restoration": {
+        "baseEntries": 9507,
+        "patchPaths": 174,
+        "modified": 158,
+        "new": 16,
+        "regularFiles": 9522,
+        "materializedLinks": 1,
+        "bytesAndModes": "PASS",
+        "physicalSymlink": "NOT_ESTABLISHED"
+      },
+      "adapter": {
+        "command": "npm test",
+        "pass": 229,
+        "fail": 0,
+        "skip": 0,
+        "node": "24.19.0",
+        "npm": "12.2.1 task-local",
+        "lockBoundary": "final preview.4 package-lock",
+        "initial": {
+          "pass": 227,
+          "fail": 2,
+          "cause": "stale fixtures; corrected without runtime guard weakening"
+        },
+        "finalMetadataRun": {
+          "pass": 229,
+          "fail": 0,
+          "skip": 0,
+          "ciExitCode": 0,
+          "exitCode": 0
+        },
+        "invocationFailurePreserved": {
+          "pass": 109,
+          "fail": 118,
+          "skip": 2,
+          "cause": "required task temp variable omitted and default script execution context; corrected invocation without product or skip-code changes"
+        }
+      },
+      "sdk": {
+        "nonLivePass": 272,
+        "platformCasesUnexecuted": 3,
+        "nestedMcpPass": 239,
+        "sameFinalBundledCliRuntimePass": 46,
+        "realProvider": false
+      },
+      "nativeSelectedScopes": {
+        "controller": 22,
+        "activation": 40,
+        "trace": 12,
+        "executorMockHttp": 9,
+        "modelsManagerFiltered": 54,
+        "protocolModelsFiltered": 33,
+        "dispatch": 3,
+        "history": 95,
+        "hooks": 22,
+        "clock": 8,
+        "storage": 255,
+        "compression": 26,
+        "recorder": 1,
+        "coldV8": 1,
+        "grpcCodeMode": 24,
+        "effortIntegration": 7,
+        "websocket": 7,
+        "compact": 2,
+        "startupLocal": 4,
+        "startupCloudFunctions": 2
+      },
+      "countsMayOverlap": true,
+      "desktopStatic": {
+        "packageVersion": "26.1023.6123.0",
+        "nativeVersion": "0.165.0-alpha.1.2",
+        "stable": 320,
+        "experimental": 460,
+        "status": "PASS_REVIEWED_PROJECTION"
+      },
+      "fiveFileBuild": "PASS_FIXED_SOURCE",
+      "priorDiagnosticBundle": {
+        "status": "PASS_STATIC_PRESERVED",
+        "doctor": "PASS",
+        "preflightInputs": 1560,
+        "supersededForMetadata": "preview.4 lock revision requires new wrapper record and bundle/proof"
+      },
+      "finalPreview4Bundle": {
+        "status": "PASS_STATIC",
+        "fiveNativeHashesUnchanged": true,
+        "doctor": "PASS",
+        "preflightInputs": 1560,
+        "localProof": {
+          "stable": 320,
+          "experimental": 460
+        },
+        "modelCalls": 0
+      },
+      "db": {
+        "privateFilesPublished": false,
+        "databases": 6,
+        "quickCheck": "ok",
+        "matchingMigrations": 78,
+        "additionalMigrations": 0
+      },
+      "GUIProvider": "NOT_RUN",
+      "freshPC": "NOT_RUN",
+      "exactCandidateRemoteCI": "NOT_RUN_AT_THIS_LOCAL_SNAPSHOT",
+      "limitations": [
+        "Two physical symlink cases lack Windows capability (WinError1314); FIFO unavailable. No security bypass.",
+        "Historical GUI observations are not .165 acceptance.",
+        "No full independent native security audit or bit-reproducible build claim.",
+        "No provider internal effort, general quality equivalence or savings claim.",
+        "Original historical PowerShell error cause and launch-manifest byte hash remain UNKNOWN."
+      ]
+    }
+  },
+  "limitations": [
+    "No fresh full native/SDK suite on corrected source; prior scopes are reused only where unchanged.",
+    "Physical Windows symlink2/FIFO1 cases remain unexecuted.",
+    "Ordinary GUI native_task_delivery remains unobserved.",
+    "No native cancellation terminal proof from predecessor Stop.",
+    "Original historical PowerShell cause and launch-manifest hash remain UNKNOWN.",
+    "No full independent security audit, bit-reproducible build, provider internal effort, general quality/savings or latency claim."
+  ],
+  "historicalScopeNotice": "Top-level source341 fields and earlier nested snapshots retain their original checkpoints. latestPublicSourceSnapshot is the current document/count correction; historical PASS results are not new execution of its changed lock.",
+  "latestDesktopRefresh": {
+    "packageVersion": "26.1023.6621.0",
+    "nativeVersion": "0.165.0-alpha.1.2",
+    "nativeSourceIdentity": "4cbf74d39c9072f013b0b0eb844b1ee7253e1eaefa222010ccc382b4d12596ff",
+    "candidateSha256": "a8d1bf393335df40a534b035b22271087e3bbd81baf7447f0204dba3c13f915a",
+    "nativeBuild": "REUSED_UNCHANGED_WITH_ORIGINAL_BUILD_LOCK",
+    "stable": 320,
+    "experimental": 460,
+    "freshLocalProof": "PASS",
+    "guiProvider": "NOT_RUN",
+    "modelCalls": 0,
+    "nativeRebuilds": 0
+  },
+  "latestPublicSourceSnapshot": {
+    "snapshot": "2026-10-30 local documentation and lock-count correction",
+    "sourceIdentity": "4cbf74d39c9072f013b0b0eb844b1ee7253e1eaefa222010ccc382b4d12596ff",
+    "patchSha256": "36d2595f5ed124146c023abb3ba05fe64c35bfed45010640d6967c4614754345",
+    "restoredTree": "e5e2d55d8614efd7cb829938bd4423d5f5431d35",
+    "patchPaths": 180,
+    "modified": 163,
+    "new": 17,
+    "regularFiles": 9523,
+    "materializedLinks": 1,
+    "oldLockSha256": "b616ac3a9746f2053751769c1116f1537dadfe1d7102158aef8ff7e687c19e11",
+    "newLockSha256": "36b24df74093b4dd88f903e0d2440f8e654f6ef39fcf0579623bc44abde57966",
+    "nativePatchRuntimeAndTestsUnchanged": true,
+    "existingDesktop6621Observation": {
+      "manualStartup": "OBSERVED",
+      "mainCompletion": "OBSERVED",
+      "lunaJudgment": "OBSERVED",
+      "automaticRestart": "FAILED_BEFORE_CAPTURE",
+      "originalDriftCause": "UNKNOWN"
+    },
+    "newBundle": "NOT_RUN",
+    "newNativeBuild": "NOT_RUN",
+    "newProtocolProof": "NOT_RUN",
+    "dedicatedGuiAcceptance": "PENDING",
+    "freshPC": "NOT_RUN",
+    "exactPublishedCommitCI": "Prepublication local snapshot; exact published-commit CI must be linked from eventual Release. No current CI pass claimed.",
+    "provenance": "New lock requires actual existing build wrapper -> bundle -> fresh proof; historical evidence is not edited or transferred as a new PASS."
+  }
+}

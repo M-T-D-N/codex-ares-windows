@@ -1,16 +1,87 @@
 # What was verified
 
-**0.164 Terra source-only Technical Preview:** Targeted changes were reviewed and submitted through [PR #1](https://github.com/M-T-D-N/codex-ares-windows/pull/1). The submitted code commit [`02d549c`](https://github.com/M-T-D-N/codex-ares-windows/commit/02d549c952bb01cc025c7729185863d6b60309db) passed [exact-head CI](https://github.com/M-T-D-N/codex-ares-windows/actions/runs/40515045146) with npm ci, 196 tests and source-only Doctor. This is a dated code-validation result, not CI for a later documentation or release commit. Matching local native tests passed 90 cases; fresh stable 320 / experimental 458 exports, proof and 1,560-input preflight passed without Desktop activation or model calls. Compact/resume 6 remains NOT_RUN under the platform skip guard. See [validation](validation.md) for publication readiness and the separate live-use limits.
+## Current 0.166 source preview — prepublication local snapshot (2026-10-30)
 
-The lock's `sourcePreparation.sourcePreparation` text records the initial preparation checkpoint; it is preserved provenance, not the current execution result. Current machine-readable results are in [source-validation-164.json](source-validation-164.json). The first full adapter run had 194 PASS/2 FAIL from an obsolete startup fixture assertion. Its correction accepts the explicit new preparation status only with GUI NOT_RUN and exact reviewed-source binding; production guards were not relaxed. The final 196/196 run supersedes that fixture result without deleting its failure logs.
+The fixed native source is `f602eec364f061f64d513b1cb77208fcaaa707ecc1bf1c61d3d20bb1f48052ac`, based on official upstream `f79b26ccbb3116b052544666a181012fb45dc49b`; patch `05016f6a951ed208895373ac1a0f82dd763026c4ff630b3f156e34224b904d49`, restored tree `acf7459e72cef50d8daadb8dfa9b640ed73e6878`. Restoration verified 9,711 regular files plus one materialized link and exact Git modes/tree. Physical Windows symlink creation is not established. Exact dependency inputs remain in the [lock](../patches/codex/upstream.lock.json).
 
-## Technical Preview scope and remaining publication decision
+| Executed scope | Recorded result and boundary |
+|---|---|
+| Protocol generation/unit checks | Stable and experimental generators separately executed;317 PASS, one generator ignored by the ordinary unit command |
+| Python SDK |122 PASS,0 FAIL,0 SKIP: generation/drift, API/runtime and RPC serialization; no real provider calls |
+| Native focused regressions |180 PASS with local fixtures; launch defaults17 and startup/model63+6 passed in their separate scopes |
+| App-server effort integration |7 PASS using the actual compiled executor and local HTTP/WebSocket mocks; not GUI/provider acceptance |
+| Default npm test |244 PASS,0 FAIL,0 SKIP with the standard command and concurrency |
+| Launcher focused checks |18 PASS across Windows PowerShell/PowerShell7 and exact-companion counterexamples; no app activation |
+| CLI plus four companions |Both build stages exit0 with source verified before/after; locked/offline, Rust1.99.1, dev/line-tables-only, jobs2, incremental0 |
+| Actual local binary contracts |Desktop26.1027.3384.0 / native0.166.0-alpha.5.1; stable320/experimental466 exports and fresh proof |
+| Bundle/Doctor/preflight |1561 inputs, exit0; no Desktop activation or model calls |
 
-The existing build, compatibility and privacy guides distinguish source restoration, native build, static contracts and live acceptance. They do not supply a blanket waiver for skipped tests or incomplete native review. The source-only preview contains no executable or dependency tree; the same missing checks still prevent claims of full behavioral compatibility, fresh-PC support or operating adoption.
+The tested CLI SHA-256 is `456a494b3b663b659a15673622d6429f92b8eb63483a7d046790e96c8df2fd2d`. A later manual taskbar launch was observed with that same hash. This does not establish dedicated current-candidate GUI effort, Stop/recovery, compaction/resume or provider qualification; those remain **NOT_RUN**. Automatic restart failed before creating a new recovery capture in a separate local workflow. Its subsequent helper correction and synthetic checks do not prove successful restart, and that private helper is not shipped here.
 
-Source-only Technical Preview publication is accepted subject to successful exact-commit CI and asset verification; this is not stable or live-use acceptance. Compact 6, GUI/provider/fresh-PC acceptance and full cumulative native independent review remain incomplete. Targeted review additionally covered task/input/settings/compaction guards and final authorization, supported model/effort intersection and stale/capture behavior, loopback authentication/length checks and single terminal recording. This is not a review of every hunk across all 70 native paths. Incomplete tests/reviews remain visible limitations, not PASS or deleted criteria. The accepted distribution contains source only; no executable or live-use approval follows. The 02d549c submission/CI remains historical evidence; the final publication target requires its own successful CI and asset verification.
+Initial lock mismatch, compile/API failures and npm attempts121/120/2,221/23/0 and242/2/0 remain preserved privately. The respective npm causes were a missing task-owned fixture-temp variable, sandbox PowerShell refusals and stale Desktop-version fixtures; the final244/0/0 followed correction without changing policy, ACLs or security settings. Counts from overlapping scopes are not added into a product-quality total.
 
-The historical native/core/RPC/SDK tests below apply only to their recorded inputs. CI Doctor reports `bundle: not_built`; local bundle/proof/preflight are separate evidence. The manual native CI workflow was not dispatched. A documentation-only successor can reuse code/native checks only after byte equality and unchanged validation criteria are confirmed. The final Release must link CI for its exact target commit, not the earlier 02d549c result.
+Fresh-PC/setup-installer acceptance, ordinary GUI `native_task_delivery` and exact published-commit CI remain unverified. Earlier0.165 GUI results do not transfer to these bytes. A metadata comparison of80 migration checksums across seven private databases does not establish database integrity, a new recovery capture or restoration. The patch itself contains78 SQL paths preserving deployed checksum bytes, a different count.
+
+The full native patch has not completed independent review. No full independent security audit, bit-identical rebuild, provider-internal effort, general quality/savings or long-term reliability is claimed. The original historical PowerShell failure cause and launch-manifest byte hash remain UNKNOWN; the historical452ms request elapsed is not UI-click latency. Small private quality samples retain their limits.
+
+This record covers local checks performed before publication of source preview `0.1.0-preview.4`; it is not the live status of remote CI. The Release identifies its actual published commit and exact-commit CI result. The prepared public source copy independently passed the same default npm244/0/0 command, complete9,711-file source verification and source-only Doctor (`bundle:not_built`); the earlier bundle/proof remain separate immutable evidence. The [build guide](build.md) describes local reconstruction; executables and private runtime/recovery evidence are excluded. The0.163/0.164/0.165 machine-readable snapshots retain their original identities and are historical evidence.
+
+## Historical 0.165 root-bound source and Desktop 6621 — local snapshot
+
+Native identity `4cbf74d39c9072f013b0b0eb844b1ee7253e1eaefa222010ccc382b4d12596ff`, patch `36d2595f5ed124146c023abb3ba05fe64c35bfed45010640d6967c4614754345`, restored content/mode tree `e5e2d55d8614efd7cb829938bd4423d5f5431d35`: 180 delta paths (163 modified, 17 added), 9,523 regular files and one materialized link. Official upstream and Cargo.lock remain fixed by the [lock](../patches/codex/upstream.lock.json). The stale 176-path lock summary is corrected in this public source copy; native patch, file manifests, runtime and test code are unchanged.
+
+The existing five-file build includes CLI `a8d1bf393335df40a534b035b22271087e3bbd81baf7447f0204dba3c13f915a`. The Desktop-only refresh to 26.1023.6621.0 reused those binaries, with fresh stable320/experimental460 contract exports, default npm test243/0/0, Doctor verified and PreflightOnly1561 PASS. These checks belong to the preserved pre-count-correction lock/bundle, not a newly built bundle of this source copy. Whole-lock build binding remains strict: use the supported wrapper, bundle and fresh proof sequence for any new bundle; do not rewrite the historical record.
+
+The user's taskbar launch and subsequent Main response completions and Luna judgments were observed on that existing layout. Automatic restart stopped before snapshot creation with `memory_source_changed_before_capture`; the original changed fields remain UNKNOWN. Private restart diagnostics, not shipped in this source preview, retain strict source comparison and record non-sensitive change kinds/counts. Their new synthetic memory39 and adapter52 checks passed; they do not demonstrate operating capture or restart. Dedicated 0.165 GUI effort/Stop/recovery/compaction-resume, fresh-PC setup and exact-publication CI remain unaccepted. Historical 0.163 GUI evidence is not promoted to this candidate.
+
+This is a prepublication local snapshot. Exact published-commit CI must be linked from the eventual Release; none is claimed here. Current source-only documentation/count changes do not create a new native build, proof, GUI test or public release. Original failures, immutable build/proof records and recovery points are retained privately. See [build/provenance](build.md) and [compatibility](compatibility.md).
+
+
+
+## Historical source341 / Desktop 6123 snapshot
+
+At that checkpoint, native identity was `341dfcf3b3facb2fa99cc009b9b69f67c67f3fb99a9c090b357c979beaf248a7`, patch `6401f12a013dbeda4f48d29ddbd70f324ed602fb1e6f99a29200802107621910`, restored tree `46506a2e270b9ee75bdbabc38ed195f18f3142ee`. Official upstream remains `360319d8dee62d87e2d59fc0c21805d79519cfed`; the then-current lock owned those historical inputs, while the [current lock](../patches/codex/upstream.lock.json) describes the successor above. These are local checks, not release or live acceptance.
+
+### Executed after the prerequisite correction
+
+| Scope | Observed result |
+|---|---|
+| Restore |9507 base entries;176 delta paths (160 modified,16 new);9522 regular files plus one materialized link. Full contents/Git modes/tree PASS; physical symlink support not established |
+| Native config/default binding |17 PASS: dedicated mode/bridge boundaries, ordinary defaults, explicit opt-outs and managed false |
+| Default-path effort integration |7 PASS without fixture feature enables, including High→XHigh→High, pinned baseline, notification/capture agreement and late-decision/manual precedence; mock transport |
+| Launcher startup protection |18 PASS including false/missing/query failures and cleanup/no-Desktop paths |
+| Actual effective native config |4 PASS: ordinary step=false; Ares step=true; explicit step=false preserved; explicit effort=false preserved. No controller connection or Desktop start |
+| Adapter |Offline locked npm restore; unmodified default npm test236 PASS,0 FAIL,0 SKIP |
+| Five-file build |Actual wrapper exit0 after source recheck, CLI SHA `82b99555e35124b98d7e9e4d9c4e34e5bbe8cb5f6cb785a032125564f08e03bf`, four companion hashes captured in the build record. Rust1.99.1/dev/line-tables-only/jobs2/incremental0; no scrypt override |
+| Separate bundle/proof/checks |1560-artifact bundle, Doctor verified, actual PreflightOnly1560 PASS; fresh stable320/experimental460 exact local protocol proof. The build record says bundle_not_run because bundling/proof ran separately afterward |
+| Same-bundle SDK runtime |46 PASS across eight files in156.41s, exit0, using the corrected bundled CLI; localhost mocks, no paid calls |
+
+### Reused prior scopes — not rerun on source341
+
+Prior source888 evidence is reused only for unchanged areas: controller22, activation40, trace12; executor mock HTTP9, model-manager54, protocol33, dispatch3; code-mode gRPC24, history95, hooks22, clock8, storage255, compression26, recorder1 and cold V8 process1; native WebSocket7/compact2; local startup4/cloud2 functions (six scenarios). The earlier SDK non-live272 includes nested MCP239 and leaves three platform cases unexecuted (Windows physical symlink2 with WinError1314; unavailable FIFO1). Six private readonly DB checks retain quick_check=ok and78 exact migrations/additional0; no DB update occurred. These are scoped reuse, not a fresh full native/SDK run or additional tests to sum.
+
+### Preserved failed diagnostic on predecessor888
+
+The predecessor `88886d7b8e97cca63813a984dcf7fc13bcbd7d3f22e88bda34e3a2e1a969b2a8` actually started GUI/backend and attempted one request. StepModelSwitching was false; no native Ares trace or Luna evidence was observed. The user clicked Stop and the turn was interrupted. Native cancellation terminal proof was not established. This is a failed Ares diagnostic, not successful end-to-end control. Corrected-source GUI/provider acceptance remains **NOT_RUN**; that status does not erase the earlier attempt.
+
+### Restart review and remaining limits
+
+Before the next local restart, dot must review the exact corrected candidate/diff/raw tests/apply/rollback, reply, and have findings resolved. Review request and reply are not claimed in this snapshot. Fresh-PC and exact-candidate remote CI remain NOT_RUN. No public push, tag or Release is claimed.
+
+The [machine-readable snapshot](source-validation-165.json) separates these scopes. Earlier adapter failures227/2 and109/118/2, later predecessor229/0/0, compile/invocation failures and historical snapshots remain preserved; they are not changed into corrected-source passes. SQL78 retains deployed CRLF checksum bytes despite matching upstream LF SQL content. No full independent security audit, bit-reproducible build, provider-internal effort, general quality/savings or latency claim follows. Ordinary GUI native_task_delivery remains unobserved. The original historical PowerShell cause and launch-manifest byte hash remain UNKNOWN; historical452ms request elapsed was not UI-click latency.
+
+## Preserved historical records
+
+The details below retain the original0.164/0.163 snapshot wording verbatim. “Current” there refers to its own checkpoint.
+
+<details>
+<summary>Preserved historical source snapshots (not current acceptance)</summary>
+
+# What was verified
+
+**Current 0.164 Terra local candidate:** The fixed source was built as CLI plus four companions. Fresh stable320/experimental458 exports, local proof, Doctor and1560-input preflight passed without Desktop activation or model calls. The final direct Node package-script body passed196/196 tests (npm wrapper unavailable). Native models63/controller22/dispatch5 passed; compact/resume6 returned through the platform network-skip guard and remain NOT_RUN. Publication/operating activation are HOLD pending final review. Historical results below remain tied to their original sources.
+
+The lock's `sourcePreparation.sourcePreparation` text records the initial preparation checkpoint; it is preserved provenance, not the current execution result. Current machine-readable results are in [source-validation-164.json](source-validation-164.json). The first full adapter run had194 PASS/2 FAIL from an obsolete startup fixture assertion. Its correction accepts the explicit new preparation status only with GUI NOT_RUN and exact reviewed-source binding; production guards were not relaxed. The final196/196 run supersedes that fixture result without deleting its failure logs.
 
 ## Revision 4: local build contract binding — 2026-10-26
 
@@ -137,3 +208,5 @@ On the same allowed Windows host/isolated layout, unmodified `npm test` passed 9
 ## Historical exact-commit CI failure and local correction
 
 The submitted 090221c6b48b77708a5bbc5d5614b1e884e46628 failed [CI run 39348719107](https://github.com/M-T-D-N/codex-ares-windows/actions/runs/39348719107): npm ci passed, but both startup fixtures failed because multiple Node application paths were coerced into one string. No tag/Release was created. The launcher now selects the first application; a two-Node PATH fixture reproduces the old failure and passes after the fix. Local default npm test: 95 PASS; both PowerShell hosts: 86 checks PASS. At that historical snapshot, the correction awaited review and exact-commit remote CI; this is not the current remote status.
+
+</details>

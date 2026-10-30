@@ -28,7 +28,7 @@ function evaluatorEnv(source){
   const normalized=normalizeEnvironment(source);
   const remove=Object.keys(normalized).filter(key=>
     /^CODEX_STEP_CONTROLLER_/i.test(key)
-      ||/^CODEX_ARES_/i.test(key)
+      ||(/^CODEX_ARES_/i.test(key)&&key.toUpperCase()!=='CODEX_ARES_EXPECTED_STORAGE_ROOTS')
       ||/^CODEX_PARENT_/i.test(key)
       ||/^(CODEX_CLI_PATH|CODEX_THREAD_ID)$/i.test(key)
       ||/^CODEX_LUNA_EVALUATOR$/i.test(key)

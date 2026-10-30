@@ -41,24 +41,12 @@
     "artifactsChecked": 1560,
     "desktopStarted": false
   },
-  "remoteCI": {
-    "scope": "submitted code checkpoint only; documentation/release successors require their own exact-head CI",
-    "commit": "02d549c952bb01cc025c7729185863d6b60309db",
-    "pushRun": 40515045146,
-    "prRun": 40515120783,
-    "conclusion": "success",
-    "tests": 196,
-    "doctorBundle": "not_built",
-    "url": "https://github.com/M-T-D-N/codex-ares-windows/actions/runs/40515045146"
-  },
+  "remoteCI": "NOT_RUN_FOR_THIS_UNPUBLISHED_CANDIDATE",
   "limitations": [
     "Old native full independent review incomplete",
     "Compact bodies skipped by platform restriction; no bypass",
     "No new public GUI/provider/fresh-PC acceptance",
     "No general quality/cost claims",
     "Original PowerShell failure and historical launch-manifest hash remain UNKNOWN; latest Get-FileHash host error is separate"
-  ],
-  "preSubmissionRemoteCI": "NOT_RUN_FOR_THIS_UNPUBLISHED_CANDIDATE",
-  "publicationDecision": "Source-only Technical Preview publication is accepted subject to successful exact-commit CI and asset verification; this is not stable or live-use acceptance. Compact 6, GUI/provider/fresh-PC acceptance and full cumulative native independent review remain incomplete.",
-  "targetedReview": "selected guards, Luna/stale/capture, loopback authentication/length, terminal recording; not all70 paths"
+  ]
 }

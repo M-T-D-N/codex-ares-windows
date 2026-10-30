@@ -1,14 +1,51 @@
 # What changed
 
-## 0.164 Terra source-only Technical Preview
+## Current 0.166 source preview — local checks
+
+- Port the cumulative Ares patch to official0.166.0-alpha.5.1, upstream `f79b26ccbb3116b052544666a181012fb45dc49b`; native identity `f602eec364f061f64d513b1cb77208fcaaa707ecc1bf1c61d3d20bb1f48052ac`,180 patch paths and9,711 regular files plus one materialized link.
+- Preserve current upstream response/image/tool/hook contracts and Ares owner, permission, cancellation and manual-effort boundaries. Classify the new error enum using static metadata without changing retry policy. Regenerate official protocol/SDK contracts and require the exact new Desktop/native companion matrix.
+- Build CLI/four companions from the same fixed inputs. Local stable320/experimental466 proof, default npm244/0/0, SDK122, protocol317 plus separate generators, native-focused180 and other scoped checks passed. Bundle/Doctor/preflight1561 passed without app activation or model calls; see [validation](docs/validation.md) for boundaries and preserved failures.
+- Observe a later manual taskbar launch using the same CLI hash. Current-candidate dedicated GUI effort, Stop/recovery, compaction/resume, provider qualification and fresh-PC setup remain unverified. Automatic restart failed in a separate private workflow; its helper is not distributed. Historical GUI evidence does not qualify these bytes.
+- Version0.1.0-preview.4 is a source-only Technical Preview; the Release links the exact published-commit CI result. Executables and private runtime evidence are excluded. Full native-patch independent review remains incomplete.
+
+## Historical 0.165 root-bound source — local review
+
+The following entry retains its original source/checkpoint; its count-only change and observations do not describe the0.166 migration.
+
+- Bind explicit storage roots while preserving owner, permission and manual-effort boundaries. Native identity `4cbf74d39c9072f013b0b0eb844b1ee7253e1eaefa222010ccc382b4d12596ff`; 180 patch paths (163 modified, 17 new), 9,523 regular files plus one materialized link.
+- Correct only the stale lock summary from 176 to 180; patch/native/runtime/test bytes are unchanged. Whole-lock build evidence must be regenerated through the existing successful wrapper before a new bundle; historical build/proof records stay immutable.
+- The preserved Desktop6621 layout has static320/460, default npm243 and preflight1561 results, plus observed manual taskbar startup/Main completions/Luna judgments. Automatic restart failed before operating snapshot creation; original inventory-drift cause UNKNOWN. GUI effort/Stop/recovery/compaction-resume and fresh-PC acceptance remain incomplete.
+- Keep the earlier source341 and 0.163/0.164 results below in their original scopes. [Validation](docs/validation.md) distinguishes actual execution, synthetic checks and pending acceptance.
+
+## Historical source341 checkpoint
+
+The following text records its original time and source, not the current candidate.
+
+## 0.1.0-preview.4 — corrected local Codex 0.165.0 candidate
+
+- The fixed native source is `341dfcf3b3facb2fa99cc009b9b69f67c67f3fb99a9c090b357c979beaf248a7`:176 patch paths (160 modified,16 new),9,522 regular files plus one materialized link. Official upstream and Cargo.lock are unchanged.
+- Correct the missing Ares startup prerequisite: only the dedicated Ares mode with configured TCP/token supplies a StepModelSwitching default before managed constraints. Ordinary defaults, explicit opt-outs and managed false values remain authoritative. ReasoningEffortOverride opt-outs are not enabled or overridden.
+- Probe both effective native prerequisites in the actual Desktop child environment before starting Desktop. Missing/disabled/query-failure paths close owned services and fail closed; no policy, authentication or shared runtime changes.
+- Corrected-source config17 and default-path mock RPC7 passed without fixture feature enables. Launcher startup18 and real CLI effective-config4 passed. Default npm test236/0/0 after offline locked dependency restore, new same-source five-file build, bundle/Doctor/preflight1560 and fresh stable320/experimental460 proof passed. Same-bundle SDK runtime46 passed in156.41s with mock transport.
+- Broader native/SDK/storage regression results are reused by unchanged scope, not presented as fresh corrected-source runs. Counts overlap and must not be summed. SQL78 deployed CRLF/checksum bytes, dev/line-tables-only and no scrypt override remain.
+- Preserve the predecessor888 diagnostic: real GUI/backend startup and one request attempt occurred with StepModelSwitching false, no native Ares trace or Luna evidence. User Stop produced an interrupted turn; native cancellation terminal proof was not established.
+- Corrected-source GUI/provider, fresh-PC and remote-CI acceptance remain NOT_RUN. Before the next local restart, dot must review the exact candidate/diff/raw checks/apply/rollback, reply, and have findings resolved. This entry does not claim that review was requested or answered, nor any public push/tag/Release.
+
+## Preserved earlier change records
+
+The sections below retain their original checkpoints. “Current,” “unreleased” and “unpublished” there are historical wording, not corrected-candidate acceptance.
+
+<details>
+<summary>Preserved historical source snapshots (not current acceptance)</summary>
+
+## Unreleased — 0.164 Terra source candidate
 
 - Add explicit Terra 6.1-Ares while preserving plain Terra bypass and catalog-supported adaptive efforts.
 - Bind a reviewed new source to an immutable historical contract reference; require fresh exact exports and a new local proof. Reject provenance/required-field/method/inventory/tampering drift.
-- Reuse the fixed successful five-binary build; native 90 and local static 320/458, Doctor/preflight 1560 passed. Compact/resume6 remains NOT_RUN due platform skip. See validation for final adapter results and limits.
-- Submitted code commit 02d549c passed remote npm ci, 196 tests and source-only Doctor; subsequent documentation/release commits need their own CI.
+- Reuse the fixed successful five-binary build; native90 and local static320/458, Doctor/preflight1560 passed. Compact/resume6 remains NOT_RUN due platform skip. See validation for final adapter results and limits.
 - No operating activation, public GUI/provider acceptance, general quality equivalence or cost saving claim.
 
-## Historical 0.164 local preparation snapshot
+## Local0.164 review candidate — unpublished
 
 Pinned official6905eced source,68-path patch, prepared Cargo.lock, Rust1.99.1 and V8152.2.0 now share one portable input set. Full regular-file identity and Git content/mode restoration are checked separately from physical symlink creation. Two synthetic fixture task IDs are anonymized; three TUI paths repair exact notification routing and baseline preservation after a real compile failure. CLI+four companions and static Desktop contracts require current-run evidence; old0.163 results are historical. No new GUI/provider acceptance, operating change or publication is claimed. [Validation scope](docs/validation.md).
 
@@ -69,3 +106,5 @@ The release keeps GPT-6 Luna/High through Codex app-server, one-generation lease
 See [validation](docs/validation.md) for the evidence, [compatibility](docs/compatibility.md) for support boundaries, and [build](docs/build.md) before installing. [한국어 변경 안내](docs/changes.ko.md).
 
 CI follow-up: the cold GitHub Windows runner exceeded the lifecycle fixture PowerShell/CIM 5-second budget. Fixture limits are now CIM15s, child30s and test60s. Parent-exit, child-survival, process-identity and natural-exit assertions remain; product/native inputs are unchanged.
+
+</details>

@@ -48,16 +48,24 @@ Check $rejected 'unvalidated registered MSIX version is rejected'
 
 # The exact current candidate is a version gate fixture, not GUI/protocol acceptance.
 $candidateLock=Get-Content -LiteralPath (Join-Path (Split-Path -Parent (Split-Path -Parent $StartFile)) 'patches/codex/upstream.lock.json') -Raw | ConvertFrom-Json
-Check ($candidateLock.desktop.observedPackageVersion -ceq '26.1021.3705.0') 'current candidate pins one exact registered Desktop version'
+Check ($candidateLock.desktop.observedPackageVersion -ceq '26.1027.3384.0') 'current candidate pins one exact registered Desktop version'
 Check ($candidateLock.desktop.candidateAcceptance.status -in @('STATIC_CONTRACT_PASS_LIVE_ACCEPTANCE_NOT_RUN','FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START')) 'only historical static evidence or a fresh-proof requirement is accepted, never GUI acceptance'
 if($candidateLock.desktop.candidateAcceptance.status -ceq 'FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START'){
   Check ($candidateLock.candidateAcceptance.guiProvider -ceq 'NOT_RUN') 'fresh-proof requirement preserves explicit GUI non-acceptance'
-  Check ($candidateLock.desktop.protocolSourceReview.sourceIdentity -ceq $candidateLock.sourcePreparation.sourceContentSha256) 'fresh proof review is bound to the current source'
+  if($candidateLock.desktop.protocolSourceReview){
+    Check ($candidateLock.desktop.protocolSourceReview.sourceIdentity -ceq $candidateLock.sourcePreparation.sourceContentSha256) 'fresh proof review is bound to the current source'
+  }else{
+    $referencePath=Join-Path (Split-Path -Parent (Split-Path -Parent $StartFile)) $candidateLock.desktop.protocolEvidence.path
+    $reference=Get-Content -Raw -LiteralPath $referencePath|ConvertFrom-Json
+    Check ((Get-FileHash -LiteralPath $referencePath -Algorithm SHA256).Hash.ToLowerInvariant() -ceq $candidateLock.desktop.protocolEvidence.sha256) 'current reference bytes are bound to the lock'
+    Check ($reference.candidateNative.sourceIdentity -ceq $candidateLock.sourcePreparation.sourceContentSha256) 'current reference is bound to the current source'
+    Check ($reference.candidateNative.version -ceq $candidateLock.nativeVersion) 'current reference uses the locked native version'
+  }
 }
-Validate-PackageVersion '26.1021.3705.0' $candidateLock.desktop
+Validate-PackageVersion '26.1027.3384.0' $candidateLock.desktop
 Check $true 'exact candidate version passes only the existing version branch'
 Check ($startAst.Extent.Text.Contains('Assert-AresDesktopProtocolIdentity $repoRoot $package $compat $candidateManifest.native.path')) 'native fingerprint validation precedes activation'
-foreach($other in @('26.1013.4894.0','26.1016.6573.0','26.1016.61520','26.1016.8120.0','26.1016.62342','26.1016.8622.1','26.1017.1.0','26.1016.8622.0','26.1021.3705.1')) {
+foreach($other in @('26.1013.4894.0','26.1016.6573.0','26.1016.61520','26.1016.8120.0','26.1016.62342','26.1016.8622.1','26.1017.1.0','26.1016.8622.0','26.1021.3705.1','26.1021.3705.0','26.1023.6123.0','26.1023.6123.1','26.1023.6621.0','26.1023.6621.1','26.1027.3384.1','26.1027.3385.0')) {
   $rejected=$false;try{Validate-PackageVersion $other $candidateLock.desktop}catch{$rejected=$true}
   Check $rejected 'previous, adjacent and future Desktop versions remain rejected'
 }
@@ -224,10 +232,10 @@ try {
   New-Item -ItemType Directory -Path (Join-Path $guardRoot 'patches/codex'),(Join-Path $installed 'app/resources') -Force|Out-Null
   $official=Join-Path $installed 'app/resources/codex.exe';$native=Join-Path $guardRoot 'candidate.exe'
   [IO.File]::WriteAllText($official,'official-fixture');[IO.File]::WriteAllText($native,'candidate-fixture')
-  $proofPath=Join-Path $guardRoot 'patches/codex/desktop-2610213705.protocol.json'
+  $proofPath=Join-Path $guardRoot 'patches/codex/desktop-1.2.3.4.protocol.json'
   $proof=@{schema=1;status='static_text_contract_checked';guiAcceptance='NOT_RUN';packageVersion='1.2.3.4';candidateNative=@{sourceIdentity='fixture-source';sha256=(Get-FileHash $native -Algorithm SHA256).Hash.ToLowerInvariant()};desktopNative=@{sha256=(Get-FileHash $official -Algorithm SHA256).Hash.ToLowerInvariant()}}
   $proof|ConvertTo-Json -Depth 5|Set-Content -LiteralPath $proofPath
-  $meta=[pscustomobject]@{desktop=[pscustomobject]@{observedPackageVersion='1.2.3.4';protocolEvidence=[pscustomobject]@{path='patches/codex/desktop-2610213705.protocol.json';sha256=(Get-FileHash $proofPath -Algorithm SHA256).Hash.ToLowerInvariant()}};sourcePreparation=[pscustomobject]@{sourceContentSha256='fixture-source'}}
+  $meta=[pscustomobject]@{desktop=[pscustomobject]@{observedPackageVersion='1.2.3.4';protocolEvidence=[pscustomobject]@{path='patches/codex/desktop-1.2.3.4.protocol.json';sha256=(Get-FileHash $proofPath -Algorithm SHA256).Hash.ToLowerInvariant()}};sourcePreparation=[pscustomobject]@{sourceContentSha256='fixture-source'}}
   $pkg=[pscustomobject]@{Version=[version]'1.2.3.4';InstallLocation=$installed}
   Assert-AresDesktopProtocolIdentity $guardRoot $pkg $meta $native
   Check $true 'exact protocol evidence and both binary fingerprints pass'

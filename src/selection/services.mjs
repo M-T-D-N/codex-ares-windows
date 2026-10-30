@@ -3,8 +3,8 @@ import {LunaAppServer} from '../luna/app-server.mjs';
 import {PilotBridge} from '../common/bridge.mjs';
 import {resolveSelection, assertSameSelection} from './selection.mjs';
 
-export async function startServices({binary,evaluatorCwd,token,record,configRevision}) {
-  const lunaEvaluator=new LunaAppServer({binary,cwd:evaluatorCwd,record});
+export async function startServices({binary,evaluatorCwd,token,record,configRevision,env=process.env}) {
+  const lunaEvaluator=new LunaAppServer({binary,cwd:evaluatorCwd,record,env});
   const luna=new ContinuousService({evaluator:lunaEvaluator,record,configRevision});
   const selections=new Map();
   const bridge=new PilotBridge({tcp:{host:'127.0.0.1',port:0,token},record,

@@ -12,7 +12,8 @@ function Assert-AresDesktopProtocolIdentity($Root,$Package,$Compat,[string]$Cand
     return
   }
   $entry=$Compat.desktop.protocolEvidence
-  if(-not $entry -or $entry.path -cne 'patches/codex/desktop-2610213705.protocol.json' -or $entry.sha256 -cnotmatch '^[a-f0-9]{64}$') {
+  $version=[string]$Compat.desktop.observedPackageVersion
+  if($version -cnotmatch '^\d+\.\d+\.\d+\.\d+$' -or -not $entry -or $entry.path -cne ('patches/codex/desktop-'+$version+'.protocol.json') -or $entry.sha256 -cnotmatch '^[a-f0-9]{64}$') {
     throw 'Exact Desktop protocol evidence is required; no version-only override is supported.'
   }
   $path=Join-Path $Root $entry.path

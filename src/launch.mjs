@@ -1,4 +1,5 @@
 // Explicit candidate launch; only this process tree receives the native override.
+import {storageEnvironment,validateStorageReadback} from './common/storage-roots.mjs';
 import {readFile, writeFile, mkdir, appendFile, realpath, lstat} from 'node:fs/promises';
 import {createReadStream, openSync, closeSync} from 'node:fs';
 import {createHash, randomBytes, randomUUID} from 'node:crypto';
@@ -83,7 +84,7 @@ export async function finishSupervisor({services, app, reason, code, record,
 }
 export function validateCompanionRelease(manifest) {
   const required = ['codex-code-mode-host.exe', 'codex-command-runner.exe', 'codex-windows-sandbox-setup.exe'];
-  if (/^0\.162\./.test(manifest.native?.sourceRelease ?? '') || ['0.163.0','0.164.0-alpha.11.1'].includes(manifest.native?.sourceRelease))
+  if (/^0\.162\./.test(manifest.native?.sourceRelease ?? '') || ['0.163.0','0.164.0-alpha.11.1','0.165.0','0.166.0-alpha.5.1'].includes(manifest.native?.sourceRelease))
     required.push('codex-windows-sandbox-service.exe');
   if (!Array.isArray(manifest.companions) || manifest.companions.length !== required.length ||
       required.some(name => manifest.companions.filter(a => basename(a.path).toLowerCase() === name).length !== 1) ||
@@ -97,6 +98,29 @@ export function validateStartupConfigSupport(help) {
   const required = ['--print-startup-config', '--startup-client-info', '--startup-sign-out'];
   if (required.some(option => !options.has(option)))
     throw new Error('Candidate lacks the Desktop startup policy query contract. No Desktop was started.');
+}
+// Capability check under the exact Ares child environment, before Desktop exists.
+export function validateAresFeatureSupport(output) {
+  const lines = String(output).split(/\r?\n/).map(line => line.trim().split(/\s+/));
+  for (const name of ['step_model_switching', 'reasoning_effort_override']) {
+    const rows = lines.filter(fields => fields[0] === name);
+    if (rows.length !== 1 || rows[0].length < 3 || rows[0].at(-1) !== 'true')
+      throw new Error('Ares requires enabled native generation features. No Desktop was started.');
+  }
+}
+export async function spawnAresDesktop({binary, desktopPath, env, services, record,
+  flushEvents, executeNative = execute, spawnChild = spawnDesktop}) {
+  try {
+    const result = await executeNative(binary, ['features', 'list'], {env, windowsHide: true, timeout: 15000});
+    validateAresFeatureSupport(result.stdout);
+  } catch {
+    let cleanupConfirmed = true;
+    try { await services.close(); } catch { cleanupConfirmed = false; }
+    record({type: 'startup_features_rejected', category: 'ares_feature_prerequisite', cleanupConfirmed});
+    try { await flushEvents(); } catch { /* Preserve failure; no Desktop can start. */ }
+    throw new Error('Ares native generation features are unavailable or disabled. No Desktop was started.');
+  }
+  return spawnChild(desktopPath, [], env);
 }
 export async function launch({trialStatus = null, executeNative = execute} = {}) {
   const {values} = parseArgs({options: {
@@ -135,6 +159,12 @@ export async function launch({trialStatus = null, executeNative = execute} = {})
   if (version !== manifest.native.version) throw new Error('Candidate native version mismatch.');
   const startupHelp = await executeNative(manifest.native.path, ['app-server', '--help'], {windowsHide: true, timeout: 10000});
   validateStartupConfigSupport(startupHelp.stdout);
+  const storageEnv=storageEnvironment(manifest,process.env);
+  if(manifest.runtimeStorageRoots!==undefined){
+    const roots=await executeNative(manifest.native.path,['app-server','--print-startup-config','--include-storage-roots'],
+      {env:storageEnv,windowsHide:true,timeout:30000});
+    validateStorageReadback(manifest,roots.stdout);
+  }
   if (!values.activate) {
     console.log(JSON.stringify({status: 'preflight_only', version, artifactsChecked: artifacts.length,
       desktopVersion: binding.packageVersion, startupConfigSupported: true, desktopStarted: false}));
@@ -168,15 +198,16 @@ export async function launch({trialStatus = null, executeNative = execute} = {})
       phase: 'event_write', category: error.code ?? 'io'});}); };
   const evaluatorCwd = join(taskRoot, 'evaluator-cwd');
   await mkdir(evaluatorCwd, {recursive: true});
-  const services = await startServices({binary: manifest.native.path, evaluatorCwd, token, record,
+  const services = await startServices({binary: manifest.native.path, evaluatorCwd, token, record,env:storageEnv,
     configRevision: manifest.sourceIdentitySha256});
-  const env = buildEnvironment(process.env, {
+  const env = buildEnvironment(storageEnv, {
     CODEX_CLI_PATH: manifest.native.path,
     CODEX_STEP_CONTROLLER_TCP: '127.0.0.1:' + services.bridge.address.port,
     CODEX_STEP_CONTROLLER_TOKEN: token, CODEX_STEP_CONTROLLER_PILOT_MARKER: marker,
     CODEX_STEP_CONTROLLER_TRACE_PATH: nativeTracePath, CODEX_STEP_CONTROLLER_ADVICE_MODE: 'luna-continuous-1'
   }, {remove: ['CODEX_STEP_CONTROLLER_ADVICE_MODE', 'CODEX_STEP_CONTROLLER_PILOT_MARKER', 'CODEX_LUNA_EVALUATOR', 'CODEX_JEV_MAIN_ROUTES']});
-  const app = spawnDesktop(binding.desktop.path, [], env);
+  const app = await spawnAresDesktop({binary: manifest.native.path, desktopPath: binding.desktop.path,
+    env, services, record, flushEvents: () => eventWrites, executeNative});
   const appEnded = new Promise(resolve => {
     app.once('error', () => resolve({reason: 'desktop_start_error', code: 1}));
     app.once('exit', code => resolve({reason: 'desktop_exit', code}));
