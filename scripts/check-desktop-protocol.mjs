@@ -8,38 +8,63 @@ import {execFileSync} from 'node:child_process';
 
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const effortMethod='turn/reasoningEffort/updated';
-function project(value,context=''){
-  if(Array.isArray(value))return value.filter(row=>
-    row?.properties?.method?.enum?.[0]!==effortMethod).map(row=>project(row));
-  if(!value||typeof value!=='object')return value;
-  const result={};
-  for(const [key,child] of Object.entries(value)){
-    if(key==='ReasoningEffortUpdatedNotification')continue;
-    if(key==='properties'&&['ThreadStartResponse','ThreadRealtimeStartParams'].includes(context)){
-      const properties={...child};
-      if(context==='ThreadStartResponse'&&properties.modelContextWindow){
-        assert(!value.required?.includes('modelContextWindow'),'Context-window extension became required');
-        assert.deepEqual(properties.modelContextWindow.type,['integer','null']);
-        delete properties.modelContextWindow;
-      }
-      if(context==='ThreadRealtimeStartParams'&&properties.voiceSessionId){
-        assert(!value.required?.includes('voiceSessionId'),'Voice session field became required');
-        assert.deepEqual(properties.voiceSessionId.type,['string','null']);
-        delete properties.voiceSessionId;
-      }
-      result[key]=project(properties);
-    }else result[key]=project(child,key);
-  }
-  return result;
+// Exact 0.167 insertions established from the four raw unequal exports. These
+// are file/location/value exceptions, never a recursive name-based projection.
+const notification={properties:{
+ evaluatorMs:{format:'uint64',minimum:0,type:'integer'},fromEffort:{type:['string','null']},
+ leaseSteps:{format:'uint32',minimum:0,type:'integer'},step:{format:'uint64',minimum:0,type:'integer'},
+ threadId:{type:'string'},toEffort:{type:'string'},turnId:{type:'string'},
+},required:['evaluatorMs','leaseSteps','step','threadId','toEffort','turnId'],type:'object'};
+const notificationDocument={$schema:'http://json-schema.org/draft-07/schema#',...notification,title:'ReasoningEffortUpdatedNotification'};
+const contextWindow={default:null,
+ description:"Usable context tokens from this thread's resolved model and configuration. Includes the model's configured headroom; unknown metadata yields null.",
+ format:'int64',type:['integer','null']};
+const method=ref=>({properties:{method:{enum:[effortMethod],title:'Turn/reasoningEffort/updatedNotificationMethod',type:'string'},params:{$ref:ref}},
+ required:['method','params'],title:'Turn/reasoningEffort/updatedNotification',type:'object'});
+function at(root,path){
+ let value=root;
+ for(const key of path){assert(value&&typeof value==='object'&&Object.hasOwn(value,key),'Missing reviewed protocol location: /'+path.join('/'));value=value[key];}
+ return value;
+}
+function removeExact(root,path,expected){
+ assert.deepEqual(at(root,path),expected,'Unexpected extension value at /'+path.join('/'));
+ delete at(root,path.slice(0,-1))[path.at(-1)];
+}
+function removeMethod(root,path,ref){
+ const rows=at(root,path);
+ assert(Array.isArray(rows)&&rows.length===87,'Unexpected notification inventory at /'+path.join('/'));
+ assert.deepEqual(rows[64],method(ref),'Unexpected notification at /'+path.join('/')+'/64');
+ rows.splice(64,1);
+}
+function withoutReviewedInsertions(name,value){
+ const result=structuredClone(value);
+ if(name==='ServerNotification.json'){
+  removeExact(result,['definitions','ReasoningEffortUpdatedNotification'],notification);
+  removeMethod(result,['oneOf'],'#/definitions/ReasoningEffortUpdatedNotification');
+ }else if(name==='codex_app_server_protocol.schemas.json'){
+  removeExact(result,['definitions','v2','ReasoningEffortUpdatedNotification'],notificationDocument);
+  removeExact(result,['definitions','v2','ThreadStartResponse','properties','modelContextWindow'],contextWindow);
+  removeMethod(result,['definitions','ServerNotification','oneOf'],'#/definitions/v2/ReasoningEffortUpdatedNotification');
+ }else if(name==='codex_app_server_protocol.v2.schemas.json'){
+  removeExact(result,['definitions','ReasoningEffortUpdatedNotification'],notificationDocument);
+  removeExact(result,['definitions','ThreadStartResponse','properties','modelContextWindow'],contextWindow);
+  removeMethod(result,['definitions','ServerNotification','oneOf'],'#/definitions/ReasoningEffortUpdatedNotification');
+ }else if(name==='v2/ThreadStartResponse.json'){
+  removeExact(result,['properties','modelContextWindow'],contextWindow);
+ }
+ return result;
 }
 export function compareProfile(desktop,candidate){
   const ownOnly=[...candidate.keys()].filter(key=>!desktop.has(key)).sort();
   assert.deepEqual([...desktop.keys()].filter(key=>!candidate.has(key)),[],'Candidate lacks Desktop schema files');
   assert.deepEqual(ownOnly,['v2/ReasoningEffortUpdatedNotification.json'],'Unexpected candidate-only protocol files');
+  assert.deepEqual(candidate.get(ownOnly[0]),notificationDocument,'Unexpected candidate-only notification schema');
+  for(const name of ['ServerNotification.json','codex_app_server_protocol.schemas.json','codex_app_server_protocol.v2.schemas.json','v2/ThreadStartResponse.json'])
+    assert(desktop.has(name),'Desktop lacks reviewed protocol file: '+name);
   const rows=[];
   for(const [name,a] of desktop){
-    const b=candidate.get(name),context=name.endsWith('/ThreadStartResponse.json')?'ThreadStartResponse':name.endsWith('/ThreadRealtimeStartParams.json')?'ThreadRealtimeStartParams':'';
-    assert.deepEqual(project(a,context),project(b,context),'Unexpected protocol difference: '+name);
+    const b=candidate.get(name);
+    assert.deepEqual(a,withoutReviewedInsertions(name,b),'Unexpected protocol difference: '+name);
     rows.push({path:name,equal:JSON.stringify(a)===JSON.stringify(b)});
   }
   return {checked:rows.length,candidateOnly:ownOnly,different:rows.filter(row=>!row.equal).map(row=>row.path).sort()};

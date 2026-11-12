@@ -1,14 +1,12 @@
 // Explicit candidate launch; only this process tree receives the native override.
-import {storageEnvironment,validateStorageReadback} from './common/storage-roots.mjs';
+import assert from 'node:assert/strict';
 import {readFile, writeFile, mkdir, appendFile, realpath, lstat} from 'node:fs/promises';
 import {createReadStream, openSync, closeSync} from 'node:fs';
 import {createHash, randomBytes, randomUUID} from 'node:crypto';
 import {spawn, execFile} from 'node:child_process';
 import {promisify, parseArgs} from 'node:util';
-import {resolve, join, dirname, basename} from 'node:path';
+import {resolve, join, dirname, basename, relative, isAbsolute, sep} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
-import {logEvent} from './common/logging.mjs';
-import {buildEnvironment} from './common/environment.mjs';
 
 const execute = promisify(execFile);
 const taskRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -18,6 +16,7 @@ async function digest(path) {
   return hash.digest('hex');
 }
 export async function configureRuntimeTemp(ownerRoot) {
+  const {buildEnvironment} = await import('./common/environment.mjs');
   const owner = resolve(ownerRoot);
   if ((await realpath(owner)).toLowerCase() !== owner.toLowerCase())
     throw new Error('Ares temporary files require an existing owner directory.');
@@ -84,12 +83,45 @@ export async function finishSupervisor({services, app, reason, code, record,
 }
 export function validateCompanionRelease(manifest) {
   const required = ['codex-code-mode-host.exe', 'codex-command-runner.exe', 'codex-windows-sandbox-setup.exe'];
-  if (/^0\.162\./.test(manifest.native?.sourceRelease ?? '') || ['0.163.0','0.164.0-alpha.11.1','0.165.0','0.166.0-alpha.5.1'].includes(manifest.native?.sourceRelease))
+  if (/^0\.162\./.test(manifest.native?.sourceRelease ?? '') || ['0.163.0','0.164.0-alpha.11.1','0.165.0','0.166.0-alpha.5.1','0.167.0-alpha.3.2','0.167.0-alpha.4.1'].includes(manifest.native?.sourceRelease))
     required.push('codex-windows-sandbox-service.exe');
   if (!Array.isArray(manifest.companions) || manifest.companions.length !== required.length ||
       required.some(name => manifest.companions.filter(a => basename(a.path).toLowerCase() === name).length !== 1) ||
       manifest.companions.some(a => a.sourceRelease !== manifest.native.sourceRelease || dirname(a.path) !== dirname(manifest.native.path)))
     throw new Error('Candidate companion release combination is invalid.');
+}
+export function validateSidecarInventory(manifest,expected){
+  assert(Array.isArray(expected)&&expected.length>0,'Locked sidecar inventory is required');
+  assert(expected.every(path=>typeof path==='string'&&/^src\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+\.mjs$/.test(path)),'Invalid locked sidecar path');
+  assert.equal(new Set(expected).size,expected.length,'Duplicate locked sidecar path');
+  assert(Array.isArray(manifest.sidecar),'Sidecar inventory is required');
+  assert.deepEqual(manifest.sidecar.map(row=>row.path).sort(),[...expected].sort(),'Sidecar set differs from locked runtime sources');
+}
+export async function verifyCandidateArtifacts(root,manifest,expectedSidecar){
+  validateSidecarInventory(manifest,expectedSidecar);
+  const all=[manifest.native,...manifest.companions,...manifest.sidecar,...(manifest.evaluatorSources??[]),...(manifest.runtimeDependencies??[])];
+  const paths=all.map(row=>{
+    assert(row&&typeof row.path==='string'&&!isAbsolute(row.path)&&!row.path.includes('\\')&&!row.path.split('/').some(part=>part==='..'||part==='.'||part===''||/[<>:"|?*\x00-\x1f]/.test(part)||/[. ]$/.test(part)),'Invalid artifact path');
+    const path=resolve(root,row.path);
+    assert(path.toLowerCase().startsWith((resolve(root)+'\\').toLowerCase())||path.startsWith(resolve(root)+'/'),'Artifact escapes candidate root');
+    return path;
+  });
+  assert.equal(new Set(paths.map(path=>path.toLowerCase())).size,paths.length,'Duplicate candidate artifact');
+  const owner=resolve(root);
+  assert.equal((await realpath(owner)).toLowerCase(),owner.toLowerCase(),'Candidate root must not be redirected');
+  for(let i=0;i<all.length;i++){
+    let current=owner;
+    for(const component of relative(owner,paths[i]).split(sep)){
+      current=join(current,component);
+      const info=await lstat(current);
+      assert(!info.isSymbolicLink(),'Candidate artifact must not be redirected');
+    }
+    assert.equal((await realpath(paths[i])).toLowerCase(),paths[i].toLowerCase(),'Candidate artifact must not be redirected');
+    assert((await lstat(paths[i])).isFile(),'Candidate artifact must be a regular file');
+    assert(/^[a-f0-9]{64}$/.test(all[i].sha256),'Invalid artifact fingerprint');
+    assert.equal(await digest(paths[i]),all[i].sha256,'Candidate artifact hash mismatch');
+  }
+  return all.length;
 }
 // Desktop reads organization policy before starting its normal app-server.
 // A valid version/hash alone does not establish support for this CLI contract.
@@ -126,12 +158,24 @@ export async function launch({trialStatus = null, executeNative = execute} = {})
   const {values} = parseArgs({options: {
     manifest: {type: 'string'}, 'desktop-binding': {type: 'string'},
     'run-dir': {type: 'string'}, activate: {type: 'boolean', default: false},
-    'detach-supervisor': {type: 'boolean', default: false}
+    'detach-supervisor': {type: 'boolean', default: false}, 'invocation-id': {type: 'string'}
   }});
   if (process.platform !== 'win32' || !values.manifest || !values['desktop-binding'] || !values['run-dir'])
     throw new Error('Use scripts/start.ps1 on Windows.');
+  if(values.activate&&!/^[a-f0-9]{32}$/.test(values['invocation-id']??''))
+    throw new Error('Activation requires the exact packaged launch invocation.');
   const manifestPath = resolve(values.manifest), bindingPath = resolve(values['desktop-binding']);
-  const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  const manifestBytes=await readFile(manifestPath);
+  const manifest = JSON.parse(manifestBytes.toString('utf8'));
+  const lockPath=join(taskRoot,'patches/codex/upstream.lock.json'),lockBytes=await readFile(lockPath);
+  const lock=JSON.parse(lockBytes.toString('utf8'));
+  const pinnedArtifacts=structuredClone(manifest);
+  const recheckRuntime=async()=>{
+    assert.deepEqual(await readFile(manifestPath),manifestBytes,'Manifest changed while starting');
+    assert.deepEqual(await readFile(lockPath),lockBytes,'Source lock changed while starting');
+    await verifyCandidateArtifacts(taskRoot,pinnedArtifacts,lock.runtimeSourceFiles);
+  };
+  const artifactCount=await verifyCandidateArtifacts(taskRoot,manifest,lock.runtimeSourceFiles);
   for (const artifact of [manifest.native, ...manifest.companions, ...manifest.sidecar, ...(manifest.evaluatorSources ?? []), ...(manifest.runtimeDependencies ?? [])]) artifact.path = resolve(taskRoot, artifact.path);
   manifest.statusServicePath = resolve(taskRoot, manifest.statusServicePath);
   const binding = JSON.parse((await readFile(bindingPath, 'utf8')).replace(/^\uFEFF/, ''));
@@ -141,20 +185,18 @@ export async function launch({trialStatus = null, executeNative = execute} = {})
   validateCompanionRelease(manifest);
   if (!manifest.sidecar?.some(a => resolve(a.path) === fileURLToPath(import.meta.url)))
     throw new Error('Manifest does not identify this launcher.');
-  const artifacts = [manifest.native, ...manifest.companions, ...manifest.sidecar,
-    ...(manifest.evaluatorSources ?? []), ...(manifest.runtimeDependencies ?? [])];
-  for (const artifact of artifacts) {
-    if (!artifact?.path || !/^[a-f0-9]{64}$/.test(artifact.sha256) || await digest(artifact.path) !== artifact.sha256)
-      throw new Error('Candidate artifact hash mismatch. Open the installed app normally.');
-  }
   // The service binding is part of the hash-checked runtime.
   if (!manifest.statusServicePath || !manifest.sidecar.some(a => resolve(a.path) === resolve(manifest.statusServicePath)))
     throw new Error('Status service binding is not in the verified manifest.');
-  await configureRuntimeTemp(taskRoot);
-  const {startServices} = await import(pathToFileURL(resolve(manifest.statusServicePath)).href);
   if (binding.packageName !== 'OpenAI.Codex' || !binding.registeredForCurrentUser ||
       await digest(binding.desktop.path) !== binding.desktop.sha256)
     throw new Error('Registered Desktop binding changed. Run scripts/start.ps1 again.');
+  // Local helpers execute only after the exact inventory, bytes and Desktop binding pass.
+  await recheckRuntime();
+  const [{storageEnvironment,validateStorageReadback},{logEvent},{buildEnvironment}]=await Promise.all([
+    import('./common/storage-roots.mjs'),import('./common/logging.mjs'),import('./common/environment.mjs')
+  ]);
+  await configureRuntimeTemp(taskRoot);
   const version = (await executeNative(manifest.native.path, ['--version'], {windowsHide: true, timeout: 10000})).stdout.trim();
   if (version !== manifest.native.version) throw new Error('Candidate native version mismatch.');
   const startupHelp = await executeNative(manifest.native.path, ['app-server', '--help'], {windowsHide: true, timeout: 10000});
@@ -166,7 +208,7 @@ export async function launch({trialStatus = null, executeNative = execute} = {})
     validateStorageReadback(manifest,roots.stdout);
   }
   if (!values.activate) {
-    console.log(JSON.stringify({status: 'preflight_only', version, artifactsChecked: artifacts.length,
+    console.log(JSON.stringify({status: 'preflight_only', version, artifactsChecked: artifactCount,
       desktopVersion: binding.packageVersion, startupConfigSupported: true, desktopStarted: false}));
     return;
   }
@@ -180,7 +222,7 @@ export async function launch({trialStatus = null, executeNative = execute} = {})
     const stderr = join(taskRoot, basename(runDir) + '.supervisor.stderr.log');
     const child = spawnSupervisor(process.execPath, [fileURLToPath(import.meta.url),
       '--manifest', manifestPath, '--desktop-binding', bindingPath,
-      '--run-dir', runDir, '--activate'], process.env, stdout, stderr);
+      '--run-dir', runDir, '--activate', '--invocation-id',values['invocation-id']], process.env, stdout, stderr);
     await new Promise((resolve, reject) => {child.once('spawn', resolve); child.once('error', reject);});
     child.unref();
     console.log(JSON.stringify({status: 'supervisor_started', pid: child.pid,
@@ -198,6 +240,11 @@ export async function launch({trialStatus = null, executeNative = execute} = {})
       phase: 'event_write', category: error.code ?? 'io'});}); };
   const evaluatorCwd = join(taskRoot, 'evaluator-cwd');
   await mkdir(evaluatorCwd, {recursive: true});
+  // Detect an overlapping update before service activation. This is not an
+  // atomic filesystem snapshot or a protection against a hostile writer.
+  await recheckRuntime();
+  const {startServices} = await import(pathToFileURL(resolve(manifest.statusServicePath)).href);
+  await recheckRuntime();
   const services = await startServices({binary: manifest.native.path, evaluatorCwd, token, record,env:storageEnv,
     configRevision: manifest.sourceIdentitySha256});
   const env = buildEnvironment(storageEnv, {
@@ -218,6 +265,7 @@ export async function launch({trialStatus = null, executeNative = execute} = {})
     {windowsHide: true, timeout: 10000})).stdout.trim();}
   catch (error) {failures.push({time: new Date().toISOString(), phase: 'identity_query', category: error.code ?? 'UNKNOWN'});}
   const receipt = {schema: 1, mode: 'explicit-model-route', status: 'starting', marker, version,
+    invocationId:values['invocation-id'],
     manifestPath, bindingPath, eventPath, nativeTracePath, statusPath,
     supervisor: {pid: process.pid, parentPid: process.ppid, argv: process.argv},
     desktop: {pid: app.pid, path: binding.desktop.path}, processIdentities: identities ? JSON.parse(identities) : [],

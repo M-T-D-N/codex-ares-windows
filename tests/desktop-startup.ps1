@@ -48,7 +48,7 @@ Check $rejected 'unvalidated registered MSIX version is rejected'
 
 # The exact current candidate is a version gate fixture, not GUI/protocol acceptance.
 $candidateLock=Get-Content -LiteralPath (Join-Path (Split-Path -Parent (Split-Path -Parent $StartFile)) 'patches/codex/upstream.lock.json') -Raw | ConvertFrom-Json
-Check ($candidateLock.desktop.observedPackageVersion -ceq '26.1027.3384.0') 'current candidate pins one exact registered Desktop version'
+Check ($candidateLock.desktop.observedPackageVersion -ceq '26.1106.6628.0') 'current candidate pins one exact registered Desktop version'
 Check ($candidateLock.desktop.candidateAcceptance.status -in @('STATIC_CONTRACT_PASS_LIVE_ACCEPTANCE_NOT_RUN','FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START')) 'only historical static evidence or a fresh-proof requirement is accepted, never GUI acceptance'
 if($candidateLock.desktop.candidateAcceptance.status -ceq 'FRESH_LOCAL_PROOF_REQUIRED_BEFORE_START'){
   Check ($candidateLock.candidateAcceptance.guiProvider -ceq 'NOT_RUN') 'fresh-proof requirement preserves explicit GUI non-acceptance'
@@ -62,10 +62,10 @@ if($candidateLock.desktop.candidateAcceptance.status -ceq 'FRESH_LOCAL_PROOF_REQ
     Check ($reference.candidateNative.version -ceq $candidateLock.nativeVersion) 'current reference uses the locked native version'
   }
 }
-Validate-PackageVersion '26.1027.3384.0' $candidateLock.desktop
+Validate-PackageVersion '26.1106.6628.0' $candidateLock.desktop
 Check $true 'exact candidate version passes only the existing version branch'
 Check ($startAst.Extent.Text.Contains('Assert-AresDesktopProtocolIdentity $repoRoot $package $compat $candidateManifest.native.path')) 'native fingerprint validation precedes activation'
-foreach($other in @('26.1013.4894.0','26.1016.6573.0','26.1016.61520','26.1016.8120.0','26.1016.62342','26.1016.8622.1','26.1017.1.0','26.1016.8622.0','26.1021.3705.1','26.1021.3705.0','26.1023.6123.0','26.1023.6123.1','26.1023.6621.0','26.1023.6621.1','26.1027.3384.1','26.1027.3385.0')) {
+foreach($other in @('26.1013.4894.0','26.1016.6573.0','26.1016.61520','26.1016.8120.0','26.1016.62342','26.1016.8622.1','26.1017.1.0','26.1016.8622.0','26.1021.3705.1','26.1021.3705.0','26.1023.6123.0','26.1023.6123.1','26.1023.6621.0','26.1023.6621.1','26.1027.3384.0','26.1027.3384.1','26.1027.3385.0','26.1103.4239.1','26.1103.4240.0','26.1103.4239.0','26.1103.7773.0','26.1106.6628.1','26.1106.6629.0')) {
   $rejected=$false;try{Validate-PackageVersion $other $candidateLock.desktop}catch{$rejected=$true}
   Check $rejected 'previous, adjacent and future Desktop versions remain rejected'
 }
@@ -80,16 +80,19 @@ function Invoke-CommandInDesktopPackage {
   Check $match.Success 'dispatch carries an exact invocation identifier'
   $id=$match.Groups[1].Value
   if($script:dispatchStatus -ne 'missing') {
-    if($script:omitIdentity){Write-AresLaunchCompletion $repoRoot $id $script:dispatchStatus 'synthetic dispatch result'}
-    else{Write-AresLaunchCompletion $repoRoot $id $script:dispatchStatus 'synthetic dispatch result' $script:observedDesktop $script:observedBackend $script:fixtureRun}
+    if($script:omitIdentity){Write-AresLaunchCompletion $repoRoot $id $script:dispatchStatus 'synthetic dispatch result' -ExpectedNativePath $script:fixtureNative -ExpectedDesktopPath $script:fixtureDesktopPath}
+    else{$script:runFixture.invocationId=$id;$script:runFixture|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $script:fixtureRun 'run.json') -Encoding utf8;Write-AresLaunchCompletion $repoRoot $id $script:dispatchStatus 'synthetic dispatch result' $script:observedDesktop $script:observedBackend $script:fixtureRun -ExpectedNativePath $script:fixtureNative -ExpectedDesktopPath $script:fixtureDesktopPath}
   }
 }
 function Get-CimInstance {
   param($ClassName,$Filter,$ErrorAction)
   if($Filter -eq 'ProcessId = 100') {return $script:observedDesktop}
   if($Filter -eq 'ProcessId = 101') {return $script:observedBackend}
+  if($Filter -eq 'ProcessId = 90') {if($script:failLauncherAfterOpen -and $script:openingRequested){return $null};return $script:observedLauncher}
+  if($Filter -eq "Name = 'codex.exe'") {return $script:observedBackend}
   throw 'Unexpected fixture process query'
 }
+function Start-Process {param($FilePath) $script:openingRequested=$true}
 function Capture-Route([bool]$PreflightOnly,[bool]$PackagedLaunch,[int]$WaitForDesktopPid){
   $script:captured=$null;$script:capturedTimeout=$null
   $package=[pscustomobject]@{PackageFamilyName='Fixture.Package'}
@@ -115,7 +118,9 @@ $script:observedDesktop=[pscustomobject]@{ProcessId=100;ParentProcessId=90;Creat
 $script:observedBackend=[pscustomobject]@{ProcessId=101;ParentProcessId=100;CreationDate='2026-10-16T00:00:01.1234560Z';ExecutablePath=$script:fixtureNative;CommandLine='candidate app-server --fixture'}
 $script:fixtureRun=Join-Path $script:fixtureRoot 'run-fixture'
 New-Item -ItemType Directory -Path $script:fixtureRun | Out-Null
-$runReceipt=[ordered]@{manifestPath=(Join-Path $script:fixtureRoot 'bundle/candidate.json');desktop=@{pid=100};processIdentities=@($script:observedDesktop)}
+$script:observedLauncher=[pscustomobject]@{ProcessId=90;ParentProcessId=80;CreationDate='2026-10-16T00:00:00.001Z';ExecutablePath=$script:fixtureNode;CommandLine='node src/launch.mjs --fixture'}
+$runReceipt=[ordered]@{invocationId=$null;supervisor=@{pid=90;argv=@($script:fixtureNode,(Join-Path $script:fixtureRoot 'src/launch.mjs'))};manifestPath=(Join-Path $script:fixtureRoot 'bundle/candidate.json');desktop=@{pid=100};processIdentities=@($script:observedDesktop,$script:observedLauncher)}
+$script:runFixture=$runReceipt
 $runReceipt|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $script:fixtureRun 'run.json') -Encoding utf8
 try {
   $realNode=Resolve-AresNodePath '' $false
@@ -176,15 +181,35 @@ try {
   $rejected=$false;try{Capture-Route $false $false 0}catch{$rejected=$_.Exception.Message -match 'outcome UNKNOWN.*completion was not observed'}
   Check $rejected 'child that never starts cannot produce parent success'
   $lateId=[regex]::Match($captured.args,'-InvocationId ([a-f0-9]{32})(?: |$)').Groups[1].Value
-  Write-AresLaunchCompletion $script:fixtureRoot $lateId 'candidate_backend_verified' 'late synthetic success' $script:observedDesktop $script:observedBackend $script:fixtureRun
+  $script:runFixture.invocationId=$lateId;$script:runFixture|ConvertTo-Json -Depth 8|Set-Content -LiteralPath (Join-Path $script:fixtureRun 'run.json') -Encoding utf8
+  Write-AresLaunchCompletion $script:fixtureRoot $lateId 'candidate_backend_verified' 'late synthetic success' $script:observedDesktop $script:observedBackend $script:fixtureRun -ExpectedNativePath $script:fixtureNative -ExpectedDesktopPath $script:fixtureDesktopPath
   Check ($rejected -and $script:dispatchCount -eq $dispatchBeforeTimeout+1) 'late child completion does not relaunch or reverse the returned UNKNOWN outcome'
+  $foreignId=[guid]::NewGuid().ToString('N')
+  $rejected=$false;try{Write-AresLaunchCompletion $script:fixtureRoot $foreignId 'candidate_backend_verified' 'foreign invocation' $script:observedDesktop $script:observedBackend $script:fixtureRun -ExpectedNativePath $script:fixtureNative -ExpectedDesktopPath $script:fixtureDesktopPath}catch{$rejected=$_.Exception.Message -match 'UNKNOWN.*invocation'}
+  Check $rejected 'success producer rejects a different invocation before publication'
+  Check (-not (Test-Path -LiteralPath (Get-AresCompletionPath $script:fixtureRoot $foreignId))) 'invalid producer leaves no success completion'
   $id=[guid]::NewGuid().ToString('N');$notBefore=[datetimeoffset]::UtcNow
   $path=Get-AresCompletionPath $script:fixtureRoot $id
-  Write-AresLaunchCompletion $script:fixtureRoot $id 'candidate_already_running' 'existing candidate verified' $script:observedDesktop $script:observedBackend $script:fixtureRun
+  Write-AresLaunchCompletion $script:fixtureRoot $id 'candidate_already_running' 'existing candidate verified' $script:observedDesktop $script:observedBackend $script:fixtureRun -ExpectedNativePath $script:fixtureNative -ExpectedDesktopPath $script:fixtureDesktopPath
+  $duplicateRejected=$false;try{Write-AresLaunchCompletion $script:fixtureRoot $id 'failed' 'must not overwrite'}catch{$duplicateRejected=$true}
+  Check $duplicateRejected 'existing completion is never overwritten'
   Check ((Wait-AresLaunchCompletion $path $id $notBefore 0).status -eq 'candidate_already_running') 'confirmed already-running candidate is accepted'
   $proof=Get-Content -LiteralPath $path -Raw|ConvertFrom-Json
   Confirm-AresLaunchIdentity $proof $script:fixtureRoot $script:fixtureNative $script:fixtureDesktopPath
   Check $true 'same-call backend/Desktop identities are confirmed against live processes and run manifest'
+  foreach($variant in @('gone','pid-reuse','wrong-command')) {
+    $savedLauncher=$script:observedLauncher
+    if($variant -eq 'gone'){$script:observedLauncher=$null}else{
+      $script:observedLauncher=$savedLauncher|Select-Object *
+      if($variant -eq 'pid-reuse'){$script:observedLauncher.CreationDate='2026-10-16T01:00:00Z'}else{$script:observedLauncher.CommandLine='node unrelated.js'}
+    }
+    $badId=[guid]::NewGuid().ToString('N');$rejected=$false
+    try{Write-AresLaunchCompletion $script:fixtureRoot $badId 'candidate_already_running' 'invalid launcher' $script:observedDesktop $script:observedBackend $script:fixtureRun -ExpectedNativePath $script:fixtureNative -ExpectedDesktopPath $script:fixtureDesktopPath}catch{$rejected=$_.Exception.Message -match 'UNKNOWN.*launcher'}
+    $script:observedLauncher=$savedLauncher
+    Check $rejected 'producer rejects missing or replaced launcher'
+    Check (-not (Test-Path -LiteralPath (Get-AresCompletionPath $script:fixtureRoot $badId))) 'invalid launcher cannot publish success'
+  }
+
   $rounded=$proof.backend|Select-Object *
   $rounded.CreationDate='/Date('+([datetimeoffset]$proof.backend.CreationDate).ToUnixTimeMilliseconds()+')/'
   Check (Test-AresProcessIdentity $rounded $script:observedBackend) 'parent accepts WinPS millisecond serialization of the same backend identity'
@@ -237,16 +262,22 @@ try {
   $proof|ConvertTo-Json -Depth 5|Set-Content -LiteralPath $proofPath
   $meta=[pscustomobject]@{desktop=[pscustomobject]@{observedPackageVersion='1.2.3.4';protocolEvidence=[pscustomobject]@{path='patches/codex/desktop-1.2.3.4.protocol.json';sha256=(Get-FileHash $proofPath -Algorithm SHA256).Hash.ToLowerInvariant()}};sourcePreparation=[pscustomobject]@{sourceContentSha256='fixture-source'}}
   $pkg=[pscustomobject]@{Version=[version]'1.2.3.4';InstallLocation=$installed}
-  Assert-AresDesktopProtocolIdentity $guardRoot $pkg $meta $native
-  Check $true 'exact protocol evidence and both binary fingerprints pass'
+  $rejected=$false;try{Assert-AresDesktopProtocolIdentity $guardRoot $pkg $meta $native}catch{$rejected=$_.Exception.Message -match 'fresh local.*before Node'}
+  Check $rejected 'historical proof without a fresh local binding never executes Node'
+  $launcherDirectory=Join-Path $guardRoot 'src';New-Item -ItemType Directory -Path $launcherDirectory|Out-Null
+  $marker=Join-Path $guardRoot 'unverified-launcher-ran'
+  $unverified=Join-Path $launcherDirectory 'launch.mjs'
+  [IO.File]::WriteAllText($unverified,('import {writeFileSync} from "node:fs";writeFileSync('+($marker|ConvertTo-Json -Compress)+',"executed");'))
+  $rejected=$false;try{Assert-AresDesktopProtocolIdentity $guardRoot $pkg $meta $native $realNode;& $realNode $unverified}catch{$rejected=$true}
+  Check ($rejected -and -not (Test-Path -LiteralPath $marker)) 'valid historical proof cannot run a replaced launcher'
   foreach($target in @($official,$native,$proofPath)) {
     $saved=[IO.File]::ReadAllBytes($target);[IO.File]::WriteAllText($target,'changed-fixture')
     $rejected=$false;try{Assert-AresDesktopProtocolIdentity $guardRoot $pkg $meta $native}catch{$rejected=$true}
-    Check $rejected 'changed official native, candidate native or evidence is rejected'
+    Check $rejected 'unbound historical evidence stays blocked after content changes'
     [IO.File]::WriteAllBytes($target,$saved)
   }
   $pkg.Version=[version]'1.2.3.5';$rejected=$false;try{Assert-AresDesktopProtocolIdentity $guardRoot $pkg $meta $native}catch{$rejected=$true}
-  Check $rejected 'same evidence cannot qualify a different package version'
+  Check $rejected 'unbound historical evidence cannot qualify another package'
   $pkg.Version=[version]'1.2.3.4';$meta.desktop.protocolEvidence=$null;$rejected=$false;try{Assert-AresDesktopProtocolIdentity $guardRoot $pkg $meta $native}catch{$rejected=$true}
   Check $rejected 'version pin alone cannot replace missing protocol evidence'
   # Execute the real catch handler around actual early validation failures.
@@ -264,6 +295,63 @@ try {
     $expectedStatus=if($early -eq 'backend-timeout'){'unknown'}else{'failed'}
     Check ($rejected -and $record.invocationId -ceq $InvocationId -and $record.status -eq $expectedStatus -and $record.message) 'early failures and backend timeout reach matching completion receipts'
   }
+  # A real bounded inert child survives its parent; no Desktop or other work is touched.
+  $parentScript=Join-Path $script:fixtureRoot 'fixture-parent.mjs'
+  [IO.File]::WriteAllText($parentScript,'import {spawn} from "node:child_process";const args=["--eval","setTimeout(()=>{},6000)"];const child=spawn(process.execPath,args,{detached:true,stdio:"ignore"});child.unref();console.log(JSON.stringify({pid:child.pid,parentPid:process.pid,path:process.execPath,args}));')
+  $info=[Diagnostics.ProcessStartInfo]::new();$info.FileName=$realNode;$info.Arguments='"'+$parentScript+'"'
+  $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.RedirectStandardOutput=$true
+  $parent=[Diagnostics.Process]::Start($info)
+  $childRecord=$parent.StandardOutput.ReadLine()|ConvertFrom-Json
+  Check ($parent.WaitForExit(3000) -and $parent.ExitCode -eq 0) 'fixture parent exited before its child'
+  $survivor=[Diagnostics.Process]::GetProcessById([int]$childRecord.pid)
+  $childRecord|Add-Member -NotePropertyName observedCreationDate -NotePropertyValue $survivor.StartTime.ToUniversalTime().ToString('o')
+  Check (-not $survivor.HasExited -and $survivor.MainModule.FileName -ceq $realNode) 'exact bounded fixture child remains after parent loss'
+  $script:ownedFixtureChild=$childRecord
+  $activationAttempted=$true
+  $lockedRun=Join-Path $script:fixtureRoot 'locked-run.json'
+  $exclusive=[IO.File]::Open($lockedRun,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
+  try {
+    $pollExit=$mainTry.Find({param($n) $n -is [Management.Automation.Language.IfStatementAst] -and $n.Clauses[0].Item1.Extent.Text -ceq '$process.HasExited'},$true)
+    Check ($null -ne $pollExit) 'production supervisor-exit branch is available'
+    foreach($fault in @('query-denied','receipt-write','parent-exit','supervisor-exit')){
+      $InvocationId=[guid]::NewGuid().ToString('N');$completionPath=Get-AresCompletionPath $repoRoot $InvocationId;$launch=$null
+      $statement=switch($fault){
+        'query-denied' {'throw [UnauthorizedAccessException]::new(''synthetic process lookup denied'')'}
+        'receipt-write' {'Set-Content -LiteralPath $lockedRun -Value ''receipt'' -ErrorAction Stop'}
+        'parent-exit' {'throw ''launcher parent exited before its receipt was published'''}
+        'supervisor-exit' {$process=$parent;$launch=@{status='starting'};$launchPath=Join-Path $script:fixtureRoot 'fixture-activation.json';$run=$script:fixtureRun;$stderr='synthetic.stderr';$pollExit.Extent.Text}
+      }
+      $rejected=$false;try{& ([scriptblock]::Create('try {'+$statement+'} '+$catch))}catch{$rejected=$true}
+      $record=Get-Content -LiteralPath $completionPath -Raw|ConvertFrom-Json
+      Check ($rejected -and $record.status -ceq 'unknown') 'post-launch observation and write errors stay UNKNOWN'
+      Check (-not $survivor.HasExited) 'failure handling never terminates the real surviving fixture child'
+    }
+    # Exercise the real already-running branch, not just a manually set flag.
+    $openBranch=$statements | Where-Object {$_ -is [Management.Automation.Language.IfStatementAst] -and $_.Clauses[0].Item1.Extent.Text -ceq '$existing.Count -gt 0'} | Select-Object -First 1
+    Check ($null -ne $openBranch) 'production existing-candidate branch is available'
+    $currentPath=Join-Path $script:fixtureRoot 'current-run.json'
+    @{receiptPath=(Join-Path $script:fixtureRun 'run.json')}|ConvertTo-Json|Set-Content -LiteralPath $currentPath -Encoding utf8
+    $existing=@($script:observedDesktop);$ContextTraceThreadId=$null
+    $candidateManifest=[pscustomobject]@{native=[pscustomobject]@{path=$script:fixtureNative}};$desktopPath=$script:fixtureDesktopPath
+    $InvocationId=[guid]::NewGuid().ToString('N');$completionPath=Get-AresCompletionPath $repoRoot $InvocationId;$launch=$null
+    $activationAttempted=$false;$script:openingRequested=$false;$script:failLauncherAfterOpen=$true
+    $rejected=$false;try{& ([scriptblock]::Create('try {'+$openBranch.Extent.Text+'} '+$catch))}catch{$rejected=$true}
+    $script:failLauncherAfterOpen=$false
+    $record=Get-Content -LiteralPath $completionPath -Raw|ConvertFrom-Json
+    Check ($script:openingRequested -and $rejected -and $record.status -ceq 'unknown') 'open-existing request followed by identity failure stays UNKNOWN'
+    Check (-not $survivor.HasExited) 'open-existing failure leaves the inert survivor alone'
+  } finally {
+    $parent.Dispose()
+    $exclusive.Dispose();$activationAttempted=$false
+    if(-not $survivor.WaitForExit(9000)){throw 'Owned fixture child exceeded its bounded lifetime'}
+    Check $survivor.HasExited 'owned child exited naturally'
+    $survivor.Dispose()
+  }
+  $InvocationId=[guid]::NewGuid().ToString('N');$completionPath=Get-AresCompletionPath $repoRoot $InvocationId;$launch=$null
+  $statement='$unknown=[InvalidOperationException]::new(''abandoned fixture outcome'');$unknown.Data[''AresOutcome'']=''UNKNOWN'';throw $unknown'
+  try{& ([scriptblock]::Create('try {'+$statement+'} '+$catch))}catch{}
+  $record=Get-Content -LiteralPath $completionPath -Raw|ConvertFrom-Json
+  Check ($record.status -ceq 'unknown') 'abandoned outcome is not classified as confirmed failure'
 } finally {
   Remove-Item -LiteralPath $script:fixtureRoot -Recurse -Force
 }
@@ -294,4 +382,4 @@ Check ((Get-StateFreshness $receipt $state $false $true $true $true $when) -eq '
 Check ((Get-StateFreshness $receipt $state $true $true $false $true $when) -eq 'historical_or_unmatched') 'missing backend is historical'
 $state.time=$when.AddSeconds(-11).ToString('o')
 Check ((Get-StateFreshness $receipt $state $true $true $true $true $when) -eq 'stale') 'stale time remains stale'
-[pscustomobject]@{status='PASS';checks=$script:checks;modelCalls=0;desktopLaunched=$false} | ConvertTo-Json -Compress
+[pscustomobject]@{status='PASS';checks=$script:checks;modelCalls=0;desktopLaunched=$false;ownedFixtureChild=$script:ownedFixtureChild;fixtureChildExitedNaturally=$true} | ConvertTo-Json -Depth 5 -Compress

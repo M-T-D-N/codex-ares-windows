@@ -8,8 +8,8 @@ for(const engine of ['powershell.exe','pwsh.exe']){
   const available=probe!==null && probe.error?.code!=='ENOENT';
   test(`Desktop package dispatch and receipt precision (${engine})`,{skip:!available},()=>{
     assert.equal(probe.error,undefined,`PowerShell availability probe failed: ${engine}`);assert.equal(probe.status,0,probe.stderr);
-    const run=spawnSync(engine,['-NoProfile','-NonInteractive','-File',script],{windowsHide:true,encoding:'utf8',timeout:15000});
+    const run=spawnSync(engine,['-NoProfile','-NonInteractive','-File',script],{windowsHide:true,encoding:'utf8',timeout:22000});
     assert.equal(run.error,undefined);assert.equal(run.status,0,run.stderr);
-    const result=JSON.parse(run.stdout);assert.equal(result.status,'PASS');assert.ok(result.checks>=24);assert.equal(result.modelCalls,0);assert.equal(result.desktopLaunched,false);
+    const result=JSON.parse(run.stdout);assert.equal(result.status,'PASS');assert.ok(result.checks>=24);assert.equal(result.modelCalls,0);assert.equal(result.desktopLaunched,false);assert.equal(result.fixtureChildExitedNaturally,true);console.log(JSON.stringify({engine,checks:result.checks,ownedFixtureChild:result.ownedFixtureChild,fixtureChildExitedNaturally:result.fixtureChildExitedNaturally}));
   });
 }

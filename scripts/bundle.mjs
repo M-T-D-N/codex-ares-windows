@@ -63,6 +63,9 @@ async function collect(dir,allFiles=false){
  }return out;
 }
 const sidecar=await collect(join(root,'src'));
+assert(Array.isArray(lock.runtimeSourceFiles)&&lock.runtimeSourceFiles.length>0,'Locked runtime source inventory is required');
+assert.equal(new Set(lock.runtimeSourceFiles).size,lock.runtimeSourceFiles.length,'Duplicate locked runtime source');
+assert.deepEqual(sidecar.map(row=>row.path).sort(),[...lock.runtimeSourceFiles].sort(),'Runtime source inventory differs from lock');
 const runtimeDependencies=[...await Promise.all(['package-lock.json','scripts/start.ps1','scripts/status.ps1','scripts/verify-desktop-protocol.mjs','scripts/check-desktop-protocol.mjs','scripts/verify-native-source.mjs'].map(p=>entry(join(root,p)))),...await collect(join(root,'node_modules/gpt-tokenizer'),true)];
 const native={...await entry(join(bundle,'codex.exe')),version:lock.nativeVersion,sourceRelease:lock.nativeVersion.replace(/^codex-cli /,''),profile:'dev'};
 const manifest={schema:1,native,companions,sidecar,runtimeDependencies,evaluatorSources:[],nativeBuild,

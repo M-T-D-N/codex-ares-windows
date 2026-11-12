@@ -1,29 +1,17 @@
-# Codex 0.166 cumulative patch scope
+# Codex0.167.0-alpha.4.1 cumulative Ares patch
 
-Apply [native.patch](native.patch) exactly once to the official source fixed by [upstream.lock.json](upstream.lock.json). The exact inventory is [modified-files.json](modified-files.json), checked against [base-files.json](base-files.json): **180 paths, 163 modified and 17 new**. Final regular-file identity is `f602eec364f061f64d513b1cb77208fcaaa707ecc1bf1c61d3d20bb1f48052ac` across 9,711 files. One materialized symlink is separately checked as link text with Git index mode 120000. Physical Windows symlink success is not claimed.
+Apply [native.patch](native.patch) once to official upstream `d2c035639366e0bf2c316aa2065c24aabc12bcdc` using the [public lock](upstream.lock.json). [modified-files.json](modified-files.json) lists199 changed paths:178 modified and21 new;78 are SQL migrations preserving deployed CRLF checksum bytes. [base-files.json](base-files.json) and the modified-file manifest define all expected contents/modes. Regular-file identity: `b2c43e5c99f9d31e331224d0694f8bc22ebf7d059c7b65a45c3b24389629a2ab` across9,930 files; link-text materialization/mode120000 is verified separately. Private Git commits/history are not distributed.
 
-Official upstream is `f79b26ccbb3116b052544666a181012fb45dc49b` (0.166.0-alpha.5.1); base tree is `f5c5a9edbf28fe1ccdb260322f5f172f6e731765`; restored content/mode tree is `acf7459e72cef50d8daadb8dfa9b640ed73e6878`. Patch SHA-256 is `05016f6a951ed208895373ac1a0f82dd763026c4ff630b3f156e34224b904d49`.
-
-| Area | Selected responsibilities in the manifest |
+| Area | Downstream scope |
 |---|---|
-| Core generation control/model catalog | Ares aliases, retained selected Main, before-generation Luna decisions, supported effort/fallback, one-generation lease, owner/epoch checks, manual precedence and cancellation; dedicated Ares launch default before managed constraints |
-| Decision inputs/trace | Accepted current requests, goals and host-provenance delivery; metadata exclusions; native capture and effective configuration-update history |
-| App-server/protocol/SDK | Effort notification and optional context-window exports, regenerated official JSON/TypeScript/precomputed schemas and Python contracts; new error-enum classification records static errorClass/observed HTTP status without sensitive bodies or retry-policy changes |
-| Prompt history and hooks | Recoverable normalization at five sites using existing repair; prompt-copy/shared-history invariants; lazy transcript after handler selection while preserving upstream environment/context behavior |
-| Current time and outgoing messages | One absolute 10-second deadline through admission/registration/response and exact pending-callback cleanup |
-| Tools/MCP | Selected restart/effort handlers and current invocation/environment API adaptation; no claim that every historical tool change was copied |
-| Storage/rollout | Thread-history projection, timestamp/lifecycle metadata, compression/recorder and related tests |
-| Code mode/V8 | Selected initialization protection and regressions; external V8 pair remains the official locked Codex build |
-| TUI | Exact-thread effort-notification routing and preserved selected baseline, with direct regression coverage |
-| Test portability/dependencies | Windows Path fixture corrections, task-owned MCP test cache/temp, current formatter fixture and prepared Cargo.lock |
-| SQL compatibility |78 migration files preserve deployed CRLF checksum bytes; SQL content equals upstream LF content |
+| Core/model catalog | Retained selected Main, Ares aliases, generation-bound Luna advice, supported effort/fallback, manual ownership and cancellation |
+| Protocol/SDK | Existing Ares effort notifications and context-window extension on current upstream provider/account-history APIs; generated JSON/TypeScript/Python contracts |
+| Decision context/traces | Accepted inputs/host provenance, exact-thread opt-in scalar diagnostics and private-body exclusions |
+| MCP/tools/time | Checked publication/restart boundaries, request-effort tool, bounded current-time/outgoing request ownership |
+| History/metadata | Existing lazy/read behavior, cached immutable metadata, retained projection handle and guard held through actual blocking-read completion after cancellation |
+| Windows sandbox | Modular authenticated-client legacy-bin permission repair and matching helper/setup serialization; local source does not replace OpenAI-signed installed services |
+| Packaging/runtime | Exact source/sidecar inventory, bootstrap verification and package/companion whitelist; same-source CLI+four companion contract |
+| SQL/storage |78 byte-level CRLF migration entries; no SQL statement normalization or extra license comments |
+| Build/dependencies | Locked Rust/Cargo/V8 and prepared Cargo.lock, incremental0, dev line-tables-only; scrypt opt-level3 preserves inherited release-compatible calibration |
 
-The SQL files are real byte-level patch entries. They do not change SQL statements, but normalizing them changes migration checksums. Keep their exact locked bytes and do not add comments. The current dev profile uses line-tables-only and no downstream scrypt override.
-
-Upstream0.166 retains the effort-update mechanism and current startup/environment/storage APIs; the port preserves its response sender, asynchronous image storage and tool cwd/hook contracts. Selected existing upstream behavior is retained rather than wholesale copying the historical0.163 implementation. The current patch is not the earlier0.16470-path selection, nor proof that every historical TUI/exec/infrastructure hunk is present or equivalent. [Validation](../../docs/validation.md) reports only executed/current evidence and explicit limits.
-
-The cumulative patch carries forward explicit validated storage roots and startup/config-manager paths from the root-bound predecessor. Its current inventory is authoritative. The historical0.165 correction of a176-path summary to180 was a separate count-only change; this0.166 migration changes native source and generated contracts.
-
-The historical source341 config correction supplies StepModelSwitching only as a default for exact Ares advice mode with both TCP/token configured. Ordinary upstream defaults, merged explicit false and managed false remain effective; ReasoningEffortOverride false is not overridden. Config17 and the existing RPC7 reran with fixture feature enables removed. Those checks retain their historical scope. Current0.166 focused source/native/SDK/mock executions are reported separately in validation and are not a full independent review of the cumulative patch.
-
-The portable adapter and build/protocol-binding scripts are outside this native patch. Build records connect actual five-file output hashes to successful source/lock/toolchain/stage evidence; local Desktop proof remains a separate requirement before start. Historical private GUI results, static contract checks and current mock regressions are not interchangeable. Retain this modification notice/map and applicable upstream/third-party notices with reconstructed source.
+Base tree `d88291397dedeb8b6c5b0faead3684688e1dd780`; restored tree `f9fc801dccf3f4de594c67250a353d817d77c178`; patch SHA256 `0c4523be1e0ac82580fc4e2e0d41149f63a05296a3c9f998ec7f0e52f25c0caa`. These are reconstruction identities, not signed provenance or bit-identical binary claims. Public source restoration, current operating acceptance and exact public-head CI remain as recorded in [validation](../../docs/validation.md). Retain this change map, cumulative patch and applicable [licenses/notices](../../THIRD_PARTY_NOTICES.md) with reconstructed source.

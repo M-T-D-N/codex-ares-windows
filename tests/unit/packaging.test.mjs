@@ -109,7 +109,8 @@ function bundleFixture(t,{writeRecord=true,missingBinary=null}={}){
     const lock={nativeVersion:'codex-cli fixture',commit:'fixture-upstream',patch:{sha256:sha(patch)},
       sourcePreparation:{sourceContentSha256:sha('codex-rs/Cargo.lock\0'+sha(cargoLock)+'\n'),nativeFileCount:1},
       build:{rustcVersion:'rustc fixture',cargoVersion:'cargo fixture',target:'x86_64-pc-windows-msvc',profile:'dev',jobs:2,cargoIncremental:'0',cargoLockSha256:sha(cargoLock)},
-      companions:companions.map(name=>({name}))};
+      companions:companions.map(name=>({name})),
+      runtimeSourceFiles:['src/common/environment.mjs','src/common/storage-roots.mjs','src/fixture.mjs']};
     writeFileSync(join(dir,'patches/codex/upstream.lock.json'),JSON.stringify(lock));
     const names=['codex.exe',...companions],bytes=name=>'synthetic bytes, never executed: '+name;
     for(const name of names)if(name!==missingBinary)writeFileSync(join(dir,'target/debug',name),bytes(name));
@@ -139,6 +140,19 @@ test('bundle metadata retains all four Main models, binds five build hashes and 
     assert(!manifest.includes(f.dir));assert(!manifest.includes(JSON.stringify(f.dir).slice(1,-1)));assert(!manifest.includes('PRIVATE_'));assert(!Object.hasOwn(candidate.nativeBuild,'source'));assert(!Object.hasOwn(candidate.nativeBuild,'process'));
     assert.notEqual(f.run().status,0);assert.equal(readFileSync(join(f.dir,'bundle/candidate.json'),'utf8'),manifest);
 });
+for(const kind of ['absent inventory','duplicate entry','unlisted runtime','missing runtime'])test('bundle runtime inventory rejects '+kind+' without a successful manifest',t=>{
+ const f=bundleFixture(t),lockPath=join(f.dir,'patches/codex/upstream.lock.json');
+ if(kind==='absent inventory')delete f.lock.runtimeSourceFiles;
+ if(kind==='duplicate entry')f.lock.runtimeSourceFiles.push(f.lock.runtimeSourceFiles[0]);
+ if(kind==='unlisted runtime')writeFileSync(join(f.dir,'src/unlisted.mjs'),'//unexpected runtime');
+ if(kind==='missing runtime')rmSync(join(f.dir,'src/fixture.mjs'));
+ writeFileSync(lockPath,JSON.stringify(f.lock));
+ f.record.lockSha256=createHash('sha256').update(readFileSync(lockPath)).digest('hex');f.saveRecord();
+ const result=f.run();assert.equal(result.error,undefined);assert.notEqual(result.status,0);
+ assert.match(result.stderr,/runtime source inventory|locked runtime source|Runtime source inventory/i);
+ assert.equal(existsSync(join(f.dir,'bundle/candidate.json')),false);
+});
+
 test('bundle root option is included at creation and in the input fingerprint',t=>{
  const f=bundleFixture(t),built=f.run(null,'C:\\fixture\\home');assert.equal(built.status,0,built.stderr);
  const m=JSON.parse(readFileSync(join(f.dir,'bundle/candidate.json'),'utf8'));

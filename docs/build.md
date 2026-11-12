@@ -2,9 +2,9 @@
 
 ## Fixed inputs
 
-The [lock](../patches/codex/upstream.lock.json), [patch](../patches/codex/native.patch) and file manifests are authoritative. This candidate uses official Codex 0.166.0-alpha.5.1, commit `f79b26ccbb3116b052544666a181012fb45dc49b`. Archive SHA-256: `8891296adbe3c02474eb9dd9fcff23c99becd171cad75e76cff88c32a8cdb209`. Prepared Cargo.lock SHA-256: `cb021edc3d34a73a7e69a5ba95dbe641f224589888e3fac02bb3a1ceb34cbc93`.
+The [lock](../patches/codex/upstream.lock.json), [patch](../patches/codex/native.patch) and file manifests are authoritative. This candidate uses official Codex 0.167.0-alpha.4.1, commit `d2c035639366e0bf2c316aa2065c24aabc12bcdc`. Archive SHA-256: `f64150ed79217eb1cd818ce586ca17190654bf549317a4e9e8981d33ecb844b2`. Prepared Cargo.lock SHA-256: `b618b9b20ca5b71edabf29ad2f3f03b69abcad4666dae37ba322618f0db819ff`.
 
-Windows x64, Git, Node 22+/npm, Visual Studio x64 C++ tools and exact `rustc 1.99.1 (58cf8f9c3 2026-10-13)` / `cargo 1.99.1 (5f94df478 2026-08-27)` are required. Python is needed for lifecycle test fixtures. Build uses the default `x86_64-pc-windows-msvc` host with no `--target`, dev profile, `debug = 'line-tables-only'`, jobs 2 and `CARGO_INCREMENTAL=0`. There is no downstream scrypt profile override. Preserve these inputs and avoid concurrent writers to a reused target cache. Do not copy another target's internal files or routinely run `cargo clean`.
+Windows x64, Git, Node 22+/npm, Visual Studio x64 C++ tools and exact `rustc 1.99.1 (58cf8f9c3 2026-10-13)` / `cargo 1.99.1 (5f94df478 2026-08-27)` are required. Python is needed for lifecycle test fixtures. Build uses the default `x86_64-pc-windows-msvc` host with no `--target`, dev profile, `debug = 'line-tables-only'`, jobs 2 and `CARGO_INCREMENTAL=0`. The inherited `[profile.dev.package.scrypt] opt-level=3` preserves release-compatible age calibration without relaxing work limits. Preserve these inputs and avoid concurrent writers to a reused target cache. Do not copy another target's internal files or routinely run `cargo clean`.
 
 ## Restore and build
 
@@ -20,7 +20,7 @@ For restoration alone:
 .\scripts\setup.ps1 -RestoreOnly -Archive .\build\codex-base.tar.gz -SourceDir .\build\source
 ```
 
-The archive must match the lock. A nonempty source directory is rejected. The exact restoration applies 180 delta paths (163 modified, 17 new), yielding 9,711 regular files and one materialized symlink. Base tree: `f5c5a9edbf28fe1ccdb260322f5f172f6e731765`; restored content/mode tree: `acf7459e72cef50d8daadb8dfa9b640ed73e6878`. The regular-file identity is `f602eec364f061f64d513b1cb77208fcaaa707ecc1bf1c61d3d20bb1f48052ac`.
+The archive must match the lock. A nonempty source directory is rejected. The exact restoration applies 199 delta paths (178 modified, 21 new), yielding 9,930 regular files and one materialized symlink. Base tree: `d88291397dedeb8b6c5b0faead3684688e1dd780`; restored content/mode tree: `f9fc801dccf3f4de594c67250a353d817d77c178`. The regular-file identity is `b2c43e5c99f9d31e331224d0694f8bc22ebf7d059c7b65a45c3b24389629a2ab`.
 
 On Windows, the portable restore materializes bubblewrap/LICENSE as its link text while preserving Git index mode 120000. Physical symlink creation previously failed with WinError1314; this is not a POSIX symlink checkout. Do not change privileges, ACLs or developer mode to turn that limitation into a pass.
 
@@ -76,6 +76,8 @@ V8 152.2.0 uses the official [Codex-built release pair](https://github.com/opena
 
 ## Local checks
 
+This source-only distribution excludes bundles and private build/protocol receipts. A local validation checkout completed the official wrapper with the current public lock, the same verified native source and pooled target, `-Offline -IncludeCompanions -SkipBundle`, then bundle creation, fresh stable326/experimental474 protocol verification, Doctor and `start.ps1 -PreflightOnly`. Both Cargo stages succeeded with all five binary hashes unchanged; 2,010 Fresh lines and no Compiling lines were observed. The local bundle and preflight each checked 1,561 inputs. These build/preflight results are separate from the completed full source restoration and private same-native operating checks in [validation](validation.md). None of these local outputs is shipped. The source regression command below is the default npm command, without concurrency overrides.
+
 Run from the source-preview root with task-owned temporary paths:
 
 ```powershell
@@ -95,8 +97,8 @@ Keep the default `npm test` concurrency. Mock fixtures and local static checks d
 
 Retain the accepted checkout/bundle and a private DB recovery point. Restore a new revision separately into an empty source path with no existing bundle, then complete relevant checks, bundle, local protocol verification, Doctor and preflight. Operating activation remains a separate acceptance decision.
 
-The recorded current-candidate manual startup does not qualify the separate private automatic-restart workflow, which failed and whose helper is not shipped. Before an operating transition, finish other active work and verify the exact candidate and private recovery scope. The commands below describe the supported procedure, not evidence of GUI/provider acceptance or a completed public release.
+Private same-native qualification completed the automatic normal-shutdown/capture/verify/start sequence and subsequent authenticated service initialization twice, with config/marker bytes and audited ACL state preserved. The normal shell and builtin-patch create/edit/delete checks passed. The private scheduler/recovery helper is not shipped, and these results do not qualify a public-layout GUI/provider run or a fresh PC. Historical failures remain in their dated scopes. Before an operating transition, finish other active work and verify the exact candidate and private recovery scope. [Validation](validation.md) records the remaining limits, including the denied mapped-service-image query and the absence of any future permanent-repair guarantee.
 
-Finish work and quit Codex normally before using an accepted launcher in ordinary non-administrator PowerShell. After that review and acceptance, run `.\scripts\start.ps1`. `-WaitForDesktopPid` waits for normal exit and does not force termination. Inspect an uncertain completion receipt and actual backend identity before deciding to retry. `-ContextTraceThreadId` opts in to diagnostics for one exact thread; `status.ps1` checks identity/freshness.
+Finish work and quit Codex normally before running `.\scripts\start.ps1` in ordinary non-administrator PowerShell. `-WaitForDesktopPid` waits for normal exit and does not force termination. Inspect an uncertain completion receipt and actual backend identity before deciding to retry. `-ContextTraceThreadId` opts in to diagnostics for one exact thread; `status.ps1` checks identity/freshness.
 
 Recover through the retained accepted launcher or installed Codex after normal exit. Do not rewrite DB/authentication, weaken guards or force other tasks closed. To remove Ares, return to the installed app and remove only unused Ares-owned shortcuts/checkout/build/bundle through the Recycle Bin, preserving needed private diagnostics. Codex home, conversations, authentication, shared runtimes and installed Desktop remain intact. The source distribution contains no executables, dependencies or private recovery data.

@@ -85,3 +85,38 @@ test('exact 0.166.0-alpha.5.1 requires four matching companions and keeps adjace
     assert.throws(()=>validateCompanionRelease(manifest),/release combination/,mode);
   }
 });
+
+// Exact current native release; adjacent builds remain unreviewed.
+test('exact 0.167.0-alpha.3.2 requires four matching companions',()=>{
+  validateCompanionRelease(fixture('0.167.0-alpha.3.2',true));
+  assert.throws(()=>validateCompanionRelease(fixture('0.167.0-alpha.3.2')),/release combination/);
+  for(const release of ['0.167.0-alpha.3.1','0.167.0-alpha.3.3','0.167.0'])assert.throws(()=>validateCompanionRelease(fixture(release,true)),/release combination/);
+  for(const mode of ['mixed-release','different-directory','duplicate','wrong-name','extra']){
+    const manifest=fixture('0.167.0-alpha.3.2',true);
+    if(mode==='mixed-release')manifest.companions[3].sourceRelease='0.166.0-alpha.5.1';
+    if(mode==='different-directory')manifest.companions[3].path='D:/example/other/codex-windows-sandbox-service.exe';
+    if(mode==='duplicate')manifest.companions[3].path=manifest.companions[0].path;
+    if(mode==='wrong-name')manifest.companions[3].path='D:/example/candidate/unknown.exe';
+    if(mode==='extra')manifest.companions.push({...manifest.companions[3],path:'D:/example/candidate/extra.exe'});
+    assert.throws(()=>validateCompanionRelease(manifest),/release combination/,mode);
+  }
+});
+
+// Exact current release; adjacent unknown releases remain outside the service allowance.
+test('exact 0.167.0-alpha.4.1 requires all four same-source companions',()=>{
+  validateCompanionRelease(fixture('0.167.0-alpha.4.1',true));
+  assert.throws(()=>validateCompanionRelease(fixture('0.167.0-alpha.4.1')),/release combination/);
+  for(const release of ['0.167.0-alpha.4.2','0.167.0-alpha.5','0.167.0','0.168.0'])
+    assert.throws(()=>validateCompanionRelease(fixture(release,true)),/release combination/);
+});
+for(const mode of ['mixed-release','different-directory','duplicate','wrong-name','extra']) {
+ test('0.167.0-alpha.4.1 rejects '+mode,()=>{
+  const manifest=fixture('0.167.0-alpha.4.1',true);
+  if(mode==='mixed-release')manifest.companions[3].sourceRelease='0.167.0-alpha.3.2';
+  if(mode==='different-directory')manifest.companions[3].path='D:/example/other/codex-windows-sandbox-service.exe';
+  if(mode==='duplicate')manifest.companions[3].path=manifest.companions[0].path;
+  if(mode==='wrong-name')manifest.companions[3].path='D:/example/candidate/unknown.exe';
+  if(mode==='extra')manifest.companions.push({...manifest.companions[3],path:'D:/example/candidate/extra.exe'});
+  assert.throws(()=>validateCompanionRelease(manifest),/release combination/);
+ });
+}

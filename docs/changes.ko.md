@@ -1,4 +1,10 @@
-# 현재 0.166 소스 프리뷰 — 로컬 검증
+# 변경 내역
+
+## 0.1.0-preview.5 / Codex0.167.0-alpha.4.1 (2026-11-12)
+
+공식 upstream `d2c035639366e0bf2c316aa2065c24aabc12bcdc`, Desktop26.1106.6628.0과 source identity `b2c43e5c99f9d31e331224d0694f8bc22ebf7d059c7b65a45c3b24389629a2ab`를 고정합니다. 모듈식 sandbox 복구·retained-reader guard·새 provider/account-history 계약과 Ares generation 제어를 보존했습니다. 공개 소스9,930 regular file과 materialized link1개의 내용·Git mode·tree 복원이 통과했습니다. 기본 npm280/0/0, public lock에 결속한 동일5종 cached build, bundle1561·fresh stable326/experimental474 proof·Doctor·preflight도 통과했습니다. 별도 private 동일-native 자동 재시작과 인증된 서비스 초기화2회가 성공했으며, 공개 layout GUI/provider·새 PC 수용과 구분합니다. 정확한 게시 커밋 CI는 날짜가 고정된 게시 전 snapshot에서 NOT_RUN이고 실제 결과는 Release에서 확인합니다. 이전 자산과 source-validation은 당시 identity로 보존합니다.
+
+## 역사적 0.166 소스 프리뷰 — 당시 로컬 검증
 
 공식 Codex0.166.0-alpha.5.1 upstream `f79b26ccbb3116b052544666a181012fb45dc49b`에 누적 Ares 변경을 이식했습니다. native identity는 `f602eec364f061f64d513b1cb77208fcaaa707ecc1bf1c61d3d20bb1f48052ac`, patch는 `05016f6a951ed208895373ac1a0f82dd763026c4ff630b3f156e34224b904d49`입니다. 180경로(수정163·신규17), 일반 파일9,711개와 materialized link1개를 검증했습니다. [Lock](../patches/codex/upstream.lock.json)이 정확한 입력을 소유합니다.
 

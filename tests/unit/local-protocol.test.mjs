@@ -1,3 +1,4 @@
+import {protocolSchemas} from '../protocol-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,mkdir,readFile,rm,copyFile} from 'node:fs/promises';
@@ -17,8 +18,7 @@ async function fixture(t){
  await writeFile(join(source,'native.txt'),'fixed source');await writeFile(desktopNative,'desktop');await writeFile(candidate,'a different build of the same source');
  const base={'native.txt':{mode:'100644',sha256:sha('fixed source')}},identity=sha('native.txt\0'+sha('fixed source')+'\n');
  await save(join(root,'patches/codex/base-files.json'),base);await save(join(root,'patches/codex/modified-files.json'),{files:{}});await writeFile(join(root,'patches/codex/native.patch'),'patch');
- const schemas={desktop:{'v2/ThreadStartResponse.json':{properties:{model:{type:'string'}},required:['model']},'ServerNotification.json':{oneOf:[{properties:{method:{enum:['thread/started']}}}]}},candidate:null};
- schemas.candidate=structuredClone(schemas.desktop);schemas.candidate['v2/ThreadStartResponse.json'].properties.modelContextWindow={type:['integer','null']};schemas.candidate['v2/ReasoningEffortUpdatedNotification.json']={properties:{threadId:{type:'string'}},required:['threadId']};
+ const schemas=protocolSchemas();
  async function emit(which,dest,mutate){await mkdir(dest,{recursive:true});const data=structuredClone(schemas[which]);if(mutate)mutate(data);for(const [name,value]of Object.entries(data)){await mkdir(resolve(dest,name,'..'),{recursive:true});await save(join(dest,name),value);}}
  const profiles={};for(const profile of ['stable','experimental']){
   profiles[profile]={};for(const who of ['desktop','candidate']){const dir=join(root,'reference',profile,who);await emit(who,dir);const s=await schemaFiles(dir);profiles[profile][who]={sha256:s.sha256,files:s.inventory};}
@@ -109,11 +109,32 @@ test('export process failure preserves failure evidence and never binds',async t
 test('candidate changed during verification cannot bind',async t=>{const f=await fixture(t),run=f.run;f.run=async(file,args)=>{const r=await run(file,args);if(args.includes('--experimental')&&file===f.candidate)await writeFile(f.candidate,'changed');return r;};await assert.rejects(validateLocalProtocol(f),/bytes changed/);await assert.rejects(readFile(join(f.root,'bundle/protocol-binding.json')));});
 for(const which of ['candidate','proof','export'])test('start verification rejects '+which+' tampering after successful binding',async t=>{const f=await fixture(t);await validateLocalProtocol(f);const b=await readJson(join(f.root,'bundle/protocol-binding.json'));const target=which==='candidate'?f.candidate:which==='proof'?join(f.root,b.path):join(resolve(f.root,b.path,'..'),'schema-candidate-stable/ServerNotification.json');await writeFile(target,'{}');await assert.rejects(verifyLocalProtocol(f));});
 for(const engine of ['powershell.exe','pwsh.exe'])test('real start function consumes local proof and rejects tampering ('+engine+')',async t=>{
- const f=await fixture(t);await validateLocalProtocol(f);
+ const f=await fixture(t);
+ await mkdir(join(f.root,'src'));await copyFile(join(project,'src/launch.mjs'),join(f.root,'src/launch.mjs'));
  for(const name of ['start.ps1','verify-desktop-protocol.mjs','verify-native-source.mjs','check-desktop-protocol.mjs'])await copyFile(join(project,'scripts',name),join(f.root,'scripts',name));
- const harness=join(f.root,'guard.ps1');await writeFile(harness,`param($Root,$Node)\n$ErrorActionPreference='Stop'\n$ast=[Management.Automation.Language.Parser]::ParseFile((Join-Path $Root 'scripts/start.ps1'),[ref]$null,[ref]$null)\n$fn=$ast.Find({param($a) $a -is [Management.Automation.Language.FunctionDefinitionAst] -and $a.Name -eq 'Assert-AresDesktopProtocolIdentity'},$true)\nInvoke-Expression $fn.Extent.Text\n$pkg=[pscustomobject]@{Version=[version]'1.2.3.4';InstallLocation=(Join-Path $Root 'installed')}\nAssert-AresDesktopProtocolIdentity $Root $pkg $null (Join-Path $Root 'bundle/codex.exe') $Node\n`);
+ f.manifest.sidecar=[{path:'src/launch.mjs',sha256:sha(await readFile(join(f.root,'src/launch.mjs')))}];
+ f.manifest.runtimeDependencies=await Promise.all(['verify-desktop-protocol.mjs','verify-native-source.mjs','check-desktop-protocol.mjs'].map(async name=>({path:'scripts/'+name,sha256:sha(await readFile(join(f.root,'scripts',name)))})));
+ await f.saveManifest();await validateLocalProtocol(f);
+ const harness=join(f.root,'guard.ps1');await writeFile(harness,`param($Root,$Node)\n$ErrorActionPreference='Stop'\nImport-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -ErrorAction Stop\n$ast=[Management.Automation.Language.Parser]::ParseFile((Join-Path $Root 'scripts/start.ps1'),[ref]$null,[ref]$null)\n$fn=$ast.Find({param($a) $a -is [Management.Automation.Language.FunctionDefinitionAst] -and $a.Name -eq 'Assert-AresDesktopProtocolIdentity'},$true)\nInvoke-Expression $fn.Extent.Text\n$pkg=[pscustomobject]@{Version=[version]'1.2.3.4';InstallLocation=(Join-Path $Root 'installed')}\nAssert-AresDesktopProtocolIdentity $Root $pkg $null (Join-Path $Root 'bundle/codex.exe') $Node\n`);
  const call=()=>spawnSync(engine,['-NoProfile','-NonInteractive','-File',harness,f.root,process.execPath],{windowsHide:true,encoding:'utf8',timeout:15000});
- const good=call();assert.equal(good.error,undefined);assert.equal(good.status,0,good.stderr);await writeFile(f.candidate,'tampered');const bad=call();assert.notEqual(bad.status,0);assert.match(bad.stderr,/invalid|changed/);
+ const good=call();assert.equal(good.error,undefined);assert.equal(good.status,0,good.stderr);
+ const marker=join(f.root,'unverified-executed');
+ for(const name of ['src/launch.mjs','scripts/verify-desktop-protocol.mjs','scripts/check-desktop-protocol.mjs','scripts/verify-native-source.mjs']){
+  const path=join(f.root,name),saved=await readFile(path);
+  try{
+   await writeFile(path,`import {writeFileSync} from 'node:fs';writeFileSync(${JSON.stringify(marker)},'executed');`);
+   const rejected=call();assert.notEqual(rejected.status,0,name);assert.match(rejected.stderr,/Bootstrap module changed/);
+   await assert.rejects(readFile(marker));
+  }finally{await writeFile(path,saved);}
+ }
+ for(const mode of ['missing','duplicate']){
+  const saved=structuredClone(f.manifest.runtimeDependencies);
+  if(mode==='missing')f.manifest.runtimeDependencies.pop();else f.manifest.runtimeDependencies.push({...f.manifest.runtimeDependencies[0]});
+  await f.saveManifest();await alterBoundProof(f,p=>{p.manifestSha256=sha(JSON.stringify(f.manifest,null,2)+'\n');});
+  const rejected=call();assert.notEqual(rejected.status,0);assert.match(rejected.stderr,/inventory is invalid/);
+  f.manifest.runtimeDependencies=saved;await f.saveManifest();await alterBoundProof(f,p=>{p.manifestSha256=sha(JSON.stringify(f.manifest,null,2)+'\n');});
+ }
+ await writeFile(f.candidate,'tampered');const bad=call();assert.notEqual(bad.status,0);assert.match(bad.stderr,/invalid|changed/);
 });
 for(const [name,change]of [
  ['lock',async f=>{f.lock.comment='stale lock';await f.saveLock();}],

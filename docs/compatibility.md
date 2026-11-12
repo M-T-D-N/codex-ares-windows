@@ -1,6 +1,12 @@
 # Compatibility
 
-## Current source preview: 0.166 / Desktop 26.1027.3384.0
+## Current candidate: 0.167.0-alpha.4.1 / Desktop26.1106.6628.0
+
+The [public lock](../patches/codex/upstream.lock.json) pins official upstream `d2c035639366e0bf2c316aa2065c24aabc12bcdc`, source identity `b2c43e5c99f9d31e331224d0694f8bc22ebf7d059c7b65a45c3b24389629a2ab` and the exact Desktop package. Complete public source restoration passed: 9,930 regular files plus one materialized link, exact contents/Git modes and tree `f9fc801dccf3f4de594c67250a353d817d77c178`. The local public-lock build, fresh stable326/experimental474 proof, Doctor and 1,561-input preflight passed with all five native hashes unchanged. Separate private operation of the same native inputs passed automatic restart and two authenticated service initializations. [Validation](validation.md) separates these scopes from public-layout GUI/provider and fresh-PC acceptance, which remain unverified, and records exact-commit CI as NOT_RUN at the prepublication snapshot. A reference or another host's private proof is not fresh proof for a user's rebuilt binary. Start requires a locally generated binding and rejects prior/adjacent package versions, altered artifacts and unreviewed schema drift.
+
+The comparator projects only the exact four known Ares insertion locations and one candidate-only effort-notification schema. Provider requests and currentAccountOnly remain ordinary upstream contracts; required fields and other differences are not ignored. Retained-reader guard lifetime prevents same-recorder cursor reuse until an old blocking reader actually stops after cancellation; cached immutable metadata and deny-reopen support remain. This source preparation does not itself operate sandbox provisioning or replace an installed service. [Validation](validation.md) separates public mocks from real operation.
+
+## Historical source preview: 0.166 / Desktop 26.1027.3384.0
 
 The [lock](../patches/codex/upstream.lock.json) pins official upstream `f79b26ccbb3116b052544666a181012fb45dc49b`, native version `0.166.0-alpha.5.1` and source identity `f602eec364f061f64d513b1cb77208fcaaa707ecc1bf1c61d3d20bb1f48052ac`. The registered Desktop package is **26.1027.3384.0**, display **26.1027.30824**. Its official native SHA-256 is `3097c909fb6d5cd63510d44aceb1d42df9f6e85722a3e447e477def1ecf60e16`; the tested Ares CLI is `456a494b3b663b659a15673622d6429f92b8eb63483a7d046790e96c8df2fd2d`.
 

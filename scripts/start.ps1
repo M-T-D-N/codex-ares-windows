@@ -3,33 +3,75 @@ $ErrorActionPreference='Stop'
 # Use this host's bundled utilities even with an inherited PowerShell 7 module path.
 Import-Module (Join-Path $PSHOME 'Modules\Microsoft.PowerShell.Utility\Microsoft.PowerShell.Utility.psd1') -ErrorAction Stop
 $repoRoot=Split-Path -Parent $PSScriptRoot
+function Assert-AresNodeEnvironment {
+  if(-not [string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable('NODE_OPTIONS','Process'))) {
+    throw 'NODE_OPTIONS can execute code before Ares validation. Start from a normal shell without Node preload or loader options. No environment settings were changed.'
+  }
+}
+function Get-AresStartMutexName([string]$UserSid,[string]$PackageFamilyName) {
+  if($UserSid -cnotmatch '^S-1-(?:[0-9]+-)*[0-9]+$' -or $PackageFamilyName -cnotmatch '^OpenAI\.Codex_[a-z0-9]+$') {
+    throw 'Exact current user and Codex package identity are required for start serialization.'
+  }
+  $hash=[Security.Cryptography.SHA256]::Create()
+  try {$key=([BitConverter]::ToString($hash.ComputeHash([Text.Encoding]::UTF8.GetBytes($UserSid+'|'+$PackageFamilyName)))).Replace('-','').ToLowerInvariant()}
+  finally {$hash.Dispose()}
+  # Local is explicitly scoped to the current interactive Windows session.
+  return 'Local\AresStart-'+$key
+}
+function Enter-AresStartMutex([string]$Name) {
+  $mutex=[Threading.Mutex]::new($false,$Name)
+  try {
+    try {$acquired=$mutex.WaitOne(0)}
+    catch [Threading.AbandonedMutexException] {
+      # WaitOne grants ownership on abandonment; release it, but never start.
+      $mutex.ReleaseMutex()
+      $unknown=[InvalidOperationException]::new('Previous launcher ended without releasing its start mutex. Outcome UNKNOWN; inspect its children and receipts before retrying.')
+      $unknown.Data['AresOutcome']='UNKNOWN'
+      throw $unknown
+    }
+    if(-not $acquired){throw 'Another supported Ares start is in progress. No new Desktop was started.'}
+    return $mutex
+  } catch {$mutex.Dispose();throw}
+}
 function Assert-AresDesktopProtocolIdentity($Root,$Package,$Compat,[string]$CandidateNativePath,[string]$NodePath) {
+  # Built-in bootstrap: no local JavaScript executes before its bytes are checked.
+  function Get-AresVerifiedLocalPath([string]$RelativePath) {
+    if(-not $RelativePath -or [IO.Path]::IsPathRooted($RelativePath) -or $RelativePath.Contains('\') -or
+      @($RelativePath.Split('/') | Where-Object {$_ -in @('','.', '..')}).Count) {throw 'Invalid bootstrap relative path.'}
+    $owner=[IO.Path]::GetFullPath($Root)
+    $part=Get-Item -LiteralPath $owner -Force
+    if(-not $part.PSIsContainer -or ($part.Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Redirected bootstrap root.'}
+    foreach($name in $RelativePath.Split('/')) {
+      $part=Get-Item -LiteralPath (Join-Path $part.FullName $name) -Force
+      if($part.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Redirected bootstrap artifact.'}
+    }
+    if($part.PSIsContainer){throw 'Bootstrap artifact must be a file.'}
+    return $part.FullName
+  }
   if(Test-Path -LiteralPath (Join-Path $Root 'bundle/protocol-binding.json')) {
+    $binding=Get-Content -Raw -LiteralPath (Get-AresVerifiedLocalPath 'bundle/protocol-binding.json') | ConvertFrom-Json
+    if($binding.schema -ne 1 -or $binding.path -cnotmatch '^build/desktop-protocol/[a-f0-9]{32}/proof\.json$' -or
+      $binding.sha256 -cnotmatch '^[a-f0-9]{64}$'){throw 'Invalid local bootstrap binding.'}
+    $proofPath=Get-AresVerifiedLocalPath $binding.path
+    if((Get-FileHash -LiteralPath $proofPath -Algorithm SHA256).Hash.ToLowerInvariant() -cne $binding.sha256){throw 'Local bootstrap proof changed.'}
+    $proof=Get-Content -Raw -LiteralPath $proofPath | ConvertFrom-Json
+    $manifestPath=Get-AresVerifiedLocalPath 'bundle/candidate.json'
+    if($proof.manifestSha256 -cnotmatch '^[a-f0-9]{64}$' -or
+      (Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash.ToLowerInvariant() -cne $proof.manifestSha256){throw 'Local bootstrap manifest changed.'}
+    $manifest=Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
+    foreach($required in @('src/launch.mjs','scripts/verify-desktop-protocol.mjs','scripts/check-desktop-protocol.mjs','scripts/verify-native-source.mjs')) {
+      $entries=@(@($manifest.sidecar)+@($manifest.runtimeDependencies) | Where-Object {$_.path -ceq $required})
+      if($entries.Count -ne 1 -or $entries[0].sha256 -cnotmatch '^[a-f0-9]{64}$'){throw 'Bootstrap module inventory is invalid.'}
+      $modulePath=Get-AresVerifiedLocalPath $required
+      if((Get-FileHash -LiteralPath $modulePath -Algorithm SHA256).Hash.ToLowerInvariant() -cne $entries[0].sha256){throw 'Bootstrap module changed.'}
+    }
     $verifier=Join-Path $Root 'scripts/verify-desktop-protocol.mjs'
     if(-not $NodePath){throw 'Exact Node executable is required for local contract evidence.'}
     & $NodePath $verifier --verify --desktop-native (Join-Path $Package.InstallLocation 'app/resources/codex.exe') --package-version $Package.Version.ToString() | Out-Null
     if($LASTEXITCODE -ne 0){throw 'Local Desktop protocol evidence is invalid. No Desktop was started.'}
     return
   }
-  $entry=$Compat.desktop.protocolEvidence
-  $version=[string]$Compat.desktop.observedPackageVersion
-  if($version -cnotmatch '^\d+\.\d+\.\d+\.\d+$' -or -not $entry -or $entry.path -cne ('patches/codex/desktop-'+$version+'.protocol.json') -or $entry.sha256 -cnotmatch '^[a-f0-9]{64}$') {
-    throw 'Exact Desktop protocol evidence is required; no version-only override is supported.'
-  }
-  $path=Join-Path $Root $entry.path
-  if((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -cne $entry.sha256){throw 'Desktop protocol evidence changed.'}
-  $proof=Get-Content -Raw -LiteralPath $path | ConvertFrom-Json
-  if($proof.schema -ne 1 -or $proof.status -cne 'static_text_contract_checked' -or $proof.guiAcceptance -cne 'NOT_RUN' -or
-     $proof.packageVersion -cne $Package.Version.ToString() -or $proof.packageVersion -cne $Compat.desktop.observedPackageVersion -or
-     $proof.candidateNative.sourceIdentity -cne $Compat.sourcePreparation.sourceContentSha256) {
-    throw 'Desktop protocol evidence does not identify this candidate and registered package.'
-  }
-  $desktopNative=Join-Path $Package.InstallLocation 'app/resources/codex.exe'
-  foreach($pair in @(@($desktopNative,$proof.desktopNative.sha256),@($CandidateNativePath,$proof.candidateNative.sha256))) {
-    if($pair[1] -cnotmatch '^[a-f0-9]{64}$' -or (Get-FileHash -LiteralPath $pair[0] -Algorithm SHA256).Hash.ToLowerInvariant() -cne $pair[1]) {
-      throw 'Desktop/candidate native fingerprint differs from the static protocol comparison. No Desktop was started.'
-    }
-  }
+  throw 'A fresh local Desktop protocol binding is required before Node execution. Historical static evidence cannot start this candidate.'
 }
 # Resolve Node before MSIX activation; that child does not inherit the caller's PATH.
 function Resolve-AresNodePath([string]$NodePath,[bool]$PackagedLaunch) {
@@ -97,6 +139,14 @@ function Confirm-AresLaunchIdentity($Result,[string]$Root,[string]$NativePath,[s
     $runReceipt.desktop.pid -ne $desktopPid) {
     throw 'Packaged launch outcome UNKNOWN: completion does not match its candidate run receipt.'
   }
+  $recordedLauncher=@($runReceipt.processIdentities | Where-Object {$_.ProcessId -eq $runReceipt.supervisor.pid}) | Select-Object -First 1
+  if(-not $recordedLauncher -or $Result.desktop.ParentProcessId -ne $recordedLauncher.ProcessId -or
+    [IO.Path]::GetFullPath([string]$runReceipt.supervisor.argv[1]) -cne (Join-Path $owner 'src\launch.mjs') -or
+    ($Result.status -eq 'candidate_backend_verified' -and $runReceipt.invocationId -cne $Result.invocationId)) {
+    throw 'Packaged launch outcome UNKNOWN: run does not identify this launcher and invocation.'
+  }
+  $liveLauncher=Get-CimInstance Win32_Process -Filter "ProcessId = $($recordedLauncher.ProcessId)" -ErrorAction Stop
+  if(-not (Test-AresProcessIdentity $recordedLauncher $liveLauncher)) {throw 'Packaged launch outcome UNKNOWN: launcher identity changed.'}
   $desktop=Get-CimInstance Win32_Process -Filter "ProcessId = $desktopPid" -ErrorAction Stop
   $backend=Get-CimInstance Win32_Process -Filter "ProcessId = $backendPid" -ErrorAction Stop
   if(-not (Test-AresProcessIdentity $Result.desktop $desktop) -or -not (Test-AresProcessIdentity $Result.backend $backend)) {
@@ -104,13 +154,23 @@ function Confirm-AresLaunchIdentity($Result,[string]$Root,[string]$NativePath,[s
   }
 }
 function Write-AresLaunchCompletion([string]$Root,[string]$InvocationId,
-  [ValidateSet('candidate_backend_verified','candidate_already_running','failed','unknown')][string]$Status,[string]$Message,$Desktop,$Backend,[string]$RunDir) {
+  [ValidateSet('candidate_backend_verified','candidate_already_running','failed','unknown')][string]$Status,[string]$Message,$Desktop,$Backend,[string]$RunDir,
+  [string]$ExpectedNativePath,[string]$ExpectedDesktopPath) {
   if(-not $InvocationId){return}
   $path=Get-AresCompletionPath $Root $InvocationId
   $result=[ordered]@{schema=1;invocationId=$InvocationId;status=$Status;message=$Message;
     completedAt=[datetimeoffset]::UtcNow.ToString('o')}
-  if($Status -in @('candidate_backend_verified','candidate_already_running')){$result.desktop=$Desktop;$result.backend=$Backend;$result.runDir=$RunDir}
-  $result | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $path -Encoding utf8
+  if($Status -in @('candidate_backend_verified','candidate_already_running')) {
+    $result.desktop=$Desktop;$result.backend=$Backend;$result.runDir=$RunDir
+    if(-not $ExpectedNativePath -or -not $ExpectedDesktopPath){throw 'Packaged launch outcome UNKNOWN: expected executable identities are required before success publication.'}
+    # The packaged child holds the start mutex here; the outer parent checks again.
+    Confirm-AresLaunchIdentity ([pscustomobject]$result) $Root $ExpectedNativePath $ExpectedDesktopPath
+  }
+  $stream=[IO.File]::Open($path,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::Read)
+  try {
+    $bytes=[Text.UTF8Encoding]::new($false).GetBytes(($result | ConvertTo-Json -Depth 6)+[Environment]::NewLine)
+    $stream.Write($bytes,0,$bytes.Length);$stream.Flush()
+  } finally {$stream.Dispose()}
 }
 function Wait-AresLaunchCompletion([string]$Path,[string]$InvocationId,[datetimeoffset]$NotBefore,[int]$TimeoutSeconds) {
   $timer=[Diagnostics.Stopwatch]::StartNew()
@@ -138,11 +198,15 @@ function Wait-AresLaunchCompletion([string]$Path,[string]$InvocationId,[datetime
 }
 $completionPath=$null
 $launch=$null
+$startMutex=$null
+$activationAttempted=$false
 try {
+  if($PackagedLaunch -and -not $PreflightOnly -and -not $InvocationId){$InvocationId=[guid]::NewGuid().ToString('N')}
   if($InvocationId) {
     if(-not $PackagedLaunch -or $PreflightOnly){throw 'Launch invocation is internal to packaged activation.'}
     $completionPath=Get-AresCompletionPath $repoRoot $InvocationId
   }
+Assert-AresNodeEnvironment
 $principal=[Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
 if($principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
   throw 'Use normal, non-administrator PowerShell. No settings were changed.'
@@ -220,6 +284,10 @@ if($WaitForDesktopPid) {
   $waitState.status='normal_desktop_exit_observed'
   $waitState | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $waitReceipt -Encoding utf8
 }
+if($PackagedLaunch) {
+  $mutexName=Get-AresStartMutexName ([Security.Principal.WindowsIdentity]::GetCurrent().User.Value) $package.PackageFamilyName
+  $startMutex=Enter-AresStartMutex $mutexName
+}
 $existing=@(Get-CimInstance Win32_Process -Filter "Name = 'ChatGPT.exe'" | Where-Object {$_.CommandLine -notmatch ' --type='})
 if($existing.Count -gt 0) {
   $backend=@(Get-CimInstance Win32_Process -Filter "Name = 'codex.exe'" | Where-Object {
@@ -233,15 +301,17 @@ if($existing.Count -gt 0) {
     $activeDesktop=$existing | Where-Object {$_.ProcessId -eq $activeBackend.ParentProcessId} |
       Select-Object -First 1 ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine
     Confirm-AresLaunchIdentity ([pscustomobject]@{desktop=$activeDesktop;backend=$activeBackend;runDir=$activeRun}) $repoRoot $candidateManifest.native.path $desktopPath
+    $activationAttempted=$true # Opening the existing app is also an execution request.
     Start-Process -FilePath $desktopPath
-    Write-AresLaunchCompletion $repoRoot $InvocationId 'candidate_already_running' 'This candidate is already running. Opened its existing window.' $activeDesktop $activeBackend $activeRun
+    Write-AresLaunchCompletion $repoRoot $InvocationId 'candidate_already_running' 'This candidate is already running. Opened its existing window.' $activeDesktop $activeBackend $activeRun -ExpectedNativePath $candidateManifest.native.path -ExpectedDesktopPath $desktopPath
     Write-Output 'This candidate is already running. Opened its existing window.'
     return
   }
   throw 'Another Codex backend is running. Finish local work, quit Codex normally from its app menu, then run this command again. No process was stopped.'
 }
-$detachedOutput=& $node $launcher --manifest $manifestPath --desktop-binding $bindingPath --run-dir $run --activate --detach-supervisor
-if($LASTEXITCODE -ne 0){throw 'Detached supervisor launch failed. No retry was attempted.'}
+$activationAttempted=$true # A detached child may survive any subsequent observation failure.
+$detachedOutput=& $node $launcher --manifest $manifestPath --desktop-binding $bindingPath --run-dir $run --activate --detach-supervisor --invocation-id $InvocationId
+if($LASTEXITCODE -ne 0){throw 'Detached supervisor outcome UNKNOWN. Inspect current processes and evidence before any retry. No retry was attempted.'}
 $detached=$detachedOutput | ConvertFrom-Json
 $stdout=$detached.stdout
 $stderr=$detached.stderr
@@ -259,7 +329,7 @@ do {
   if($process.HasExited) {
     $launch.status='supervisor_exited_before_backend_verified';$launch.exitCode=$process.ExitCode
     $launch | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $launchPath -Encoding utf8
-    throw "Candidate did not start. Inspect $stderr and $run\run.json before retrying."
+    throw "Candidate start outcome UNKNOWN: the supervisor exited before verification and a Desktop may remain. Inspect current processes, $stderr and $run\run.json before any retry. No retry was attempted."
   }
   $receiptPath=Join-Path $run 'run.json'
   if(-not(Test-Path -LiteralPath $receiptPath)){continue}
@@ -275,7 +345,7 @@ do {
     $launch.status='candidate_backend_verified';$launch.verifiedAt=[DateTime]::UtcNow.ToString('o');$launch.backend=$backend
     $launch.desktop=Get-CimInstance Win32_Process -Filter "ProcessId = $($receipt.desktop.pid)" | Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine
     $launch | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $launchPath -Encoding utf8
-    Write-AresLaunchCompletion $repoRoot $InvocationId 'candidate_backend_verified' "Ares candidate backend verified. Run: $run" $launch.desktop $backend[0] $run
+    Write-AresLaunchCompletion $repoRoot $InvocationId 'candidate_backend_verified' "Ares candidate backend verified. Run: $run" $launch.desktop $backend[0] $run -ExpectedNativePath $candidateManifest.native.path -ExpectedDesktopPath $desktopPath
     Write-Output "Ares candidate backend verified. Run: $run"
     return
   }
@@ -287,9 +357,16 @@ throw 'Backend not verified within 40 seconds. Inspect the receipt and actual pr
 } catch {
   $failure=$_
   if($PackagedLaunch -and $completionPath) {
-    $completionStatus=if($launch -and $launch.status -eq 'backend_not_verified'){'unknown'}else{'failed'}
+    $unknownOutcome=$activationAttempted -or ($launch -and $launch.status -eq 'backend_not_verified')
+    $exception=$failure.Exception
+    while($null -ne $exception){if($exception.Data['AresOutcome'] -eq 'UNKNOWN'){$unknownOutcome=$true};$exception=$exception.InnerException}
+    $completionStatus=if($unknownOutcome){'unknown'}else{'failed'}
     try {Write-AresLaunchCompletion $repoRoot $InvocationId $completionStatus $failure.Exception.Message}
     catch {Write-Warning "Could not record packaged launch failure at $completionPath. $($_.Exception.Message)"}
   }
   throw $failure
+} finally {
+  if($null -ne $startMutex) {
+    try {$startMutex.ReleaseMutex()} finally {$startMutex.Dispose()}
+  }
 }

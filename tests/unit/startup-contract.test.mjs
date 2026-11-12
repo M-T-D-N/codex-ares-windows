@@ -38,7 +38,7 @@ const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 for (const outcome of ['supported', 'missing-flag', 'help-failure', 'version-failure']) {
   test(`launch preflight preserves ${outcome} without starting services or Desktop`,
     {skip: process.platform !== 'win32'}, async t => {
-      const parent = join(dirname(root.replace(/[\\/]$/, '')), 'launcher-validation-temp');
+      const parent = join(root, 'launcher-validation-temp');
       const parentExisted = await exists(parent);
       await mkdir(parent, {recursive: true});
       const fixture = await mkdtemp(join(parent, 'startup-'));
@@ -51,7 +51,7 @@ for (const outcome of ['supported', 'missing-flag', 'help-failure', 'version-fai
         const path = join(fixture, name);
         const bytes = Buffer.from('synthetic startup fixture: ' + name);
         await writeFile(path, bytes, {flag: 'wx'});
-        return {path, sha256: sha(bytes), sourceRelease: '0.163.0'};
+        return {path: path.slice(root.length).replaceAll('\\','/'), sha256: sha(bytes), sourceRelease: '0.163.0'};
       };
       try {
         const native = {...await entries('codex.exe'), version: 'synthetic-codex-version'};
@@ -61,12 +61,13 @@ for (const outcome of ['supported', 'missing-flag', 'help-failure', 'version-fai
         const serviceBytes = Buffer.from("export function startServices() { throw new Error('Synthetic preflight must not start services'); }\n");
         await writeFile(servicePath, serviceBytes, {flag: 'wx'});
         const desktop = await entries('synthetic-desktop.exe');
+        desktop.path=join(root,desktop.path);
+        const lock=JSON.parse(await readFile(join(root,'patches/codex/upstream.lock.json'),'utf8'));
+        const sidecar=await Promise.all(lock.runtimeSourceFiles.map(async path=>({path,sha256:sha(await readFile(join(root,path)))})));
         const manifestPath = join(fixture, 'candidate.json');
         const bindingPath = join(fixture, 'binding.json');
         await writeFile(manifestPath, JSON.stringify({native, companions,
-          sidecar: [{path: launcher, sha256: sha(await readFile(launcher))},
-            {path: servicePath, sha256: sha(serviceBytes)}],
-          runtimeDependencies: [], statusServicePath: servicePath}), {flag: 'wx'});
+          sidecar, runtimeDependencies: [], statusServicePath: 'src/selection/services.mjs'}), {flag: 'wx'});
         await writeFile(bindingPath, JSON.stringify({packageName: 'OpenAI.Codex',
           registeredForCurrentUser: true, packageVersion: 'synthetic-desktop-version', desktop}), {flag: 'wx'});
         process.argv = [process.execPath, launcher, '--manifest', manifestPath,
@@ -76,7 +77,7 @@ for (const outcome of ['supported', 'missing-flag', 'help-failure', 'version-fai
         const calls = [];
         const failure = Object.assign(new Error('synthetic native command failed'), {code: 17, stderr: 'synthetic failure'});
         const executeNative = async (binary, args, options) => {
-          assert.equal(binary, native.path);
+          assert.equal(binary, join(root,native.path));
           assert.deepEqual(options, {windowsHide: true, timeout: 10000});
           calls.push(args);
           if (args[0] === '--version') {
@@ -92,7 +93,7 @@ for (const outcome of ['supported', 'missing-flag', 'help-failure', 'version-fai
           await launch({executeNative});
           assert.equal(output.length, 1);
           assert.deepEqual(output[0], {status: 'preflight_only', version: native.version,
-            artifactsChecked: 7, desktopVersion: 'synthetic-desktop-version',
+            artifactsChecked: 5+lock.runtimeSourceFiles.length, desktopVersion: 'synthetic-desktop-version',
             startupConfigSupported: true, desktopStarted: false});
         } else if (outcome === 'missing-flag') {
           await assert.rejects(launch({executeNative}), /startup policy query/);

@@ -1,6 +1,39 @@
 # What was verified
 
-## Current 0.166 source preview — prepublication local snapshot (2026-10-30)
+## Current 0.167 source preview — local snapshot (2026-11-12)
+
+Pinned upstream `d2c035639366e0bf2c316aa2065c24aabc12bcdc`, regular-file identity `b2c43e5c99f9d31e331224d0694f8bc22ebf7d059c7b65a45c3b24389629a2ab` and cumulative patch199paths/178modified/21new. Public source restoration passed for 9,930 regular files plus one separately checked materialized link, with exact contents, Git modes and restored tree `f9fc801dccf3f4de594c67250a353d817d77c178`. Physical Windows symlink creation is not established. Private Git history and build/runtime receipts are excluded.
+
+The frozen lock's `candidateAcceptance` describes the earlier preparation checkpoint, not a rolling operating receipt. This dated validation record describes the later scoped results. Whole-lock build binding remains strict; historical receipts are not rewritten to change their source/lock identity.
+
+| Evidence | Result | Boundary |
+|---|---|---|
+| Locked npm restore | PASS, exit0 | Node24.22.1 /npm12.2.1, offline existing cache, gpt-tokenizer4.0.0 |
+| First default npm test |250 PASS /24 FAIL /0 SKIP | Preserved initial stale-schema fixture and GUI NOT_RUN label failures |
+| Corrected protocol/startup subset |71 PASS /0 FAIL /0 SKIP | Separate overlapping regression scope,14.345s |
+| Final default npm test |280 PASS /0 FAIL /0 SKIP, exit0 | Official `npm test`, default concurrency,16.652s |
+| Source-only Doctor before local build |PASS, exit0 /bundle:not_built | Historical checkpoint before the local build below |
+| Public-lock-bound native build |CLI and companion stages exit0; all five binary hashes unchanged | Official wrapper, same verified source/pooled target, locked/offline; 2,010 Fresh lines and no Compiling lines; source checked before/after |
+| Local bundle and fresh Desktop proof |1,561 artifacts; stable326 /experimental474; exit0 | Current public lock and actual local CLI; static contract proof, not GUI/provider acceptance |
+| Bundled Doctor and supported preflight |Both exit0; bundle verified /1,561 inputs checked | These commands did not start Desktop or read credentials/request a model |
+| Public source restoration |PASS:9,930 regular files +1 materialized link | Complete contents/Git modes/tree check;9,931 total entries, not9,931 regular files |
+| Private same-native automatic restart |Normal-console, capture, verify and start: all four exit0 | New run/native identity confirmed; prior run recorded normal Desktop exit, code0, cleanup confirmed and no failures |
+| Protected private operating recovery |7 databases quick_check ok;80 migration checks; both memory namespaces preserved | Capture and verification passed; no private DB, namespace contents or recovery set is distributed |
+| Authenticated service initialization after restart |Two invocations exit0; before/after audits ALREADY_REPAIRED | Running SCM service and signed configured image verified; root file identity,39-child inventory, DACL and config/marker bytes preserved; owned children exited naturally |
+| Ordinary sandbox entrypoints |Shell and builtin-patch create/edit/delete PASS | Actual local operating entrypoints; no policy relaxation or new provider/model qualification |
+| Exact published-commit CI |NOT_RUN at this prepublication snapshot | The Release identifies the actual published commit and exact-commit CI result |
+
+The first failures came from minimal old `{}`/threadId-only protocol fixtures and a label inconsistent with the existing GUI non-acceptance consumer. Production guards were not weakened. The corrected fixture independently captures the pinned generated0.167 extension shapes. Negative controls reject scalar-type, nested-definition, notification-position/inventory, provider-required-field, currentAccountOnly-type and unreviewed optional-voice-input drift. Existing runtime inventory/bootstrap tampering, default/manual ownership, cancellation and launcher-lifetime tests remain in the full default suite. These mock/static tests do not validate a real provider or installed service.
+
+Private operating qualification used the same native inputs, not an independently accepted public-layout GUI/provider run. The automatic sequence confirmed the new process lineage and native hashes, then restored the exact temporary hook and confirmed watcher release, helper absence and removal of the one-shot scheduled task. Its scheduler/recovery helper and private operating evidence are not shipped; the public build/normal-Quit/start procedure remains in the [build guide](build.md).
+
+Earlier private attempts held before the affected action on an invalid installed-alias binding and on a changed frozen configuration digest. Neither was automatic-restart or service-call success. The alias preparation was corrected to use the actual open-handle final path and full member identity/image preflight before helper dispatch; failed records remain preserved privately. The later automatic sequence and two authenticated initializations above are separate executions. Historical failures and UNKNOWN causes below retain their original scope.
+
+The service's actual mapped image query was denied and remains UNKNOWN; a verified signed SCM configured image is not substituted for that observation. The repeated successful checks do not establish a permanent repair under every future stock runtime or external writer. Config/marker bytes and audited ACL state were preserved in the observed runs; no service replacement, forced termination or automatic retry is inferred.
+
+This is source-only Technical Preview0.1.0-preview.5. The Release identifies its actual published commit, exact-commit CI result and source-asset checksums separately from this local snapshot. Prior releases/assets and dated source-validation records remain unchanged. Public-layout GUI/provider, fresh-PC setup, physical Windows symlink creation, ordinary GUI native_task_delivery, provider-internal effort, general answer quality/cost savings and full independent security/binary-redistribution audits remain unverified.
+
+## Historical 0.166 source preview — prepublication local snapshot (2026-10-30)
 
 The fixed native source is `f602eec364f061f64d513b1cb77208fcaaa707ecc1bf1c61d3d20bb1f48052ac`, based on official upstream `f79b26ccbb3116b052544666a181012fb45dc49b`; patch `05016f6a951ed208895373ac1a0f82dd763026c4ff630b3f156e34224b904d49`, restored tree `acf7459e72cef50d8daadb8dfa9b640ed73e6878`. Restoration verified 9,711 regular files plus one materialized link and exact Git modes/tree. Physical Windows symlink creation is not established. Exact dependency inputs remain in the [lock](../patches/codex/upstream.lock.json).
 

@@ -3,7 +3,7 @@
 | Material | Source / license | Included here | Remaining condition |
 |---|---|---|---|
 | Astra-Ares derived effort question | miuuyy/Astra-Ares b2011446d88202329dcdc5163500ca818aba9dbb, MIT | Pure Luna question helper and full notice | Preserve MIT notice |
-| Codex native delta | openai/codexf79b26ccbb3116b052544666a181012fb45dc49b, Apache-2.0 | Exact0.166.0-alpha.5.1 cumulative Ares patch, license, NOTICE and changed-file manifests/map | Retain applicable notices with downstream source/binary distributions |
+| Codex native delta | openai/codex d2c035639366e0bf2c316aa2065c24aabc12bcdc, Apache-2.0 | Exact0.167.0-alpha.4.1 cumulative Ares patch, license, NOTICE and changed-file manifests/map | Retain applicable notices with downstream source/binary distributions |
 | Codex NOTICE references | OpenAI and Ratatui notices | Preserved upstream NOTICE | These acknowledgments do not relicense the whole package as MIT |
 | gpt-tokenizer 4.0.0 | npm public registry; MIT, Bazyli Brzoska | Dependency lock and license; package code obtained by npm ci | No private node_modules is shipped |
 | Rust dependencies | Cargo.lock public crates.io and pinned public Git sources | Prepared lock in native patch; crates are not vendored | Binary redistribution needs a complete linked-dependency license/notice inventory |
@@ -20,4 +20,4 @@ The portable Windows restore materializes bubblewrap/LICENSE as link text `COPYI
 
 No binary assets, signatures, account entitlements, service-term permissions or trademark endorsement are conveyed. A self-built executable does not inherit OpenAI's signature. Provider/API terms and charges remain the user's responsibility. A full independent security audit or complete binary-redistribution review is not claimed.
 
-Sources: [Apache-2.0](licenses/Apache-2.0.txt), [Codex NOTICE](licenses/NOTICE.codex), [Codex pinned license](https://github.com/openai/codex/blob/f79b26ccbb3116b052544666a181012fb45dc49b/LICENSE), [Ares pinned license](https://github.com/miuuyy/Astra-Ares/blob/b2011446d88202329dcdc5163500ca818aba9dbb/LICENSE), [Ares MIT notice](licenses/MIT-Astra-Ares.txt).
+Sources: [Apache-2.0](licenses/Apache-2.0.txt), [Codex NOTICE](licenses/NOTICE.codex), [Codex pinned license](https://github.com/openai/codex/blob/d2c035639366e0bf2c316aa2065c24aabc12bcdc/LICENSE), [Ares pinned license](https://github.com/miuuyy/Astra-Ares/blob/b2011446d88202329dcdc5163500ca818aba9dbb/LICENSE), [Ares MIT notice](licenses/MIT-Astra-Ares.txt).

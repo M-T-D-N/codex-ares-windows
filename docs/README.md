@@ -1,6 +1,6 @@
 # Documentation map
 
-These documents describe the Codex 0.166.0-alpha.5.1 source preview, native sourcef602eec and Desktop 26.1027.3384.0. The current [validation scope](validation.md#current-0166-source-preview--local-snapshot) separates source/build/static checks, later manual startup and unverified GUI/provider behavior. Automatic restart failed in a separate private workflow; its helper is not shipped. Exact source/dependency inputs remain in the [lock](../patches/codex/upstream.lock.json). This local snapshot does not claim a published tag, Release or exact-commit CI result.
+These documents describe source-only preview.5 for Codex0.167.0-alpha.4.1 and exact Desktop26.1106.6628.0. [Validation](validation.md#current-0167-source-preview--local-snapshot-2026-11-12) separates completed public restoration/regressions and local build/proof checks from private same-native automatic-restart and permission checks. Public-layout GUI/provider and fresh-PC acceptance remain unverified. Exact published-commit CI is NOT_RUN at the dated prepublication snapshot; the Release identifies its actual commit and CI result.
 
 | Need | Read | Scope |
 |---|---|---|
@@ -13,4 +13,4 @@ These documents describe the Codex 0.166.0-alpha.5.1 source preview, native sour
 | Native changes | [Patch map](../patches/codex/PATCH_MAP.md) | Changed-file inventory and downstream responsibilities |
 | Earlier task comparisons | [Pilot results](pilot-results.md) | Historical measured outcomes and negative results |
 
-Dated integration documents, `source-validation-163.json`, `source-validation-164.json`, `source-validation-165.json`, `runtime-validation.json` and pilot records retain their original identities. They are historical evidence, not rolling0.166 acceptance records. Counts from different or overlapping scopes must not be added into a product-quality total.
+Dated integration documents, `source-validation-163.json`, `source-validation-164.json`, `source-validation-165.json`, `runtime-validation.json` and pilot records retain their original identities. They are historical evidence, not rolling0.167 acceptance records. Counts from different or overlapping scopes must not be added into a product-quality total.

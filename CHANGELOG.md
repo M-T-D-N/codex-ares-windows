@@ -1,6 +1,10 @@
 # What changed
 
-## Current 0.166 source preview — local checks
+## 0.1.0-preview.5 / Codex0.167.0-alpha.4.1 (2026-11-12)
+
+Pinned upstream `d2c035639366e0bf2c316aa2065c24aabc12bcdc`, Desktop26.1106.6628.0 and source identity `b2c43e5c99f9d31e331224d0694f8bc22ebf7d059c7b65a45c3b24389629a2ab`. The cumulative patch preserves the modular sandbox repair, retained-reader guard, current provider/account-history contracts and Ares generation controls. Public source restoration passed for 9,930 regular files plus one materialized link, with exact contents, Git modes and restored tree. Default npm280/0/0, the public-lock cached five-binary build, bundle1561, fresh stable326/experimental474 proof, Doctor and preflight passed. Separate private same-native automatic restart and two authenticated service initializations passed; public-layout GUI/provider and fresh-PC acceptance remain unverified. Exact published-commit CI is NOT_RUN in the dated prepublication snapshot and is identified with the Release. Historical assets and source-validation records retain their identities.
+
+## Historical 0.166 source preview — local checks
 
 - Port the cumulative Ares patch to official0.166.0-alpha.5.1, upstream `f79b26ccbb3116b052544666a181012fb45dc49b`; native identity `f602eec364f061f64d513b1cb77208fcaaa707ecc1bf1c61d3d20bb1f48052ac`,180 patch paths and9,711 regular files plus one materialized link.
 - Preserve current upstream response/image/tool/hook contracts and Ares owner, permission, cancellation and manual-effort boundaries. Classify the new error enum using static metadata without changing retry policy. Regenerate official protocol/SDK contracts and require the exact new Desktop/native companion matrix.
